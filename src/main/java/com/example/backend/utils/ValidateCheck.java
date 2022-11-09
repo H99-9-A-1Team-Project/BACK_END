@@ -1,5 +1,7 @@
 package com.example.backend.utils;
 
+import com.example.backend.domain.Member;
+import com.example.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
