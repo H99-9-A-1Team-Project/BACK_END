@@ -30,11 +30,15 @@ public class Member extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String profileImg;
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private MemberRole role;
 
 
     public Member(MemberRequestDto memberReqDto) {
         this.username = memberReqDto.getUsername();
         this.password = memberReqDto.getPassword();
+        this.role = MemberRole.MEMBER;
     }
 
     public boolean validatePassword(PasswordEncoder passwordEncoder, String password){
