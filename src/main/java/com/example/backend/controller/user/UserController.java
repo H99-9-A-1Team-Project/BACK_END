@@ -1,6 +1,8 @@
 package com.example.backend.controller.user;
 
 
+import com.example.backend.dto.user.IntroMessageDto;
+import com.example.backend.dto.user.NicknameRequestDto;
 import com.example.backend.dto.user.UserDto;
 import com.example.backend.entity.user.User;
 import com.example.backend.exception.MemberNotFoundException;
@@ -33,11 +35,11 @@ public class UserController {
         return Response.success(userService.findUser(id));
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/users/{id}")
-    public Response editUserInfo(@PathVariable Long id, @RequestBody UserDto userDto) {
-        return Response.success(userService.editUserInfo(id, userDto));
-    }
+//    @ResponseStatus(HttpStatus.OK)
+//    @PutMapping("/users/{id}")
+//    public Response editUserInfo(@PathVariable Long id, @RequestBody UserDto userDto) {
+//        return Response.success(userService.editUserInfo(id, userDto));
+//    }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/users/{id}")
@@ -46,6 +48,24 @@ public class UserController {
         User user = userRepository.findByEmail(authentication.getName()).orElseThrow(MemberNotFoundException::new);
 
         userService.deleteUserInfo(user, id);
+        return Response.success();
+    }
+
+    @PutMapping("/user/editNickname")
+    public Response editUserNickname(@RequestBody NicknameRequestDto nicknameRequestDto){
+        userService.editUserNickname(nicknameRequestDto);
+        return Response.success();
+    }
+
+    @PutMapping("/realtor/editNickname")
+    public Response editRealtorNickname(@RequestBody NicknameRequestDto nicknameRequestDto){
+        userService.editRealtorNickname(nicknameRequestDto);
+        return Response.success();
+    }
+
+    @PutMapping("/realtor/introMessage")
+    public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto){
+        userService.editRealtorIntroMessage(introMessageDto);
         return Response.success();
     }
 }
