@@ -1,9 +1,7 @@
 package com.example.backend.controller.user;
 
-import com.example.backend.dto.user.LoginRequestDto;
-import com.example.backend.dto.user.SignUpRealtorRequestDto;
-import com.example.backend.dto.user.SignUpRequestDto;
-import com.example.backend.dto.user.TokenRequestDto;
+import com.example.backend.dto.user.*;
+import com.example.backend.repository.user.UserRepository;
 import com.example.backend.response.Response;
 import com.example.backend.service.user.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,7 @@ import static com.example.backend.response.Response.success;
 @RestController
 @RequestMapping("/api")
 public class AuthController {
-
+    private final UserRepository userRepository;
     private final AuthService authService;
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -40,6 +38,7 @@ public class AuthController {
     public Response signIn(@Valid @RequestBody LoginRequestDto loginRequestDto) {
         return success(authService.login(loginRequestDto));
     }
+
 
 
 
