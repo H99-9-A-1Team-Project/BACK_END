@@ -1,11 +1,14 @@
 package com.example.backend.entity.user;
 
+import com.example.backend.dto.user.SignUpRealtorRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,41 +17,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Realtor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Realtor extends User {
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @JsonIgnore
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
-    private String nickname;
-
-    @Column(nullable = false)
+    @Column
     private String profile;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Authority authority;
+    @Column
+    private Long check;
 
-    @DateTimeFormat
-    private LocalDateTime createDate;
-
-    @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
-    public void createDate() {
-        this.createDate = LocalDateTime.now();
+    public Realtor(SignUpRealtorRequestDto dto) {
+        super(dto);
+        this.profile = dto.getProfile();
+        this.check = 0L;
     }
-    @Builder
-    public Realtor(String email, String password, String nickname,Authority authority) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.authority = authority;
-    }
-
 }

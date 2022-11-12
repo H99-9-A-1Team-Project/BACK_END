@@ -3,7 +3,6 @@ package com.example.backend.service.user;
 
 import com.example.backend.controller.config.jwt.TokenProvider;
 import com.example.backend.dto.user.*;
-import com.example.backend.entity.user.Authority;
 import com.example.backend.entity.user.Realtor;
 import com.example.backend.entity.user.RefreshToken;
 import com.example.backend.entity.user.User;
@@ -21,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.backend.entity.user.Authority.ROLE_REALTOR;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -30,30 +31,21 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final RealtorRepository realtorRepository;
-    @Transactional
-    public void signup(SignUpRequestDto signUpRequestDto) {
-        validateSignUpInfo(signUpRequestDto);
 
-        User user = new User();
-        user.setEmail(signUpRequestDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
-        user.setNickname(signUpRequestDto.getNickname());
-        user.setAuthority(Authority.ROLE_USER);
+    @Transactional
+    public void memberSignUp(SignUpRequestDto signUpRequestDto) {
+        validateMemberSignUpInfo(signUpRequestDto);
+        signUpRequestDto.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
+        User user = new User(signUpRequestDto);
         userRepository.save(user);
     }
 
     @Transactional
-    public void signup2(SignUpRealtorRequestDto signUpRealtorRequestDto) {
-        validateSignUpInfo2(signUpRealtorRequestDto);
-
-        Realtor realtor = new Realtor();
-        realtor.setEmail(signUpRealtorRequestDto.getEmail());
-        realtor.setPassword(passwordEncoder.encode(signUpRealtorRequestDto.getPassword()));
-        realtor.setNickname(signUpRealtorRequestDto.getNickname());
-        realtor.setProfile(signUpRealtorRequestDto.getProfile());
-        realtor.setAuthority(Authority.ROLE_REALTOR);
-        realtorRepository.save(realtor);
+    public void realtorSignUp(SignUpRealtorRequestDto signUpRealtorRequestDto) {
+        validateRealtorSignUpInfo(signUpRealtorRequestDto);
+        signUpRealtorRequestDto.setPassword(passwordEncoder.encode(signUpRealtorRequestDto.getPassword()));
+        Realtor realtor = new Realtor(signUpRealtorRequestDto);
+        userRepository.save(realtor);
     }
 
 
@@ -61,7 +53,7 @@ public class AuthService {
     public TokenResponseDto login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(loginRequestDto, user);
-
+        validateCheck(loginRequestDto, user);
 
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
@@ -80,9 +72,14 @@ public class AuthService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
+
         // 5. 토큰 발급
         return new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
+
+
     }
+
+
 
 
     @Transactional
@@ -117,11 +114,11 @@ public class AuthService {
     }
 
 
-    private void validateSignUpInfo(SignUpRequestDto signUpRequestDto) {
+    private void validateMemberSignUpInfo(SignUpRequestDto signUpRequestDto) {
         if (userRepository.existsByEmail(signUpRequestDto.getEmail()))
             throw new MemberEmailAlreadyExistsException(signUpRequestDto.getEmail());
     }
-    private void validateSignUpInfo2(SignUpRealtorRequestDto signUpRealtorRequestDto) {
+    private void validateRealtorSignUpInfo(SignUpRealtorRequestDto signUpRealtorRequestDto) {
         if (userRepository.existsByEmail(signUpRealtorRequestDto.getEmail()))
             throw new MemberEmailAlreadyExistsException(signUpRealtorRequestDto.getEmail());
     }
@@ -131,6 +128,19 @@ public class AuthService {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
             throw new LoginFailureException();
         }
+    }
+
+    private void validateCheck(LoginRequestDto loginRequestDto, User user) {
+        if (user.getAuthority() == ROLE_REALTOR ){
+            Realtor realtor = (Realtor) user;
+            if (realtor.getCheck() == 0) {
+                throw new RuntimeException("관리자 승인 대기중입니다.");
+            } else if (realtor.getCheck() == 2) {
+                throw new RuntimeException("관리자 승인이 거부되었습니다.");
+            }
+    }
+
+
     }
 
 }
