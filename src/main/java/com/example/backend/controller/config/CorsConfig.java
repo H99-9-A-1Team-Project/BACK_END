@@ -13,11 +13,12 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:8080");
+        config.addAllowedOrigin("*");
+        config.addAllowedOriginPattern("*");
 
+        config.addAllowedOrigin("*");  // CORS 요청 허용 Site
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
         source.registerCorsConfiguration("/**", config);

@@ -24,5 +24,6 @@ public class Response {
     public static Response failure(int code, String msg) { // 6
         return new Response("Fail..", code, new Failure(msg));
     }
+
 }
 

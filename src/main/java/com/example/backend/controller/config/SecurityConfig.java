@@ -57,9 +57,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // CORS
         http.cors().configurationSource(request -> {
             var cors = new CorsConfiguration();
-            cors.setAllowedOrigins(List.of("http://localhost:8080"));
-            cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+            cors.setAllowedOriginPatterns(List.of("*"));
+            cors.setAllowedMethods(List.of("*"));
             cors.setAllowedHeaders(List.of("*"));
+            cors.setAllowCredentials(true);
             return cors;
         });
         http
@@ -87,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**", "/v3/**", "/test").permitAll() // swagger
                 .antMatchers(HttpMethod.GET, "/image/**").permitAll()
 
-                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue").permitAll()
+                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/user/editNickname").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.GET, "/api/users/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
