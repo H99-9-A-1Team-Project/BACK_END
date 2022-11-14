@@ -1,6 +1,6 @@
 package com.example.backend.user.dto;
 
-
+import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.User;
 import lombok.AllArgsConstructor;
@@ -33,7 +33,8 @@ public class LoginRequestDto {
                 .build();
     }
 
-    public UsernamePasswordAuthenticationToken toAuthentication() {
-        return new UsernamePasswordAuthenticationToken(email, password);
+    public UsernamePasswordAuthenticationToken toAuthentication(User user) {
+        UserDetailsImpl details = new UserDetailsImpl(user);
+        return new UsernamePasswordAuthenticationToken(details.getUser().getEmail(), email);
     }
 }

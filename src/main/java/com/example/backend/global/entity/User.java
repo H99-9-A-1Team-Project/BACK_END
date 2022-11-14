@@ -33,12 +33,18 @@ public class User {
 
     @Column(nullable = false)
     private String nickname;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
     @DateTimeFormat
     private LocalDateTime createDate; // 날짜
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
 
     @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨

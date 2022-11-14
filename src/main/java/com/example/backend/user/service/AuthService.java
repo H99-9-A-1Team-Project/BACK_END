@@ -1,7 +1,5 @@
 package com.example.backend.user.service;
 
-
-import com.example.backend.global.config.jwt.TokenProvider;
 import com.example.backend.user.dto.*;
 import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.RefreshToken;
@@ -28,7 +26,6 @@ public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
@@ -48,14 +45,14 @@ public class AuthService {
     }
 
 
-    @Transactional
+/*    @Transactional
     public TokenResponseDto login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(loginRequestDto, user);
         validateCheck(loginRequestDto, user);
 
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
+        UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication(user);
 
         // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
@@ -76,10 +73,10 @@ public class AuthService {
         return new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 
 
-    }
+    }*/
 
 
-    @Transactional
+/*    @Transactional
     public TokenResponseDto reissue(TokenRequestDto tokenRequestDto) {
         // 1. Refresh Token 검증
         if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
@@ -108,7 +105,7 @@ public class AuthService {
         // 토큰 발급
         return new TokenResponseDto(tokenDto.getAccessToken(), tokenDto.getRefreshToken());
 
-    }
+    }*/
 
 
     private void validateMemberSignUpInfo(SignUpRequestDto signUpRequestDto) {

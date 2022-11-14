@@ -1,10 +1,11 @@
 package com.example.backend.global.config.security;
 
-import com.example.backend.global.config.jwt.JwtAccessDeniedHandler;
-import com.example.backend.global.config.jwt.JwtAuthenticationEntryPoint;
-import com.example.backend.global.config.jwt.JwtSecurityConfig;
-import com.example.backend.global.config.jwt.TokenProvider;
+import com.example.backend.global.config.auth.UserDetailsServiceImpl;
+import com.example.backend.global.config.jwt.JWTCheckFilter;
+import com.example.backend.global.config.jwt.JWTLoginFilter;
+import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,7 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsUtils;
 
@@ -22,18 +24,18 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final TokenProvider tokenProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+    @Autowired
+    private UserDetailsServiceImpl userDetailsServiceImpl;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    // 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder PasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer(){
-//        return web -> web.ignoring()
-//                .antMatchers("/h2-console/**");
 
     @Bean // h2 하위 모든 요청과 파비콘은 제한 무시하는 것으로 설정
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -54,6 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // CSRF 설정 Disable
         http.csrf().disable();
 
+        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager(), userRepository);
+        JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager(), userDetailsServiceImpl);
+
         // CORS
         http.cors().configurationSource(request -> {
             var cors = new CorsConfiguration();
@@ -72,8 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 // exception handling 할 때 우리가 만든 클래스를 추가
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
 
 
                 // 시큐리티는 기본적으로 세션을 사용
@@ -86,10 +89,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
 
-                .antMatchers("/swagger-ui/**", "/v3/**", "/test").permitAll() // swagger
+                .antMatchers("/swagger-ui/**", "/v3/**", "/v1/**","/test").permitAll() // swagger
                 .antMatchers(HttpMethod.GET, "/image/**").permitAll()
 
-                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/user/editNickname").permitAll()
+                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.GET, "/api/users/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -128,6 +131,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(checkFilter, BasicAuthenticationFilter.class);
     }
 }

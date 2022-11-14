@@ -1,5 +1,7 @@
 package com.example.backend.user.controller;
 
+import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.entity.User;
 import com.example.backend.user.dto.LoginRequestDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import com.example.backend.user.dto.SignUpRequestDto;
@@ -11,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -38,7 +43,7 @@ public class AuthController {
         return success();
     }
 
-    @PostMapping("/login")
+/*    @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> signIn(@Valid @RequestBody LoginRequestDto loginRequestDto) {
 
@@ -48,12 +53,20 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .headers(headers).build();
-    }
-
+    }*/
+/*
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/reissue")
     public Response reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return success(authService.reissue(tokenRequestDto));
+    }*/
+
+    @GetMapping("/test")
+    public ResponseEntity<?> test(@AuthenticationPrincipal UserDetailsImpl user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getName());
+        System.out.println(user);
+        return ResponseEntity.ok(user.getUser());
     }
 
 }
