@@ -8,6 +8,7 @@ import com.example.backend.global.entity.RefreshToken;
 import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.customexception.LoginFailureException;
 import com.example.backend.global.exception.customexception.MemberEmailAlreadyExistsException;
+import com.example.backend.user.repository.RealtorRepository;
 import com.example.backend.user.repository.RefreshTokenRepository;
 import com.example.backend.user.repository.UserRepository;
 
@@ -146,7 +147,7 @@ public class AuthService {
     }
 
     private void validateEmail(EmailConfirmDto emailConfirmDto){
-        if(userRepository.existsByEmail(emailConfirmDto.getEmail())){
+        if(RealtorRepository.existsByEmail(emailConfirmDto.getEmail())){
             throw new MemberEmailAlreadyExistsException();
         }
     }

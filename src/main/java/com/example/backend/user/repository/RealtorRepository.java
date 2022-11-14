@@ -7,4 +7,8 @@ import java.util.Optional;
 
 public interface RealtorRepository extends JpaRepository<Realtor, Long> {
     Optional<Realtor> findByEmail(String email);
+
+    static boolean existsByEmail(String email) {
+        return false;
+    }
 }
