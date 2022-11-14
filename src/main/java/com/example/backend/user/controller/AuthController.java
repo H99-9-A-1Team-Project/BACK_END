@@ -1,9 +1,6 @@
 package com.example.backend.user.controller;
 
-import com.example.backend.user.dto.LoginRequestDto;
-import com.example.backend.user.dto.SignUpRealtorRequestDto;
-import com.example.backend.user.dto.SignUpRequestDto;
-import com.example.backend.user.dto.TokenRequestDto;
+import com.example.backend.user.dto.*;
 import com.example.backend.user.repository.UserRepository;
 import com.example.backend.global.response.Response;
 import com.example.backend.user.service.AuthService;
@@ -56,4 +53,10 @@ public class AuthController {
         return success(authService.reissue(tokenRequestDto));
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/emailconfirm")
+    public ResponseEntity<?> emailConfirm(@RequestBody EmailConfirmDto emailConfirmDto){
+        authService.emailComfirm(emailConfirmDto);
+        return ResponseEntity.ok().build();
+    }
 }

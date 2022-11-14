@@ -47,6 +47,11 @@ public class AuthService {
         userRepository.save(realtor);
     }
 
+    @Transactional
+    public void emailComfirm(EmailConfirmDto emailConfirmDto){
+        validateEmail(emailConfirmDto);
+    }
+
 
     @Transactional
     public TokenResponseDto login(LoginRequestDto loginRequestDto) {
@@ -135,9 +140,15 @@ public class AuthService {
             } else if (realtor.getCheck() == 2) {
                 throw new RuntimeException("관리자 승인이 거부되었습니다.");
             }
+        }
+
+
     }
 
-
+    private void validateEmail(EmailConfirmDto emailConfirmDto){
+        if(userRepository.existsByEmail(emailConfirmDto.getEmail())){
+            throw new MemberEmailAlreadyExistsException();
+        }
     }
 
 }
