@@ -1,8 +1,11 @@
 package com.example.backend.user.service;
 
 
+import com.example.backend.global.entity.Authority;
+import com.example.backend.global.exception.customexception.AccessDeniedException;
 import com.example.backend.user.dto.IntroMessageDto;
 import com.example.backend.user.dto.NicknameRequestDto;
+import com.example.backend.user.dto.RealtorApproveDto;
 import com.example.backend.user.dto.UserDto;
 import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.User;
@@ -105,5 +108,24 @@ public class UserService {
             realtor.setNickname(introMessageDto.getIntroMessage());
         }
     }
+
+    @Transactional
+    public void realtorApproval(RealtorApproveDto dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        validateManager(authentication);
+        Realtor realtor = realtorRepository.findByEmail(dto.getEmail())
+                .orElseThrow(MemberNotFoundException::new);
+
+        realtor.update(dto);
+    }
+
+    private void validateManager(Authentication authentication) {
+        User manager = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(AccessDeniedException::new);
+        if(manager.getAuthority().equals(Authority.ROLE_ADMIN)){
+            throw new AccessDeniedException();
+        }
+    }
 }
+
 

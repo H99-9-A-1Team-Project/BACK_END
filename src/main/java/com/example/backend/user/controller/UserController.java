@@ -5,11 +5,13 @@ import com.example.backend.user.dto.IntroMessageDto;
 import com.example.backend.user.dto.NicknameRequestDto;
 import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.customexception.MemberNotFoundException;
+import com.example.backend.user.dto.RealtorApproveDto;
 import com.example.backend.user.repository.UserRepository;
 import com.example.backend.global.response.Response;
 import com.example.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -66,5 +68,12 @@ public class UserController {
     public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto){
         userService.editRealtorIntroMessage(introMessageDto);
         return Response.success();
+    }
+
+    @PutMapping("/v1/realtor-approval")
+    public ResponseEntity relatorApproval(@RequestBody RealtorApproveDto dto) {
+        userService.realtorApproval(dto);
+        return new ResponseEntity(HttpStatus.OK);
+
     }
 }
