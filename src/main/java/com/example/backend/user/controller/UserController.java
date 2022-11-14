@@ -4,7 +4,7 @@ package com.example.backend.user.controller;
 import com.example.backend.user.dto.IntroMessageDto;
 import com.example.backend.user.dto.NicknameRequestDto;
 import com.example.backend.global.entity.User;
-import com.example.backend.global.exception.MemberNotFoundException;
+import com.example.backend.global.exception.customexception.MemberNotFoundException;
 import com.example.backend.user.repository.UserRepository;
 import com.example.backend.global.response.Response;
 import com.example.backend.user.service.UserService;

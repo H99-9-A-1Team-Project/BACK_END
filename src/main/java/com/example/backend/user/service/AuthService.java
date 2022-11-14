@@ -6,8 +6,8 @@ import com.example.backend.user.dto.*;
 import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.RefreshToken;
 import com.example.backend.global.entity.User;
-import com.example.backend.global.exception.LoginFailureException;
-import com.example.backend.global.exception.MemberEmailAlreadyExistsException;
+import com.example.backend.global.exception.customexception.LoginFailureException;
+import com.example.backend.global.exception.customexception.MemberEmailAlreadyExistsException;
 import com.example.backend.user.repository.RefreshTokenRepository;
 import com.example.backend.user.repository.UserRepository;
 
@@ -113,11 +113,11 @@ public class AuthService {
 
     private void validateMemberSignUpInfo(SignUpRequestDto signUpRequestDto) {
         if (userRepository.existsByEmail(signUpRequestDto.getEmail()))
-            throw new MemberEmailAlreadyExistsException(signUpRequestDto.getEmail());
+            throw new MemberEmailAlreadyExistsException();
     }
     private void validateRealtorSignUpInfo(SignUpRealtorRequestDto signUpRealtorRequestDto) {
         if (userRepository.existsByEmail(signUpRealtorRequestDto.getEmail()))
-            throw new MemberEmailAlreadyExistsException(signUpRealtorRequestDto.getEmail());
+            throw new MemberEmailAlreadyExistsException();
     }
 
 
