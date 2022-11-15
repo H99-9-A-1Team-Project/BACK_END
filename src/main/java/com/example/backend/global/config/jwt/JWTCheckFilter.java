@@ -3,6 +3,7 @@ package com.example.backend.global.config.jwt;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.config.auth.UserDetailsServiceImpl;
 import com.example.backend.global.exception.ErrorResponse;
+import com.example.backend.global.exception.customexception.user.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,9 +52,7 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
            SecurityContextHolder.getContext().setAuthentication(userToken);
            chain.doFilter(request,response);
        } else {
-           ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다.");
-           response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-           response.getOutputStream().write(objectMapper.writeValueAsBytes(errorResponse));
+           throw new TokenExpiredException();
        }
 
     }
