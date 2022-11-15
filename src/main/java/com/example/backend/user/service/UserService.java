@@ -13,8 +13,6 @@ import com.example.backend.global.exception.customexception.user.MemberNotFoundE
 import com.example.backend.user.repository.RealtorRepository;
 import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +84,7 @@ public class UserService {
 
         Realtor user = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(MemberNotFoundException::new);
         return new RealtorProfileResponseDto(user);
+
     }
 
     public void validAuth(UserDetailsImpl userDetails){
