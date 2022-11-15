@@ -48,21 +48,24 @@ public class UserController {
         return Response.success();
     }
 
-    @PutMapping("/user/editNickname")
-    public Response editUserNickname(@RequestBody NicknameRequestDto nicknameRequestDto){
-        userService.editUserNickname(nicknameRequestDto);
+    @PutMapping("/user/edit-nickname")
+    public Response editUserNickname(@RequestBody NicknameRequestDto nicknameRequestDto,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails){
+        userService.editUserNickname(nicknameRequestDto, userDetails);
         return Response.success();
     }
 
-    @PutMapping("/realtor/editNickname")
-    public Response editRealtorNickname(@RequestBody NicknameRequestDto nicknameRequestDto){
-        userService.editRealtorNickname(nicknameRequestDto);
+    @PutMapping("/realtor/edit-nickname")
+    public Response editRealtorNickname(@RequestBody NicknameRequestDto nicknameRequestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
+        userService.editRealtorNickname(nicknameRequestDto, userDetails);
         return Response.success();
     }
 
-    @PutMapping("/realtor/introMessage")
+    @PutMapping("/realtor/intro-Message")
     public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto){
         userService.editRealtorIntroMessage(introMessageDto);
         return Response.success();
     }
+
 }

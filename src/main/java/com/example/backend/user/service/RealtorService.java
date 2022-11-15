@@ -37,6 +37,7 @@ public class RealtorService {
         realtor.update(dto);
     }
 
+    @Transactional(readOnly = true)
     public List<RealtorListResponseDto> getRealtorApprovalList(UserDetailsImpl userDetails) {
         validateManager(userDetails);
         List<Realtor> realtorList = realtorRepository.findByCheck(1L);
