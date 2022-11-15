@@ -1,6 +1,7 @@
 package com.example.backend.user.controller;
 
 
+import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.user.dto.IntroMessageDto;
 import com.example.backend.user.dto.NicknameRequestDto;
 import com.example.backend.global.entity.User;
@@ -13,10 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api")
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -35,12 +37,6 @@ public class UserController {
     public Response findUser(@PathVariable Long id) {
         return Response.success(userService.findUser(id));
     }
-
-//    @ResponseStatus(HttpStatus.OK)
-//    @PutMapping("/users/{id}")
-//    public Response editUserInfo(@PathVariable Long id, @RequestBody UserDto userDto) {
-//        return Response.success(userService.editUserInfo(id, userDto));
-//    }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/users/{id}")
@@ -68,12 +64,5 @@ public class UserController {
     public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto){
         userService.editRealtorIntroMessage(introMessageDto);
         return Response.success();
-    }
-
-    @PutMapping("/v1/realtor-approval")
-    public ResponseEntity relatorApproval(@RequestBody RealtorApproveDto dto) {
-        userService.realtorApproval(dto);
-        return new ResponseEntity(HttpStatus.OK);
-
     }
 }

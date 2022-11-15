@@ -1,6 +1,7 @@
 package com.example.backend.user.controller;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.user.dto.SignUpMemberRequestDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import com.example.backend.user.dto.SignUpRequestDto;
 import com.example.backend.user.repository.UserRepository;
@@ -28,8 +29,8 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
-    public Response memberSignup(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
-        authService.memberSignUp(signUpRequestDto);
+    public Response memberSignup(@Valid @RequestBody SignUpMemberRequestDto signUpMemberRequestDto) {
+        authService.memberSignUp(signUpMemberRequestDto);
         return success();
     }
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,24 +39,6 @@ public class AuthController {
         authService.realtorSignUp(signUpRealtorRequestDto);
         return success();
     }
-
-/*    @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> signIn(@Valid @RequestBody LoginRequestDto loginRequestDto) {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("access-token", authService.login(loginRequestDto).getAccessToken());
-        headers.add("refresh-token", authService.login(loginRequestDto).getRefreshToken());
-
-        return ResponseEntity.ok()
-                .headers(headers).build();
-    }*/
-/*
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/reissue")
-    public Response reissue(@RequestBody TokenRequestDto tokenRequestDto) {
-        return success(authService.reissue(tokenRequestDto));
-    }*/
 
     @GetMapping("/test")
     public ResponseEntity<?> test(@AuthenticationPrincipal UserDetailsImpl user) {

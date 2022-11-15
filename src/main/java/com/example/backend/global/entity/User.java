@@ -1,6 +1,7 @@
 package com.example.backend.global.entity;
 
 
+import com.example.backend.user.dto.SignUpMemberRequestDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import com.example.backend.user.dto.SignUpRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -41,38 +42,24 @@ public class User {
     @DateTimeFormat
     private LocalDateTime createDate; // 날짜
 
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-
     @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
     public void createDate() {
         this.createDate = LocalDateTime.now();
     }
 
-    @Builder
-    public User(String email, String password, String nickname,Authority authority) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.authority = authority;
-    }
-
-    public User(SignUpRequestDto signUpRequestDto) {
-        this.email = signUpRequestDto.getEmail();
-        this.password = signUpRequestDto.getPassword();
-        this.nickname = signUpRequestDto.getNickname();
-        this.authority = Authority.ROLE_USER;
-    }
 
     public User(SignUpRealtorRequestDto dto){
         this.email = dto.getEmail();
         this.password = dto.getPassword();
         this.nickname = dto.getNickname();
         this.authority = Authority.ROLE_REALTOR;
+    }
 
+    public User(SignUpMemberRequestDto signUpMemberRequestDto) {
+        this.email = signUpMemberRequestDto.getEmail();
+        this.password = signUpMemberRequestDto.getPassword();
+        this.nickname = signUpMemberRequestDto.getNickname();
+        this.authority = Authority.ROLE_USER;
     }
 
 

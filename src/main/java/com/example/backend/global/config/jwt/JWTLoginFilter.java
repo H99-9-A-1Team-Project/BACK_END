@@ -1,12 +1,13 @@
 package com.example.backend.global.config.jwt;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.entity.Authority;
+import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.ErrorResponse;
+import com.example.backend.global.exception.customexception.user.RealtorNotApprovedYetException;
 import com.example.backend.user.dto.LoginRequestDto;
-import com.example.backend.user.repository.RefreshTokenRepository;
 import com.example.backend.user.repository.UserRepository;
-import com.example.backend.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -41,7 +42,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     public JWTLoginFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
-        setFilterProcessesUrl("/api/login");
+        setFilterProcessesUrl("/v1/login");
         this.userRepository = userRepository;
     }
 
@@ -82,6 +83,12 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
+        User user = userDetails.getUser();
+        if(user.getAuthority() == Authority.ROLE_REALTOR){
+            Realtor realtor = (Realtor) user;
+            if(realtor.getCheck() == 0) throw new RealtorNotApprovedYetException();
+        }
+
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
@@ -91,7 +98,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("access_token", jwt.makeAuthToken(userDetails));
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-        response.getOutputStream().write(objectMapper.writeValueAsBytes(userDetails.getUser()));
+        response.getOutputStream().write(objectMapper.writeValueAsBytes(new UserResponseDto(userDetails.getUser())));
 
     }
 
@@ -110,5 +117,17 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     }
 
+
+    public static class UserResponseDto {
+        public int accountState;
+        public String email;
+        public String nickname;
+
+        public UserResponseDto(User user) {
+            this.accountState = user.getAuthority().getNum();
+            this.email = user.getEmail();
+            this.nickname = user.getNickname();
+        }
+    }
 
 }

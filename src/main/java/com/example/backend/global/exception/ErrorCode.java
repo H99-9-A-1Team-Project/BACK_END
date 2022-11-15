@@ -18,7 +18,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"C007", "서버에서 오류가 발생했습니다."),
 
     // User
-    USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "U001", "회원가입이 필요합니다."),
+    USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "U001", "로그인 해주세요"),
     LOGIN_FAIL_EXCEPTION(HttpStatus.UNAUTHORIZED, "U002", "로그인에 실패했습니다."),
     REALTOR_NOT_APPROVED_YET(HttpStatus.FORBIDDEN, "U003", "공인중개사 인증이 완료되지 않았습니다."),
     REALTOR_NOT_APPROVED(HttpStatus.FORBIDDEN, "U004", "공인중개사 인증이 거부되었습니다."),
