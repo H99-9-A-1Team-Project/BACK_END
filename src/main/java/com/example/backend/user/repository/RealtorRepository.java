@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface RealtorRepository extends JpaRepository<Realtor, Long> {
     Optional<Realtor> findByEmail(String email);
 
-    List<Realtor> findByCheck(Long i);
+    List<Realtor> findByAccountCheck(Long i);
 }
