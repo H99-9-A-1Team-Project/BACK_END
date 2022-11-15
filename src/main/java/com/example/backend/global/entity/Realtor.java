@@ -1,5 +1,6 @@
 package com.example.backend.global.entity;
 
+import com.example.backend.user.dto.RealtorApproveDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,5 +24,9 @@ public class Realtor extends User {
         super(dto);
         this.profile = dto.getProfile();
         this.check = 0L;
+    }
+
+    public void update(RealtorApproveDto dto) {
+        this.check = dto.getAccountCheck();
     }
 }

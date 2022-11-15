@@ -1,4 +1,4 @@
-package com.example.backend.global.exception.customexception;
+package com.example.backend.global.exception.customexception.user;
 
 import com.example.backend.global.exception.CustomException;
 import com.example.backend.global.exception.ErrorCode;
