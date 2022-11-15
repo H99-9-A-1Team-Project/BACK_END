@@ -2,6 +2,8 @@ package com.example.backend.user.service;
 
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.entity.Authority;
+import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import com.example.backend.user.dto.*;
 import com.example.backend.global.entity.Realtor;
@@ -55,31 +57,46 @@ public class UserService {
 
     @Transactional
     public void editUserNickname(NicknameRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
-        if(userDetails == null) throw new UserUnauthorizedException();
+        validAuth(userDetails);
         User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
         user.update(nicknameRequestDto.getNickname());
     }
 
     @Transactional
     public void editRealtorNickname(NicknameRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
-        if(userDetails == null) throw new UserUnauthorizedException();
+        validAuth(userDetails);
         User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
         user.update(nicknameRequestDto.getNickname());
     }
 
     @Transactional
-    public void editRealtorIntroMessage(IntroMessageDto introMessageDto){
-        Realtor realtor = realtorRepository.findByEmail(introMessageDto.getIntroMessage()).orElseThrow(MemberNotFoundException::new);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(!authentication.getName().equals(realtor.getEmail())){
-            throw new MemberNotEqualsException();
-        }else{
-            realtor.setNickname(introMessageDto.getIntroMessage());
-        }
+    public void editRealtorIntroMessage(IntroMessageDto introMessageDto, UserDetailsImpl userDetails){
+        validAuth(userDetails);
+        validRealtor(userDetails);
+        Realtor realtor = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
+        realtor.update(introMessageDto);
     }
 
+    public Object getMyProfile(UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        Authority authority = userDetails.getUser().getAuthority();
+        if(authority.equals(Authority.ROLE_USER)){
+            return new UserProfileResponseDto(userDetails.getUser());
+        }
+
+        Realtor user = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(MemberNotFoundException::new);
+        return new RealtorProfileResponseDto(user);
+    }
+
+    public void validAuth(UserDetailsImpl userDetails){
+        if(userDetails == null) throw new UserUnauthorizedException();
+    }
+
+    public void validRealtor(UserDetailsImpl userDetails){
+        realtorRepository.findByEmail(userDetails.getUser().getEmail())
+                .orElseThrow(AccessDeniedException::new);
+
+    }
 }
 
 

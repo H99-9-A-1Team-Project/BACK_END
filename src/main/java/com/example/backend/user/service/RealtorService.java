@@ -6,19 +6,15 @@ import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
-import com.example.backend.global.exception.customexception.user.MemberNotEqualsException;
 import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import com.example.backend.user.dto.*;
 import com.example.backend.user.repository.RealtorRepository;
 import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +36,7 @@ public class RealtorService {
     @Transactional(readOnly = true)
     public List<RealtorListResponseDto> getRealtorApprovalList(UserDetailsImpl userDetails) {
         validateManager(userDetails);
-        List<Realtor> realtorList = realtorRepository.findByCheck(1L);
+        List<Realtor> realtorList = realtorRepository.findByAccountCheck(1L);
         return realtorList.stream().map(RealtorListResponseDto::new).collect(Collectors.toList());
     }
 

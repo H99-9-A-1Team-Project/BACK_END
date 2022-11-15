@@ -1,5 +1,6 @@
 package com.example.backend.global.entity;
 
+import com.example.backend.user.dto.IntroMessageDto;
 import com.example.backend.user.dto.RealtorApproveDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import lombok.AllArgsConstructor;
@@ -15,18 +16,25 @@ import javax.persistence.*;
 public class Realtor extends User {
 
     @Column
-    private String profile;
+    private String introMessage;
 
     @Column
-    private Long check;
+    private Long accountCheck;
+
+    @Column
+    private String profile;
 
     public Realtor(SignUpRealtorRequestDto dto) {
         super(dto);
         this.profile = dto.getProfile();
-        this.check = 0L;
+        this.accountCheck = 0L;
     }
 
     public void update(RealtorApproveDto dto) {
-        this.check = dto.getAccountCheck();
+        this.accountCheck = dto.getAccountCheck();
+    }
+
+    public void update(IntroMessageDto dto) {
+        this.introMessage = dto.getIntroMessage();
     }
 }

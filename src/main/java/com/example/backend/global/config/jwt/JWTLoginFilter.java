@@ -4,7 +4,6 @@ import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.User;
-import com.example.backend.global.exception.ErrorResponse;
 import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
 import com.example.backend.global.exception.customexception.user.RealtorNotApprovedYetException;
 import com.example.backend.global.exception.customexception.user.TokenExpiredException;
@@ -16,7 +15,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -87,7 +85,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         User user = userDetails.getUser();
         if(user.getAuthority() == Authority.ROLE_REALTOR){
             Realtor realtor = (Realtor) user;
-            if(realtor.getCheck() == 0) {
+            if(realtor.getAccountCheck() == 0) {
                 throw new RealtorNotApprovedYetException();
             }
         }
