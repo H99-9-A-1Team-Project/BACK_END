@@ -2,8 +2,6 @@ package com.example.backend.user.service;
 
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.entity.Authority;
-import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import com.example.backend.user.dto.*;
 import com.example.backend.global.entity.Realtor;
@@ -20,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -45,21 +42,6 @@ public class UserService {
     }
 
 
-//    @Transactional
-//    public UserDto editUserInfo(Long id, UserDto updateInfo) {
-//        User user = userRepository.findById(id).orElseThrow(MemberNotFoundException::new);
-//
-//        // 권한 처리
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (!authentication.getName().equals(user.getEmail())) {
-//            throw new MemberNotEqualsException();
-//        } else {
-//            user.setNickname(updateInfo.getNickname());
-//            return UserDto.toDto(user);
-//        }
-//    }
-
     @Transactional
     public void deleteUserInfo(User user, Long id) {
         User target = userRepository.findById(id).orElseThrow(MemberNotFoundException::new);
@@ -72,28 +54,17 @@ public class UserService {
     }
 
     @Transactional
-    public void editUserNickname(NicknameRequestDto nicknameRequestDto){
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(nicknameRequestDto.getNickname()).orElseThrow(MemberNotFoundException::new);
-        if(!authentication.getName().equals(user.getEmail())){
-            throw new MemberNotEqualsException();
-        }else{
-            user.setNickname(nicknameRequestDto.getNickname());
-        }
+    public void editUserNickname(NicknameRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
+        if(userDetails == null) throw new UserUnauthorizedException();
+        User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
+        user.update(nicknameRequestDto.getNickname());
     }
 
     @Transactional
-    public void editRealtorNickname(NicknameRequestDto nicknameRequestDto){
-        Realtor realtor = realtorRepository.findByEmail(nicknameRequestDto.getNickname()).orElseThrow(MemberNotFoundException::new);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if(!authentication.getName().equals(realtor.getEmail())){
-            throw new MemberNotEqualsException();
-        }else{
-            realtor.setNickname(nicknameRequestDto.getNickname());
-        }
+    public void editRealtorNickname(NicknameRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
+        if(userDetails == null) throw new UserUnauthorizedException();
+        User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
+        user.update(nicknameRequestDto.getNickname());
     }
 
     @Transactional

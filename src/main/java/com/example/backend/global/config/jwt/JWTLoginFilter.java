@@ -5,7 +5,9 @@ import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.ErrorResponse;
+import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
 import com.example.backend.global.exception.customexception.user.RealtorNotApprovedYetException;
+import com.example.backend.global.exception.customexception.user.TokenExpiredException;
 import com.example.backend.user.dto.LoginRequestDto;
 import com.example.backend.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -49,13 +50,13 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     @SneakyThrows
     @Override
     public Authentication attemptAuthentication(
-            HttpServletRequest reqeust,
+            HttpServletRequest request,
             HttpServletResponse response) throws AuthenticationException {
 
-        String refreshToken = reqeust.getHeader("refresh_token");
+        String refreshToken = request.getHeader("refresh_token");
 
         if (refreshToken == null) {
-            LoginRequestDto userLogin = objectMapper.readValue(reqeust.getInputStream(), LoginRequestDto.class);
+            LoginRequestDto userLogin = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                     userLogin.getEmail(), userLogin.getPassword(), null);
             return getAuthenticationManager().authenticate(token);
@@ -69,7 +70,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                         new UserDetailsImpl(user), user.getPassword());
 
             } else {
-                throw new IllegalArgumentException("Refresh token expired");
+                throw new TokenExpiredException();
             }
         }
     }
@@ -86,7 +87,9 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         User user = userDetails.getUser();
         if(user.getAuthority() == Authority.ROLE_REALTOR){
             Realtor realtor = (Realtor) user;
-            if(realtor.getCheck() == 0) throw new RealtorNotApprovedYetException();
+            if(realtor.getCheck() == 0) {
+                throw new RealtorNotApprovedYetException();
+            }
         }
 
         objectMapper.registerModule(new JavaTimeModule());
@@ -99,7 +102,6 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         response.getOutputStream().write(objectMapper.writeValueAsBytes(new UserResponseDto(userDetails.getUser())));
-
     }
 
     @Override
@@ -110,10 +112,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     ) throws IOException, ServletException {
 
         SecurityContextHolder.clearContext();
-
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, "사용자를 찾을 수 없습니다");
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        response.getOutputStream().write(objectMapper.writeValueAsBytes(errorResponse));
+        throw new MemberNotFoundException();
 
     }
 

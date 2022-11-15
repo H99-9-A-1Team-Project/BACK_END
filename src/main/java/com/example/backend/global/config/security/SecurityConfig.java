@@ -1,6 +1,7 @@
 package com.example.backend.global.config.security;
 
 import com.example.backend.global.config.auth.UserDetailsServiceImpl;
+import com.example.backend.global.config.jwt.ExceptionHandlerFilter;
 import com.example.backend.global.config.jwt.JWTCheckFilter;
 import com.example.backend.global.config.jwt.JWTLoginFilter;
 import com.example.backend.user.repository.UserRepository;
@@ -30,6 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ExceptionHandlerFilter exceptionHandlerFilter;
 
     // 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
     @Bean
@@ -132,6 +136,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
                 .and()
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(checkFilter, BasicAuthenticationFilter.class);
+                .addFilterAt(checkFilter, BasicAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, JWTLoginFilter.class);
     }
 }
