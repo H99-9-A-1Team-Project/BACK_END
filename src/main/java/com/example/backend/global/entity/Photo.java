@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.FetchType.EAGER;
 
 @Entity
 @Builder
@@ -18,10 +22,10 @@ public class Photo {
     @Id
     private Long id;
 
-    @ManyToOne(cascade =  CascadeType.PERSIST,fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name="footsteps_id")
+    @ManyToOne
+    @JoinColumn(name="footstepsPost_id")
     private FootstepsPost footstepsPost;
-
+    private String postImgUrl;
     @Column
     private String sunImg;
 
@@ -48,4 +52,11 @@ public class Photo {
 
     @Column
     private String securityImg;
+
+
+    public Photo(String photoImgUrl, FootstepsPost post){
+        this.postImgUrl = photoImgUrl;
+        this.footstepsPost = post;
+
+    }
 }
