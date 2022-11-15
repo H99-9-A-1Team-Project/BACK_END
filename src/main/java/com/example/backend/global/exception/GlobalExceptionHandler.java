@@ -13,10 +13,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleApiRequestException(Exception ex) {
         if (ex.getMessage().contains("SQL"))
             return new ResponseEntity<>(new ErrorResponse(ErrorCode.SQL_CONFLICT), HttpStatus.CONFLICT);
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()); // 나중에 Custom Error Code로 변경
         return new ResponseEntity<>(errorResponse, errorResponse.getHttpStatus());
     }
 
+    // 400대 에러
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleCustomException(CustomException e) {
         ErrorCode errorCode = e.getErrorCode();

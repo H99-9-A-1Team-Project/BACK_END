@@ -2,17 +2,14 @@ package com.example.backend.user.service;
 
 import com.example.backend.user.dto.*;
 import com.example.backend.global.entity.Realtor;
-import com.example.backend.global.entity.RefreshToken;
 import com.example.backend.global.entity.User;
-import com.example.backend.global.exception.customexception.LoginFailureException;
-import com.example.backend.global.exception.customexception.MemberEmailAlreadyExistsException;
+import com.example.backend.global.exception.customexception.user.LoginFailureException;
+import com.example.backend.global.exception.customexception.register.MemberEmailAlreadyExistsException;
 import com.example.backend.user.repository.RefreshTokenRepository;
 import com.example.backend.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

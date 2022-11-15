@@ -41,7 +41,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     public JWTLoginFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
-        setFilterProcessesUrl("/api/signin");
+        setFilterProcessesUrl("/api/login");
         this.userRepository = userRepository;
     }
 

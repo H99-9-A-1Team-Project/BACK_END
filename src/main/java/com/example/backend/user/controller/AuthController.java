@@ -1,16 +1,12 @@
 package com.example.backend.user.controller;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.entity.User;
-import com.example.backend.user.dto.LoginRequestDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import com.example.backend.user.dto.SignUpRequestDto;
-import com.example.backend.user.dto.TokenRequestDto;
 import com.example.backend.user.repository.UserRepository;
 import com.example.backend.global.response.Response;
 import com.example.backend.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,7 +21,7 @@ import static com.example.backend.global.response.Response.success;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/v1")
 public class AuthController {
     private final UserRepository userRepository;
     private final AuthService authService;
