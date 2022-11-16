@@ -55,19 +55,6 @@ public class UserController {
         return Response.success();
     }
 
-    @PutMapping("/realtor/edit-nickname")
-    public Response editRealtorNickname(@RequestBody NicknameRequestDto nicknameRequestDto,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
-        userService.editRealtorNickname(nicknameRequestDto, userDetails);
-        return Response.success();
-    }
-
-    @PutMapping("/realtor/intro-message")
-    public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
-        userService.editRealtorIntroMessage(introMessageDto, userDetails);
-        return Response.success();
-    }
 
     @GetMapping("/myprofile")
     public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails){

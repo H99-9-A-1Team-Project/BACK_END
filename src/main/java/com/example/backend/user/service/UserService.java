@@ -60,21 +60,6 @@ public class UserService {
         user.update(nicknameRequestDto.getNickname());
     }
 
-    @Transactional
-    public void editRealtorNickname(NicknameRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
-        validAuth(userDetails);
-        User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
-        user.update(nicknameRequestDto.getNickname());
-    }
-
-    @Transactional
-    public void editRealtorIntroMessage(IntroMessageDto introMessageDto, UserDetailsImpl userDetails){
-        validAuth(userDetails);
-        validRealtor(userDetails);
-        Realtor realtor = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
-        realtor.update(introMessageDto);
-    }
-
     public Object getMyProfile(UserDetailsImpl userDetails) {
         validAuth(userDetails);
         Authority authority = userDetails.getUser().getAuthority();
@@ -91,11 +76,6 @@ public class UserService {
         if(userDetails == null) throw new UserUnauthorizedException();
     }
 
-    public void validRealtor(UserDetailsImpl userDetails){
-        realtorRepository.findByEmail(userDetails.getUser().getEmail())
-                .orElseThrow(AccessDeniedException::new);
-
-    }
 }
 
 

@@ -1,11 +1,8 @@
 package com.example.backend.user.dto;
 
 import com.example.backend.global.entity.Realtor;
-import com.example.backend.global.entity.User;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Optional;
 
 @Getter
 @Setter

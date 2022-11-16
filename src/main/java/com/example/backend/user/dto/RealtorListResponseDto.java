@@ -12,14 +12,14 @@ public class RealtorListResponseDto {
     private String email;
     private String nickname;
     private LocalDateTime createDate;
-    private String profile;
-    private Long check;
+    private String license;
+    private Long accountCheck;
 
     public RealtorListResponseDto(Realtor realtor) {
         this.email = realtor.getEmail();
         this.nickname = realtor.getNickname();
         this.createDate = realtor.getCreateDate();
-        this.profile = realtor.getIntroMessage();
-        this.check = realtor.getAccountCheck();
+        this.license = realtor.getIntroMessage();
+        this.accountCheck = realtor.getAccountCheck();
     }
 }
