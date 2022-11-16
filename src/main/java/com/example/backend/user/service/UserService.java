@@ -43,14 +43,9 @@ public class UserService {
 
 
     @Transactional
-    public void deleteUserInfo(User user, Long id) {
-        User target = userRepository.findById(id).orElseThrow(MemberNotFoundException::new);
-
-        if (user.equals(target)) {
-            userRepository.deleteById(id);
-        } else {
-            throw new MemberNotEqualsException();
-        }
+    public void deleteUserInfo(UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        userRepository.deleteByEmail(userDetails.getUser().getEmail());
     }
 
     @Transactional
