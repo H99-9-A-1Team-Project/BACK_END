@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.FetchType.EAGER;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -73,4 +78,6 @@ public class FootstepsPost extends BaseTimeEntity {
     @Column
     private String security;
 
+    @OneToMany(mappedBy = "footstepsPost",fetch = EAGER)
+    private List<Photo> photos= new ArrayList<>();
 }
