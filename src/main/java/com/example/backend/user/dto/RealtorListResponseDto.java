@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +19,7 @@ public class RealtorListResponseDto {
         this.email = realtor.getEmail();
         this.nickname = realtor.getNickname();
         this.createDate = realtor.getCreateDate();
-        this.profile = realtor.getProfile();
-        this.check = realtor.getCheck();
+        this.profile = realtor.getIntroMessage();
+        this.check = realtor.getAccountCheck();
     }
 }

@@ -62,10 +62,18 @@ public class UserController {
         return Response.success();
     }
 
-    @PutMapping("/realtor/intro-Message")
-    public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto){
-        userService.editRealtorIntroMessage(introMessageDto);
+    @PutMapping("/realtor/intro-message")
+    public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
+        userService.editRealtorIntroMessage(introMessageDto, userDetails);
         return Response.success();
+    }
+
+    @GetMapping("/myprofile")
+    public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity.ok(userService.getMyProfile(userDetails));
+
+
     }
 
 }
