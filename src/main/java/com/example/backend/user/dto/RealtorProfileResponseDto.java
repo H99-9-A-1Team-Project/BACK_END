@@ -12,11 +12,13 @@ public class RealtorProfileResponseDto {
     private String nickname;
     private String profile;
     private String introMessage;
+    private String email;
 
     public RealtorProfileResponseDto(Realtor realtor) {
         this.introMessage = realtor.getIntroMessage();
         this.accountState = realtor.getAuthority().getNum();
         this.profile = realtor.getProfile();
         this.nickname = realtor.getNickname();
+        this.email = realtor.getEmail();
     }
 }
