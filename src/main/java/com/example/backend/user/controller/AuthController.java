@@ -14,8 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
+import java.io.IOException;
 
 import static com.example.backend.global.response.Response.success;
 
@@ -24,7 +27,7 @@ import static com.example.backend.global.response.Response.success;
 @RestController
 @RequestMapping("/v1")
 public class AuthController {
-    private final UserRepository userRepository;
+
     private final AuthService authService;
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,10 +38,12 @@ public class AuthController {
     }
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/realtor/signup")
-    public Response relatorSignup(@Valid @RequestBody SignUpRealtorRequestDto signUpRealtorRequestDto) {
-        authService.realtorSignUp(signUpRealtorRequestDto);
+    public Response relatorSignup(@RequestPart(value = "content") SignUpRealtorRequestDto signUpRealtorRequestDto,
+                                  @RequestPart(value = "license") MultipartFile multipartFile) throws IOException {
+        authService.realtorSignUp(signUpRealtorRequestDto, multipartFile);
         return success();
     }
+
 
     @GetMapping("/test")
     public ResponseEntity<?> test(@AuthenticationPrincipal UserDetailsImpl user) {

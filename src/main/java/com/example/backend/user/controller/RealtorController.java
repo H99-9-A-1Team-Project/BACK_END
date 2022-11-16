@@ -18,6 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RequestMapping("/v1")
 @RequiredArgsConstructor
@@ -39,5 +42,26 @@ public class RealtorController {
     public ResponseEntity<?> getRealtorApprovalList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(realtorService.getRealtorApprovalList(userDetails));
 
+    }
+
+    @PutMapping("/realtor/edit-nickname")
+    public Response editRealtorNickname(@RequestBody NicknameRequestDto nicknameRequestDto,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
+        realtorService.editRealtorNickname(nicknameRequestDto, userDetails);
+        return Response.success();
+    }
+
+    @PutMapping("/realtor/intro-message")
+    public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
+        realtorService.editRealtorIntroMessage(introMessageDto, userDetails);
+        return Response.success();
+    }
+
+    @PutMapping("/realtor/profile-image")
+    public ResponseEntity<?> editRealtorProfileImage(@RequestPart(value = "profile") MultipartFile multipartFile,
+                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        realtorService.editRealtorProfileImage(multipartFile, userDetails);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

@@ -22,11 +22,15 @@ public class Realtor extends User {
     private Long accountCheck;
 
     @Column
+    private String license;
+
+    @Column
     private String profile;
+
 
     public Realtor(SignUpRealtorRequestDto dto) {
         super(dto);
-        this.profile = dto.getProfile();
+        this.license = dto.getLicense();
         this.accountCheck = 0L;
     }
 
@@ -37,4 +41,5 @@ public class Realtor extends User {
     public void update(IntroMessageDto dto) {
         this.introMessage = dto.getIntroMessage();
     }
+
 }
