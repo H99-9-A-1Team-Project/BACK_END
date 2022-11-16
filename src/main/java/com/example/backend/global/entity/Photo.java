@@ -25,34 +25,8 @@ public class Photo {
     @ManyToOne
     @JoinColumn(name="footstepsPost_id")
     private FootstepsPost footstepsPost;
+    @Column
     private String postImgUrl;
-    @Column
-    private String sunImg;
-
-    @Column
-    private String moldImg;
-
-    @Column
-    private String waterImg;
-
-    @Column
-    private String drainImg;
-
-    @Column
-    private String optionImg;
-
-    @Column
-    private String ventilImg;
-
-    @Column
-    private String destroyImg;
-
-    @Column
-    private String ownerImg;
-
-    @Column
-    private String securityImg;
-
 
     public Photo(String photoImgUrl, FootstepsPost post){
         this.postImgUrl = photoImgUrl;

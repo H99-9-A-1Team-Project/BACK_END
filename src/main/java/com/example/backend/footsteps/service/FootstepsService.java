@@ -63,12 +63,8 @@ public class FootstepsService {
 //                post.addPhoto(photo);
                 photoRepository.save(photo);
 
-                //추가
             }
         }
-        /*
-         * 확인용
-         * */
         List<Photo> imgList = photoRepository.findAllByFootstepsPost(footstepsPost.getId());
         List<PhotoResponseDto> photoResponseDto = new ArrayList<>();
         for(Photo photo : imgList){
