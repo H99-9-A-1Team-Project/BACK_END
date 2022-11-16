@@ -5,6 +5,7 @@ import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
+import com.example.backend.global.exception.customexception.user.RealtorNotApprovedException;
 import com.example.backend.global.exception.customexception.user.RealtorNotApprovedYetException;
 import com.example.backend.global.exception.customexception.user.TokenExpiredException;
 import com.example.backend.user.dto.LoginRequestDto;
@@ -87,6 +88,8 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             Realtor realtor = (Realtor) user;
             if(realtor.getAccountCheck() == 0) {
                 throw new RealtorNotApprovedYetException();
+            } else if (realtor.getAccountCheck() == 2) {
+                throw new RealtorNotApprovedException();
             }
         }
 
