@@ -39,12 +39,9 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/users/{id}")
-    public Response deleteUserInfo(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(authentication.getName()).orElseThrow(MemberNotFoundException::new);
-
-        userService.deleteUserInfo(user, id);
+    @DeleteMapping("/user")
+    public Response deleteUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.deleteUserInfo(userDetails);
         return Response.success();
     }
 
