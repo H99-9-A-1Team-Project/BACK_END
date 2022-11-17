@@ -15,7 +15,7 @@ public class FootstepsRequstDto {
     //가격
     private Long price;
     //평수
-    private int size;
+    private Long size;
     //한줄평
     private String review;
     //햇빛

@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class FootstepsPost extends BaseTimeEntity {
     private Long price;
     //평수
     @Column
-    private int size;
+    private Long size;
     //한줄평
     @Column
     private String review;
@@ -99,6 +101,12 @@ public class FootstepsPost extends BaseTimeEntity {
     //주차장
     @Column
     private boolean park;
+    @DateTimeFormat
+    private LocalDateTime createDate; // 날짜
 
+    @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
+    public void createDate() {
+        this.createDate = LocalDateTime.now();
+    }
 
 }

@@ -10,10 +10,12 @@ import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
 import com.example.backend.global.config.S3.CommonUtils;
 import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.config.security.SecurityUtil;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
 import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
+import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class FootstepsService {
 
     @Transactional
     public void createPost(List<MultipartFile> multipartFile, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) throws IOException {
+        validAuth(userDetails);
         String imgurl = null;
 
         FootstepsPost footstepsPost = FootstepsPost.builder()
