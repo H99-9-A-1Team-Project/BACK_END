@@ -10,6 +10,8 @@ import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
+import com.example.backend.mail.MailDto;
+import com.example.backend.mail.MailService;
 import com.example.backend.user.dto.*;
 import com.example.backend.user.repository.RealtorRepository;
 import com.example.backend.user.repository.UserRepository;
@@ -32,6 +34,7 @@ public class RealtorService {
     private final UserRepository userRepository;
     private final RealtorRepository realtorRepository;
     private final AmazonS3Service amazonS3Service;
+    private final MailService mailService;
 
     @Value("${cloud.aws.credentials.domain}")
     private String amazonS3Domain;
@@ -39,15 +42,15 @@ public class RealtorService {
     @Transactional
     public void approveRealtor(RealtorApproveDto dto, UserDetailsImpl userDetails) {
         validateManager(userDetails);
-        Realtor realtor = realtorRepository.findByEmail(dto.getEmail())
-                .orElseThrow(MemberNotFoundException::new);
+        Realtor realtor = realtorRepository.findByEmail(dto.getEmail()).orElseThrow(MemberNotFoundException::new);
+        mailService.sendSimpleMessage(new MailDto(realtor.getEmail(), "축하합니다, 등대지기 가입이 승인되었습니다.", "축하합니다"));
         realtor.update(dto);
     }
 
     @Transactional(readOnly = true)
-    public List<RealtorListResponseDto> getRealtorApprovalList(UserDetailsImpl userDetails) {
+    public List<RealtorListResponseDto> getRealtorList(UserDetailsImpl userDetails) {
         validateManager(userDetails);
-        List<Realtor> realtorList = realtorRepository.findByAccountCheck(1L);
+        List<Realtor> realtorList = realtorRepository.findAll();
         return realtorList.stream().map(RealtorListResponseDto::new).collect(Collectors.toList());
     }
 
