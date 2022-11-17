@@ -10,10 +10,12 @@ public class UserProfileResponseDto {
 
     private String nickname;
     private int accountState;
+    private String email;
 
     public UserProfileResponseDto(User user) {
         this.nickname = user.getNickname();
         this.accountState = user.getAuthority().getNum();
+        this.email = user.getEmail();
     }
 }
 

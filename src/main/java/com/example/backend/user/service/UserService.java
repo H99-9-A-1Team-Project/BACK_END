@@ -43,14 +43,9 @@ public class UserService {
 
 
     @Transactional
-    public void deleteUserInfo(User user, Long id) {
-        User target = userRepository.findById(id).orElseThrow(MemberNotFoundException::new);
-
-        if (user.equals(target)) {
-            userRepository.deleteById(id);
-        } else {
-            throw new MemberNotEqualsException();
-        }
+    public void deleteUserInfo(UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        userRepository.deleteByEmail(userDetails.getUser().getEmail());
     }
 
     @Transactional
@@ -58,21 +53,6 @@ public class UserService {
         validAuth(userDetails);
         User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
         user.update(nicknameRequestDto.getNickname());
-    }
-
-    @Transactional
-    public void editRealtorNickname(NicknameRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
-        validAuth(userDetails);
-        User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
-        user.update(nicknameRequestDto.getNickname());
-    }
-
-    @Transactional
-    public void editRealtorIntroMessage(IntroMessageDto introMessageDto, UserDetailsImpl userDetails){
-        validAuth(userDetails);
-        validRealtor(userDetails);
-        Realtor realtor = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
-        realtor.update(introMessageDto);
     }
 
     public Object getMyProfile(UserDetailsImpl userDetails) {
@@ -91,11 +71,6 @@ public class UserService {
         if(userDetails == null) throw new UserUnauthorizedException();
     }
 
-    public void validRealtor(UserDetailsImpl userDetails){
-        realtorRepository.findByEmail(userDetails.getUser().getEmail())
-                .orElseThrow(AccessDeniedException::new);
-
-    }
 }
 
 
