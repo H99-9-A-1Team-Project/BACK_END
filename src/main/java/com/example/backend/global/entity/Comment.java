@@ -21,10 +21,10 @@ public class Comment extends BaseTimeEntity {
     private String content;
 
     @ManyToOne(cascade =  CascadeType.PERSIST,fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "member_id",nullable = false)
-    private Member member;
+    @JoinColumn(name = "user_id",nullable = false)
+    private User user;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_id", nullable = false)
-    private UserPost userpost;
+    @JoinColumn(name = "consult_id", nullable = false)
+    private Consult consult;
 }

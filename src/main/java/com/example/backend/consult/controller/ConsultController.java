@@ -3,6 +3,7 @@ package com.example.backend.consult.controller;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.consult.dto.RegisterConsultDto;
 import com.example.backend.consult.service.ConsultService;
+import com.example.backend.global.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,10 @@ public class ConsultController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/advicerequest")
-    public ResponseEntity<?> registerConsult(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                             @Valid @RequestBody RegisterConsultDto dto) {
-        return consultService.registerConsult(userDetails, dto);
+    public Response registerConsult(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                    @Valid @RequestBody RegisterConsultDto dto) {
+        consultService.registerConsult(userDetails, dto);
+        return Response.success();
     }
 
 
