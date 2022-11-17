@@ -37,9 +37,11 @@ dependencies {
 
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation("com.auth0:java-jwt:3.16.0")
-//
-    //s3
+    // s3
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
+
+    // mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {

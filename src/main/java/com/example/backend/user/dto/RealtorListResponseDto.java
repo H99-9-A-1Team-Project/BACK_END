@@ -19,7 +19,7 @@ public class RealtorListResponseDto {
         this.email = realtor.getEmail();
         this.nickname = realtor.getNickname();
         this.createDate = realtor.getCreateDate();
-        this.license = realtor.getIntroMessage();
+        this.license = realtor.getLicense();
         this.accountCheck = realtor.getAccountCheck();
     }
 }
