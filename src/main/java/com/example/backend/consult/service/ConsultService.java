@@ -1,10 +1,10 @@
-package com.example.backend.user.service;
+package com.example.backend.consult.service;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.AnswerState;
 import com.example.backend.global.entity.Consult;
-import com.example.backend.user.dto.RegisterConsultDto;
-import com.example.backend.user.repository.ConsultRepository;
+import com.example.backend.consult.dto.RegisterConsultDto;
+import com.example.backend.consult.repository.ConsultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
