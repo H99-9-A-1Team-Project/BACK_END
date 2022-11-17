@@ -101,6 +101,4 @@ public class FootstepsPost extends BaseTimeEntity {
     private boolean park;
 
 
-
-
 }

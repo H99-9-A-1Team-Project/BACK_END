@@ -1,11 +1,11 @@
 package com.example.backend.user.controller;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.response.Response;
 import com.example.backend.user.dto.SignUpMemberRequestDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import com.example.backend.user.dto.SignUpRequestDto;
 import com.example.backend.user.repository.UserRepository;
-import com.example.backend.global.response.Response;
 import com.example.backend.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
