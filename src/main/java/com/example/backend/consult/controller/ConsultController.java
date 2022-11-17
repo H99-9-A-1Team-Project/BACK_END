@@ -1,8 +1,8 @@
-package com.example.backend.user.controller;
+package com.example.backend.consult.controller;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.user.dto.RegisterConsultDto;
-import com.example.backend.user.service.ConsultService;
+import com.example.backend.consult.dto.RegisterConsultDto;
+import com.example.backend.consult.service.ConsultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
