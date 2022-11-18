@@ -3,9 +3,7 @@ package com.example.backend.user.controller;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.response.Response;
-import com.example.backend.user.dto.IntroMessageDto;
-import com.example.backend.user.dto.NicknameRequestDto;
-import com.example.backend.user.dto.RealtorApproveDto;
+import com.example.backend.user.dto.*;
 import com.example.backend.user.service.RealtorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,39 +21,27 @@ public class RealtorController {
 
     private final RealtorService realtorService;
 
-//    // realtor 회원가입 승인 여부 수정 (관리자 권한)
-//    @PutMapping("/realtor-approval")
-//    public ResponseEntity approveRealtor(@RequestBody RealtorApproveDto dto,
-//                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        realtorService.approveRealtor(dto, userDetails);
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
+    // realtor 회원가입 승인 여부 수정 (관리자 권한)
+    @PutMapping("/realtor-approval")
+    public ResponseEntity approveRealtor(@RequestBody RealtorApproveDto dto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        realtorService.approveRealtor(dto, userDetails);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
-    // realtor 회원가입 승인 목록 (관리자 권한)
+    // realtor 회원가입 요청 목록 조회 (관리자 권한)
     @GetMapping("/realtor-approval")
     public ResponseEntity<?> getRealtorApprovalList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(realtorService.getRealtorList(userDetails));
 
     }
 
-    @PutMapping("/realtor/edit-nickname")
-    public Response editRealtorNickname(@RequestBody NicknameRequestDto nicknameRequestDto,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
-        realtorService.editRealtorNickname(nicknameRequestDto, userDetails);
-        return Response.success();
-    }
-
-    @PutMapping("/realtor/intro-message")
-    public Response editRealtorIntroMessage(@RequestBody IntroMessageDto introMessageDto,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
-        realtorService.editRealtorIntroMessage(introMessageDto, userDetails);
-        return Response.success();
-    }
-
-    @PutMapping("/realtor/profile-image")
-    public ResponseEntity<?> editRealtorProfileImage(@RequestPart(value = "profile") MultipartFile multipartFile,
-                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        realtorService.editRealtorProfileImage(multipartFile, userDetails);
-        return new ResponseEntity(HttpStatus.OK);
+    // realtor 프로필 수정
+    @PutMapping("/realtor/profile")
+    public ResponseEntity<?> editRealtorProfile(@RequestPart(value = "profile") MultipartFile multipartFile,
+                                                @RequestPart(value = "content") RealtorEditRequestDto realtorEditRequestDto,
+                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        realtorService.editRealtorProfile(multipartFile, realtorEditRequestDto, userDetails);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.example.backend.global.entity;
 
 import com.example.backend.user.dto.IntroMessageDto;
 import com.example.backend.user.dto.RealtorApproveDto;
+import com.example.backend.user.dto.RealtorEditRequestDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,4 +43,9 @@ public class Realtor extends User {
         this.introMessage = dto.getIntroMessage();
     }
 
+    public void update(RealtorEditRequestDto dto, String imageUrl) {
+        this.introMessage = dto.getIntroMessage();
+        this.profile = imageUrl;
+        this.setNickname(dto.getNickname());
+    }
 }
