@@ -19,18 +19,17 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Consult extends BaseTimeEntity {
+public class Consult {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column//(name="post_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
-    @Column(nullable = false)
+    @Column
     private String title;
 
     @Column(nullable = false)
@@ -57,10 +56,10 @@ public class Consult extends BaseTimeEntity {
     @Column(nullable = false)
     private boolean check6;
 
-    @Column(nullable = false)
+    @Column
     private String consultMessage;
 
-    @Column(nullable = false)
+    @Column
 //    @Enumerated(EnumType.STRING)
     private AnswerState answerState;
     @DateTimeFormat
@@ -71,12 +70,4 @@ public class Consult extends BaseTimeEntity {
         this.createDate = LocalDateTime.now();
     }
 
-    public Consult(RegisterConsultDto registerConsultDto) {
-        this.title = registerConsultDto.getTitle();
-        this.coordX = registerConsultDto.getCoordX();
-        this.coordY = registerConsultDto.getCoordY();
-        this.consultMessage = registerConsultDto.getConsultMessage();
-        this.answerState = AnswerState.ROLE_WAIT;
-        this.createDate = getCreatedAt();
-    }
 }
