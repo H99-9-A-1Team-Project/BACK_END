@@ -1,6 +1,7 @@
 package com.example.backend.global.entity;
 
 import com.example.backend.global.config.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,12 +26,13 @@ public class FootstepsPost {
     @Id
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
-
-    @OneToMany(mappedBy = "footstepsPost",fetch = EAGER)
+    @JsonIgnore
+    @OneToMany(mappedBy = "footstepsPost",fetch = FetchType.LAZY)
     private List<Photo> photos= new ArrayList<>();
     //제목
     @Column
