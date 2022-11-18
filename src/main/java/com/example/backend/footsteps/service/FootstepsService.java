@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -39,8 +41,42 @@ public class FootstepsService {
     @Transactional
     public void createPost(List<MultipartFile> multipartFile, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) throws IOException {
         validAuth(userDetails);
-        String imgurl = null;
 
+        List<Photo> photos = new ArrayList<>();
+
+        FootstepsPost footstepsPost = saveFootStepPost(postRequestDto, userDetails);
+        List<String> imgUrlList = uploadS3Photo(multipartFile);
+
+        for (String imgUrl : imgUrlList) {
+            photos.add(new Photo(imgUrl, footstepsPost));
+        }
+
+        photoRepository.saveAll(photos);
+
+    }
+
+    private List<String> uploadS3Photo(List<MultipartFile> multipartFile) throws IOException {
+        List<String> imgUrlList = new ArrayList<>();
+
+        for (MultipartFile file : multipartFile) {
+            if (!multipartFile.isEmpty()) {
+                String fileName = CommonUtils.buildFileName(file.getOriginalFilename());
+                ObjectMetadata objectMetadata = new ObjectMetadata();
+                objectMetadata.setContentType(file.getContentType());
+
+                byte[] bytes = IOUtils.toByteArray(file.getInputStream());
+                objectMetadata.setContentLength(bytes.length);
+                ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
+
+                amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+                imgUrlList.add(amazonS3Client.getUrl(bucketName, fileName).toString());
+            }
+        }
+        return imgUrlList;
+    }
+
+    private FootstepsPost saveFootStepPost(FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
         FootstepsPost footstepsPost = FootstepsPost.builder()
                 .title(postRequestDto.getTitle())
                 .coordFY(postRequestDto.getCoordFY())
@@ -72,46 +108,10 @@ public class FootstepsService {
                 .user(userDetails.getUser())
                 .build();
         footstepsRepository.save(footstepsPost);
-        for (MultipartFile file : multipartFile) {
-            if (!multipartFile.isEmpty()) {
-                String fileName = CommonUtils.buildFileName(file.getOriginalFilename());
-                ObjectMetadata objectMetadata = new ObjectMetadata();
-                objectMetadata.setContentType(file.getContentType());
-
-                byte[] bytes = IOUtils.toByteArray(file.getInputStream());
-                objectMetadata.setContentLength(bytes.length);
-                ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
-
-                amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
-
-                Photo photo = new Photo(imgurl, footstepsPost);
-//                post.addPhoto(photo);
-                photoRepository.save(photo);
-
-            }
-        }
+        return footstepsPost;
     }
+
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
     }
 }
-//        List<Photo> imgList = photoRepository.findAllByFootstepsPost(footstepsPost.getId());
-//        List<PhotoResponseDto> photoResponseDto = new ArrayList<>();
-//        for(Photo photo : imgList){
-//            photoResponseDto.add(
-//                    PhotoResponseDto.builder()
-//                            .postImgUrl(photo.getPostImgUrl())
-//                            .build()
-//            );
-//        }
-//        return ResponseDto.success(
-//                FootstepsResponseDto.builder()
-//                        .title(postRequestDto.getTitle())
-//                        .postImgUrl(photoResponseDto)
-//                        .build()
-//        );
-//
-//    }
-//}

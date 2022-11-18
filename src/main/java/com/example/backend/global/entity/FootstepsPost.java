@@ -35,8 +35,10 @@ public class FootstepsPost {
     //제목
     @Column
     private String title;
+
     @Column
     private double coordFY;
+
     @Column
     private double coordFX;
     //가격
