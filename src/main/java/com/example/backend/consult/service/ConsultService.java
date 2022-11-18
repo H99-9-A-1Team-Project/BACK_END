@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,7 @@ public class ConsultService {
                 .check5(dto.isCheck5())
                 .check6(dto.isCheck6())
                 .consultMessage(dto.getConsultMessage())
-                .createDate(LocalDateTime.now())
+                .createDate(LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))))
                 .user(userDetails.getUser())
                 .answerState(AnswerState.ROLE_WAIT)
                 .build();
@@ -68,9 +69,6 @@ public class ConsultService {
 
     }
 
-    public void validAuth(UserDetailsImpl userDetails){
-        if(userDetails == null) throw new UserUnauthorizedException();
-    }
     private void validRealtor(UserDetailsImpl userDetails){
         realtorRepository.findByEmail(userDetails.getUser().getEmail())
                 .orElseThrow(AccessDeniedException::new);

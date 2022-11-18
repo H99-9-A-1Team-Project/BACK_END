@@ -2,6 +2,7 @@ package com.example.backend.consult.dto;
 
 import com.example.backend.global.entity.AnswerState;
 import com.example.backend.global.entity.Consult;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class UserAllConsultResponseDto {
     private String consultMessage;
 
     private AnswerState answerState;
+
     private LocalDateTime createdAt;
 
     public UserAllConsultResponseDto(Consult consult){
