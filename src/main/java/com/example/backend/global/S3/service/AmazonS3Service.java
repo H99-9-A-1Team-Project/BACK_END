@@ -12,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,10 +27,10 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public AwsS3 upload(MultipartFile multipartFile, String dirName) throws IOException {
+    public AwsS3 upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
         File file = convertMultipartFileToFile(multipartFile)
                 .orElseThrow( ()-> new IllegalArgumentException("파일 변환 실패!"));
-        String key = randomFileName(file, dirName);
+        String key = randomFileName(email, dirName);
         String path = putS3(file, key);
         file.delete();
 
@@ -51,8 +54,9 @@ public class AmazonS3Service {
         return Optional.empty();
     }
 
-    public String randomFileName(File file, String dirName) {
-        return dirName + "/" + UUID.randomUUID() + file.getName();
+    public String randomFileName(String email, String dirName) {
+        int idx = email.indexOf("@");
+        return dirName + "/" + UUID.randomUUID() + email.substring(0,idx);
     }
 
     public String putS3(File uploadFile, String fileName) {

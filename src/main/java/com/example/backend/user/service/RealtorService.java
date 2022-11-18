@@ -45,8 +45,18 @@ public class RealtorService {
     public void approveRealtor(RealtorApproveDto dto, UserDetailsImpl userDetails) {
         validateManager(userDetails);
         Realtor realtor = realtorRepository.findByEmail(dto.getEmail()).orElseThrow(MemberNotFoundException::new);
-        mailService.sendSimpleMessage(new MailDto(realtor.getEmail(), "축하합니다, 등대지기 가입이 승인되었습니다.", "축하합니다"));
+        sendApproveResultEmail(dto, realtor);
         realtor.update(dto);
+    }
+
+    private void sendApproveResultEmail(RealtorApproveDto dto, Realtor realtor) {
+        MailDto mail = new MailDto(realtor.getEmail());
+
+        Long accountCheck = dto.getAccountCheck();
+        if(accountCheck == 1) { mail.setRealtorApproveMessage(); }
+        else if (accountCheck == 2) { mail.setRealtorRejectMessage(); }
+
+        mailService.sendSimpleMessage(mail);
     }
 
     @Transactional(readOnly = true)
@@ -72,7 +82,7 @@ public class RealtorService {
     }
 
     private void validateManager(UserDetailsImpl userDetails) {
-        if(userDetails == null){ throw new UserUnauthorizedException(); }
+        validAuth(userDetails);
         User manager = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(AccessDeniedException::new);
         if(!manager.getAuthority().equals(Authority.ROLE_ADMIN)){
             throw new AccessDeniedException();
@@ -82,18 +92,18 @@ public class RealtorService {
     public void editRealtorProfileImage(MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
         Realtor realtor = validRealtor(userDetails);
 
-        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication");
+        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication", userDetails.getUser().getEmail());
         String imageUrl = amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
 
         realtor.setProfile(imageUrl);
         realtorRepository.save(realtor);
     }
 
-    public void validAuth(UserDetailsImpl userDetails){
+    private void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
     }
 
-    public Realtor validRealtor(UserDetailsImpl userDetails){
+    private Realtor validRealtor(UserDetailsImpl userDetails){
         return realtorRepository.findByEmail(userDetails.getUser().getEmail())
                 .orElseThrow(AccessDeniedException::new);
     }

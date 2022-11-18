@@ -44,7 +44,7 @@ public class AuthService {
         validateRealtorSignUpInfo(signUpRealtorRequestDto);
         signUpRealtorRequestDto.setPassword(passwordEncoder.encode(signUpRealtorRequestDto.getPassword()));
 
-        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication");
+        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication", signUpRealtorRequestDto.getEmail());
         String imageUrl = amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
 
         Realtor realtor = new Realtor(signUpRealtorRequestDto);
