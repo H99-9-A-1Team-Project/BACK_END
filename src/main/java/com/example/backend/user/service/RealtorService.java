@@ -67,36 +67,12 @@ public class RealtorService {
     }
 
     @Transactional
-    public void editRealtorNickname(NicknameRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
-        validAuth(userDetails);
-        User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
-        user.update(nicknameRequestDto.getNickname());
-    }
-
-    @Transactional
-    public void editRealtorIntroMessage(IntroMessageDto introMessageDto, UserDetailsImpl userDetails){
-        validAuth(userDetails);
-        validRealtor(userDetails);
-        Realtor realtor = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
-        realtor.update(introMessageDto);
-    }
-
-    private void validateManager(UserDetailsImpl userDetails) {
-        validAuth(userDetails);
-        User manager = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(AccessDeniedException::new);
-        if(!manager.getAuthority().equals(Authority.ROLE_ADMIN)){
-            throw new AccessDeniedException();
-        }
-    }
-
-    public void editRealtorProfileImage(MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
+    public void editRealtorProfile(MultipartFile multipartFile, RealtorEditRequestDto realtorEditRequestDto, UserDetailsImpl userDetails) throws IOException {
         Realtor realtor = validRealtor(userDetails);
 
         AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication", userDetails.getUser().getEmail());
         String imageUrl = amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
-
-        realtor.setProfile(imageUrl);
-        realtorRepository.save(realtor);
+        realtor.update(realtorEditRequestDto, imageUrl);
     }
 
     private void validAuth(UserDetailsImpl userDetails){
@@ -106,6 +82,14 @@ public class RealtorService {
     private Realtor validRealtor(UserDetailsImpl userDetails){
         return realtorRepository.findByEmail(userDetails.getUser().getEmail())
                 .orElseThrow(AccessDeniedException::new);
+    }
+
+    private void validateManager(UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        User manager = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(AccessDeniedException::new);
+        if(!manager.getAuthority().equals(Authority.ROLE_ADMIN)){
+            throw new AccessDeniedException();
+        }
     }
 }
 
