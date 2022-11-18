@@ -10,6 +10,7 @@ import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
 import com.example.backend.global.config.S3.CommonUtils;
 import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.footsteps.dto.FootStepsMappingDto;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
@@ -23,7 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -111,7 +111,18 @@ public class FootstepsService {
         return footstepsPost;
     }
 
+    public List<FootstepsPost> getMyPosts(UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        return footstepsRepository.findByUser(userDetails.getUser());
+    }
+
+    public List<FootStepsMappingDto> getMyAdviceRequest(UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        return footstepsRepository.findByUserInfo(userDetails.getUser().getId());
+    }
+
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
     }
+
 }
