@@ -1,11 +1,13 @@
 package com.example.backend.consult.service;
 
 import com.example.backend.consult.dto.UserAllConsultResponseDto;
+import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.AnswerState;
 import com.example.backend.global.entity.Consult;
 import com.example.backend.consult.dto.RegisterConsultDto;
 import com.example.backend.consult.repository.ConsultRepository;
+import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import com.example.backend.user.repository.RealtorRepository;
@@ -24,6 +26,8 @@ public class ConsultService {
 
     private final ConsultRepository consultRepository;
     private final RealtorRepository realtorRepository;
+
+    private final FootstepsRepository footstepsRepository;
 
     @Transactional
     public void registerConsult(UserDetailsImpl userDetails, RegisterConsultDto dto) {
@@ -63,6 +67,7 @@ public class ConsultService {
         return userAllConsultResponseDtoList;
 
     }
+
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
     }
@@ -70,4 +75,6 @@ public class ConsultService {
         realtorRepository.findByEmail(userDetails.getUser().getEmail())
                 .orElseThrow(AccessDeniedException::new);
     }
+
+
 }
