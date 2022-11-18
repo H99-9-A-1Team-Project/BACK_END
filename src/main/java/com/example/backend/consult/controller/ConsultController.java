@@ -33,6 +33,11 @@ public class ConsultController {
         List<UserAllConsultResponseDto> redDtos = consultService.allConsult(userDetails.getUser().getId());
         return ResponseEntity.ok(redDtos);
     }
+    @GetMapping("/waitcustomer")
+    public ResponseEntity<?> waitConsult(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    List<UserAllConsultResponseDto> redDtos = consultService.waitConsult(userDetails);
+        return ResponseEntity.ok(redDtos);
+    }
 
 
 }

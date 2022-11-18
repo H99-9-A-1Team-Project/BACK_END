@@ -1,7 +1,5 @@
 package com.example.backend.global.entity;
 
-import com.example.backend.consult.dto.RegisterConsultDto;
-import com.example.backend.global.config.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

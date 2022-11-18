@@ -1,23 +1,19 @@
 package com.example.backend.consult.service;
 
 import com.example.backend.consult.dto.UserAllConsultResponseDto;
-import com.example.backend.footsteps.dto.ResponseDto;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.AnswerState;
 import com.example.backend.global.entity.Consult;
 import com.example.backend.consult.dto.RegisterConsultDto;
 import com.example.backend.consult.repository.ConsultRepository;
-import com.example.backend.global.entity.Photo;
+import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
-import com.example.backend.global.response.Response;
-import com.example.backend.user.dto.RealtorProfileResponseDto;
+import com.example.backend.user.repository.RealtorRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +23,7 @@ import java.util.stream.Collectors;
 public class ConsultService {
 
     private final ConsultRepository consultRepository;
+    private final RealtorRepository realtorRepository;
 
     @Transactional
     public void registerConsult(UserDetailsImpl userDetails, RegisterConsultDto dto) {
@@ -55,7 +52,22 @@ public class ConsultService {
                 .collect(Collectors.toList());
         return userAllConsultResponseDtoList;
     }
+
+
+    public List<UserAllConsultResponseDto> waitConsult(UserDetailsImpl userDetails) {
+        validRealtor(userDetails);
+        List<Consult> consultList = consultRepository.findAllByAnswerState(AnswerState.ROLE_WAIT.ordinal());
+        List<UserAllConsultResponseDto> userAllConsultResponseDtoList = consultList.stream()
+                .map(consult -> new UserAllConsultResponseDto(consult))
+                .collect(Collectors.toList());
+        return userAllConsultResponseDtoList;
+
+    }
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
+    }
+    private void validRealtor(UserDetailsImpl userDetails){
+        realtorRepository.findByEmail(userDetails.getUser().getEmail())
+                .orElseThrow(AccessDeniedException::new);
     }
 }
