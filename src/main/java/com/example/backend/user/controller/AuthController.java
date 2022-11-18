@@ -45,12 +45,4 @@ public class AuthController {
     }
 
 
-    @GetMapping("/test")
-    public ResponseEntity<?> test(@AuthenticationPrincipal UserDetailsImpl user) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getName());
-        System.out.println(user);
-        return ResponseEntity.ok(user.getUser());
-    }
-
 }
