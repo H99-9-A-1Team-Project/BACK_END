@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FootstepsRequstDto {
     private String title;
+
+    private double coordFY;
+
+    private double coordFX;
     //가격
     private Long price;
     //평수
@@ -24,8 +28,11 @@ public class FootstepsRequstDto {
     private boolean mold;
     //환기
     private boolean vent;
+
     private boolean water;
+
     private boolean ventil;
+
     private boolean drain;
     //외풍
     private boolean draft;

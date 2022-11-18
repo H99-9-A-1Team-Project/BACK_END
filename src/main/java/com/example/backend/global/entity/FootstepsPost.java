@@ -19,7 +19,7 @@ import static javax.persistence.FetchType.EAGER;
 @NoArgsConstructor
 @Getter
 @Entity
-public class FootstepsPost extends BaseTimeEntity {
+public class FootstepsPost {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -35,6 +35,10 @@ public class FootstepsPost extends BaseTimeEntity {
     //제목
     @Column
     private String title;
+    @Column
+    private double coordFY;
+    @Column
+    private double coordFX;
     //가격
     @Column
     private Long price;
