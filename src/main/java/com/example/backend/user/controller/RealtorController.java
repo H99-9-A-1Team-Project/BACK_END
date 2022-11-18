@@ -23,13 +23,13 @@ public class RealtorController {
 
     private final RealtorService realtorService;
 
-//    // realtor 회원가입 승인 여부 수정 (관리자 권한)
-//    @PutMapping("/realtor-approval")
-//    public ResponseEntity approveRealtor(@RequestBody RealtorApproveDto dto,
-//                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        realtorService.approveRealtor(dto, userDetails);
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
+    // realtor 회원가입 승인 여부 수정 (관리자 권한)
+    @PutMapping("/realtor-approval")
+    public ResponseEntity approveRealtor(@RequestBody RealtorApproveDto dto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        realtorService.approveRealtor(dto, userDetails);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     // realtor 회원가입 승인 목록 (관리자 권한)
     @GetMapping("/realtor-approval")
