@@ -10,12 +10,9 @@ import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
 import com.example.backend.global.config.S3.CommonUtils;
 import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.config.security.SecurityUtil;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
-import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
-import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -45,6 +43,8 @@ public class FootstepsService {
 
         FootstepsPost footstepsPost = FootstepsPost.builder()
                 .title(postRequestDto.getTitle())
+                .coordFY(postRequestDto.getCoordFY())
+                .coordFX(postRequestDto.getCoordFX())
                 .price(postRequestDto.getPrice())
                 .size(postRequestDto.getSize())
                 .review(postRequestDto.getReview())
@@ -68,6 +68,7 @@ public class FootstepsService {
                 .hospital(postRequestDto.isHospital())
                 .accessibility(postRequestDto.isAccessibility())
                 .park(postRequestDto.isPark())
+                .createDate(LocalDateTime.now())
                 .user(userDetails.getUser())
                 .build();
         footstepsRepository.save(footstepsPost);
