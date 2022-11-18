@@ -3,7 +3,7 @@ package com.example.backend.global.config.S3;
 public class CommonUtils {
 
     private static final String FILE_EXTENSION_SEPARATOR = ".";
-    private static final String CATEGORY_PREFIX = "Server";
+    private static final String CATEGORY_PREFIX = "Server/";
     private static final String TIME_SEPARATOR = "." ;
 
     public static String buildFileName(String originalFileName) {
