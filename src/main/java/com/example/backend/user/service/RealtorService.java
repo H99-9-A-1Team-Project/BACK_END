@@ -71,7 +71,7 @@ public class RealtorService {
     public void editRealtorProfile(MultipartFile multipartFile, RealtorEditRequestDto realtorEditRequestDto, UserDetailsImpl userDetails) throws IOException {
         Realtor realtor = validRealtor(userDetails);
 
-        if (multipartFile.isEmpty()) {
+        if (multipartFile == null || multipartFile.isEmpty()) {
             realtor.update(realtorEditRequestDto);
             return;
         }
