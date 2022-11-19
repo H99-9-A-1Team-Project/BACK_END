@@ -39,13 +39,14 @@ public class Realtor extends User {
         this.accountCheck = dto.getAccountCheck();
     }
 
-    public void update(IntroMessageDto dto) {
-        this.introMessage = dto.getIntroMessage();
-    }
-
     public void update(RealtorEditRequestDto dto, String imageUrl) {
         this.introMessage = dto.getIntroMessage();
+        this.setNickname(dto.getNickname());
         this.profile = imageUrl;
+    }
+
+    public void update(RealtorEditRequestDto dto) {
+        this.introMessage = dto.getIntroMessage();
         this.setNickname(dto.getNickname());
     }
 }

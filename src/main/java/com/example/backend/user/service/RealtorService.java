@@ -10,8 +10,6 @@ import com.example.backend.global.entity.User;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
-//import com.example.backend.mail.MailDto;
-//import com.example.backend.mail.MailService;
 import com.example.backend.mail.MailDto;
 import com.example.backend.mail.MailService;
 import com.example.backend.user.dto.*;
@@ -44,9 +42,11 @@ public class RealtorService {
     @Transactional
     public void approveRealtor(RealtorApproveDto dto, UserDetailsImpl userDetails) {
         validateManager(userDetails);
+
         Realtor realtor = realtorRepository.findByEmail(dto.getEmail()).orElseThrow(MemberNotFoundException::new);
-        sendApproveResultEmail(dto, realtor);
         realtor.update(dto);
+
+        sendApproveResultEmail(dto, realtor);
     }
 
     private void sendApproveResultEmail(RealtorApproveDto dto, Realtor realtor) {
@@ -62,6 +62,7 @@ public class RealtorService {
     @Transactional(readOnly = true)
     public List<RealtorListResponseDto> getRealtorList(UserDetailsImpl userDetails) {
         validateManager(userDetails);
+
         List<Realtor> realtorList = realtorRepository.findAll();
         return realtorList.stream().map(RealtorListResponseDto::new).collect(Collectors.toList());
     }
@@ -70,9 +71,18 @@ public class RealtorService {
     public void editRealtorProfile(MultipartFile multipartFile, RealtorEditRequestDto realtorEditRequestDto, UserDetailsImpl userDetails) throws IOException {
         Realtor realtor = validRealtor(userDetails);
 
-        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication", userDetails.getUser().getEmail());
-        String imageUrl = amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
+        if (multipartFile.isEmpty()) {
+            realtor.update(realtorEditRequestDto);
+            return;
+        }
+
+        String imageUrl = uploadImage(multipartFile, userDetails.getUser());
         realtor.update(realtorEditRequestDto, imageUrl);
+    }
+
+    private String uploadImage(MultipartFile multipartFile, User user) throws IOException {
+        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication", user.getEmail());
+        return amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
     }
 
     private void validAuth(UserDetailsImpl userDetails){
@@ -86,6 +96,7 @@ public class RealtorService {
 
     private void validateManager(UserDetailsImpl userDetails) {
         validAuth(userDetails);
+
         User manager = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(AccessDeniedException::new);
         if(!manager.getAuthority().equals(Authority.ROLE_ADMIN)){
             throw new AccessDeniedException();
