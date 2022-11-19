@@ -38,7 +38,7 @@ public class RealtorController {
 
     // realtor 프로필 수정
     @PutMapping("/realtor/profile")
-    public ResponseEntity<?> editRealtorProfile(@RequestPart(value = "profile") MultipartFile multipartFile,
+    public ResponseEntity<?> editRealtorProfile(@RequestPart(value = "profile", required = false) MultipartFile multipartFile,
                                                 @RequestPart(value = "content") RealtorEditRequestDto realtorEditRequestDto,
                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         realtorService.editRealtorProfile(multipartFile, realtorEditRequestDto, userDetails);
