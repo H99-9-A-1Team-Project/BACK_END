@@ -47,9 +47,6 @@ public class User {
         this.createDate = LocalDateTime.now();
     }
 
-    public User (String nickname) {
-        this.nickname = nickname;
-    }
 
     public User(SignUpRealtorRequestDto dto){
         this.email = dto.getEmail();
@@ -65,9 +62,8 @@ public class User {
         this.authority = Authority.ROLE_USER;
     }
 
+
     public void update(String nickname) {
         this.nickname = nickname;
     }
-
-
 }

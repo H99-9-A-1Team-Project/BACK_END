@@ -1,11 +1,7 @@
 package com.example.backend.global.entity;
 
-import com.example.backend.global.config.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -13,11 +9,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.FetchType.EAGER;
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Getter
 @Entity
 public class FootstepsPost {

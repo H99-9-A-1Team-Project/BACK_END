@@ -1,6 +1,5 @@
 package com.example.backend.footsteps.repository;
 
-import com.example.backend.footsteps.dto.FootStepsMappingDto;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -45,6 +44,6 @@ public interface FootstepsRepository extends JpaRepository<FootstepsPost,Long> {
             "\tON consult.coordx = coordfx \n" +
             "\tAND consult.coordy = coordfy\n" +
             "    WHERE consult.user_id = :user_id", nativeQuery = true)
-    List<FootStepsMappingDto> findByUserInfo(@Param("user_id") Long user_id);
+    List<FootstepsPost> findByUserInfo(@Param("user_id") Long user_id);
 
 }

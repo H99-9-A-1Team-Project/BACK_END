@@ -10,7 +10,6 @@ import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
 import com.example.backend.global.config.S3.CommonUtils;
 import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.footsteps.dto.FootStepsMappingDto;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
@@ -23,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,9 +116,16 @@ public class FootstepsService {
         return footstepsRepository.findByUser(userDetails.getUser());
     }
 
-    public List<FootStepsMappingDto> getMyAdviceRequest(UserDetailsImpl userDetails) {
+    public List<FootstepsPost> getMyAdviceRequest(UserDetailsImpl userDetails) {
         validAuth(userDetails);
-        return footstepsRepository.findByUserInfo(userDetails.getUser().getId());
+        List<FootstepsPost> posts = footstepsRepository.findByUserInfo(userDetails.getUser().getId());
+
+        for (FootstepsPost post : posts) {
+            post.setCreateDate(LocalDateTime.parse(post.getCreateDate()
+                    .format(DateTimeFormatter.ofPattern("yyyy.MM.dd")), DateTimeFormatter.ofPattern("yyyy.MM.dd")));
+        }
+
+        return posts;
     }
 
     public void validAuth(UserDetailsImpl userDetails){
