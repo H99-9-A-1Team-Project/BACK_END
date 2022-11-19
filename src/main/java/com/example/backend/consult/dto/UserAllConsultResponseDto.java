@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Builder
@@ -21,7 +22,7 @@ public class UserAllConsultResponseDto {
     private String consultMessage;
 
     private AnswerState answerState;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     public UserAllConsultResponseDto(Consult consult){
         this.id = consult.getId();
@@ -30,6 +31,6 @@ public class UserAllConsultResponseDto {
         this.coordX = consult.getCoordX();
         this.consultMessage = consult.getConsultMessage();
         this.answerState = consult.getAnswerState();
-        this.createdAt = consult.getCreateDate();
+        this.createdAt = consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
     }
 }

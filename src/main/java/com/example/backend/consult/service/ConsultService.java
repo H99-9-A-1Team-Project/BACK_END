@@ -4,6 +4,7 @@ import com.example.backend.consult.dto.UserAllConsultResponseDto;
 import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.AnswerState;
+import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.Consult;
 import com.example.backend.consult.dto.RegisterConsultDto;
 import com.example.backend.consult.repository.ConsultRepository;
@@ -25,9 +26,6 @@ import java.util.stream.Collectors;
 public class ConsultService {
 
     private final ConsultRepository consultRepository;
-    private final RealtorRepository realtorRepository;
-
-    private final FootstepsRepository footstepsRepository;
 
     @Transactional
     public void registerConsult(UserDetailsImpl userDetails, RegisterConsultDto dto) {
@@ -51,20 +49,18 @@ public class ConsultService {
 
     public List<UserAllConsultResponseDto> allConsult(Long id) {
         List<Consult> consultList = consultRepository.findAllByUserId(id);
-        List<UserAllConsultResponseDto> userAllConsultResponseDtoList = consultList.stream()
-                .map(consult -> new UserAllConsultResponseDto(consult))
+        return consultList.stream()
+                .map(UserAllConsultResponseDto::new)
                 .collect(Collectors.toList());
-        return userAllConsultResponseDtoList;
     }
 
 
     public List<UserAllConsultResponseDto> waitConsult(UserDetailsImpl userDetails) {
         validRealtor(userDetails);
         List<Consult> consultList = consultRepository.findAllByAnswerState(AnswerState.ROLE_WAIT.ordinal());
-        List<UserAllConsultResponseDto> userAllConsultResponseDtoList = consultList.stream()
-                .map(consult -> new UserAllConsultResponseDto(consult))
+        return consultList.stream()
+                .map(UserAllConsultResponseDto::new)
                 .collect(Collectors.toList());
-        return userAllConsultResponseDtoList;
 
     }
 
@@ -72,8 +68,8 @@ public class ConsultService {
         if(userDetails == null) throw new UserUnauthorizedException();
     }
     private void validRealtor(UserDetailsImpl userDetails){
-        realtorRepository.findByEmail(userDetails.getUser().getEmail())
-                .orElseThrow(AccessDeniedException::new);
+        if(userDetails.getAuthority() != Authority.ROLE_REALTOR)
+            throw new AccessDeniedException();
     }
 
 

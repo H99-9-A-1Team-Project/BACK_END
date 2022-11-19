@@ -14,7 +14,6 @@ import com.example.backend.mail.MailDto;
 import com.example.backend.mail.MailService;
 import com.example.backend.user.dto.*;
 import com.example.backend.user.repository.RealtorRepository;
-import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,6 @@ import java.util.stream.Collectors;
 @Service
 public class RealtorService {
 
-    private final UserRepository userRepository;
     private final RealtorRepository realtorRepository;
     private final AmazonS3Service amazonS3Service;
     private final MailService mailService;
@@ -69,8 +67,9 @@ public class RealtorService {
 
     @Transactional
     public void editRealtorProfile(MultipartFile multipartFile, RealtorEditRequestDto realtorEditRequestDto, UserDetailsImpl userDetails) throws IOException {
-        Realtor realtor = validRealtor(userDetails);
+        validRealtor(userDetails);
 
+        Realtor realtor = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
         if (multipartFile == null || multipartFile.isEmpty()) {
             realtor.update(realtorEditRequestDto);
             return;
@@ -86,21 +85,19 @@ public class RealtorService {
     }
 
     private void validAuth(UserDetailsImpl userDetails){
-        if(userDetails == null) throw new UserUnauthorizedException();
+        if(userDetails == null)
+            throw new UserUnauthorizedException();
     }
 
-    private Realtor validRealtor(UserDetailsImpl userDetails){
-        return realtorRepository.findByEmail(userDetails.getUser().getEmail())
-                .orElseThrow(AccessDeniedException::new);
+    private void validRealtor(UserDetailsImpl userDetails){
+        if(userDetails.getAuthority() != Authority.ROLE_REALTOR)
+            throw new AccessDeniedException();
     }
 
     private void validateManager(UserDetailsImpl userDetails) {
         validAuth(userDetails);
-
-        User manager = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(AccessDeniedException::new);
-        if(!manager.getAuthority().equals(Authority.ROLE_ADMIN)){
+        if (userDetails.getAuthority() != Authority.ROLE_ADMIN)
             throw new AccessDeniedException();
-        }
     }
 }
 
