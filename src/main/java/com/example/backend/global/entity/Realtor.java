@@ -16,7 +16,8 @@ import javax.persistence.*;
 @Entity
 public class Realtor extends User {
 
-    @Column
+    @Column(length = 1000)
+    @Lob
     private String introMessage;
 
     @Column
