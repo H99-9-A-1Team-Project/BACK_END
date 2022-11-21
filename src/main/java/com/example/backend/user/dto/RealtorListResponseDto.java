@@ -4,22 +4,22 @@ import com.example.backend.global.entity.Realtor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
 public class RealtorListResponseDto {
     private String email;
     private String nickname;
-    private LocalDateTime createDate;
+    private String createDate;
     private String license;
     private Long accountCheck;
 
     public RealtorListResponseDto(Realtor realtor) {
         this.email = realtor.getEmail();
         this.nickname = realtor.getNickname();
-        this.createDate = realtor.getCreateDate();
-        this.license = realtor.getIntroMessage();
+        this.createDate = realtor.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+        this.license = realtor.getLicense();
         this.accountCheck = realtor.getAccountCheck();
     }
 }

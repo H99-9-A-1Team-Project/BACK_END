@@ -1,5 +1,6 @@
 package com.example.backend.global.config.auth;
 
+import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,9 +19,12 @@ public class UserDetailsImpl implements UserDetails {
 
     private Map<String, Object> attributes;
 
+    private Authority authority;
+
     // 일반 로그인
     public UserDetailsImpl(User user) {
         this.user = user;
+        this.authority = user.getAuthority();
     }
 
     // OAuth 로그인
@@ -34,6 +38,10 @@ public class UserDetailsImpl implements UserDetails {
         return user;
     }
 
+
+    public Authority getAuthority() {
+        return user.getAuthority();
+    }
 
     @Override
     public String getPassword() {

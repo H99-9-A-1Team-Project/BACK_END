@@ -1,11 +1,11 @@
 package com.example.backend.user.controller;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.response.Response;
 import com.example.backend.user.dto.SignUpMemberRequestDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
 import com.example.backend.user.dto.SignUpRequestDto;
 import com.example.backend.user.repository.UserRepository;
-import com.example.backend.global.response.Response;
 import com.example.backend.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,13 +44,5 @@ public class AuthController {
         return success();
     }
 
-
-    @GetMapping("/test")
-    public ResponseEntity<?> test(@AuthenticationPrincipal UserDetailsImpl user) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getName());
-        System.out.println(user);
-        return ResponseEntity.ok(user.getUser());
-    }
 
 }

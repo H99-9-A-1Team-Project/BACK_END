@@ -6,15 +6,13 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
 import com.example.backend.footsteps.dto.FootstepsRequstDto;
-import com.example.backend.footsteps.dto.FootstepsResponseDto;
-import com.example.backend.footsteps.dto.PhotoResponseDto;
-import com.example.backend.footsteps.dto.ResponseDto;
 import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
 import com.example.backend.global.config.S3.CommonUtils;
+import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
-import com.example.backend.global.entity.User;
+import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,15 +37,28 @@ public class FootstepsService {
     private final PhotoRepository photoRepository;
 
     private final FootstepsRepository footstepsRepository;
-    public ResponseDto<FootstepsResponseDto> createPost(List<MultipartFile> multipartFile, FootstepsRequstDto postRequestDto, User user) throws IOException {
-        String imgurl = null;
 
-        FootstepsPost footstepsPost = FootstepsPost.builder()
-                .title(postRequestDto.getTitle())
-                .user(user)
-                .build();
-        footstepsRepository.save(footstepsPost);
-        for (MultipartFile file : multipartFile){
+    @Transactional
+    public void createPost(List<MultipartFile> multipartFile, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) throws IOException {
+        validAuth(userDetails);
+
+        List<Photo> photos = new ArrayList<>();
+
+        FootstepsPost footstepsPost = saveFootStepPost(postRequestDto, userDetails);
+        List<String> imgUrlList = uploadS3Photo(multipartFile);
+
+        for (String imgUrl : imgUrlList) {
+            photos.add(new Photo(imgUrl, footstepsPost));
+        }
+
+        photoRepository.saveAll(photos);
+
+    }
+
+    private List<String> uploadS3Photo(List<MultipartFile> multipartFile) throws IOException {
+        List<String> imgUrlList = new ArrayList<>();
+
+        for (MultipartFile file : multipartFile) {
             if (!multipartFile.isEmpty()) {
                 String fileName = CommonUtils.buildFileName(file.getOriginalFilename());
                 ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -57,28 +70,66 @@ public class FootstepsService {
 
                 amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-                imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
-
-                Photo photo = new Photo(imgurl, footstepsPost);
-//                post.addPhoto(photo);
-                photoRepository.save(photo);
-
+                imgUrlList.add(amazonS3Client.getUrl(bucketName, fileName).toString());
             }
         }
-        List<Photo> imgList = photoRepository.findAllByFootstepsPost(footstepsPost.getId());
-        List<PhotoResponseDto> photoResponseDto = new ArrayList<>();
-        for(Photo photo : imgList){
-            photoResponseDto.add(
-                    PhotoResponseDto.builder()
-                            .postImgUrl(photo.getPostImgUrl())
-                            .build()
-            );
-        }
-        return ResponseDto.success(
-                FootstepsResponseDto.builder()
-                        .title(postRequestDto.getTitle())
-                        .postImgUrl(photoResponseDto)
-                        .build()
-        );
+        return imgUrlList;
     }
+
+    private FootstepsPost saveFootStepPost(FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
+        FootstepsPost footstepsPost = FootstepsPost.builder()
+                .title(postRequestDto.getTitle())
+                .coordFY(postRequestDto.getCoordFY())
+                .coordFX(postRequestDto.getCoordFX())
+                .price(postRequestDto.getPrice())
+                .size(postRequestDto.getSize())
+                .review(postRequestDto.getReview())
+                .sun(postRequestDto.isSun())
+                .mold(postRequestDto.isMold())
+                .vent(postRequestDto.isVent())
+                .water(postRequestDto.isWater())
+                .ventil(postRequestDto.isVentil())
+                .drain(postRequestDto.isDrain())
+                .draft(postRequestDto.isDraft())
+                .extraMemo(postRequestDto.getExtraMemo())
+                .option(postRequestDto.getOption())
+                .destroy(postRequestDto.isDestroy())
+                .utiRoom(postRequestDto.isUtiRoom())
+                .securityWindow(postRequestDto.isSecurityWindow())
+                .noise(postRequestDto.isNoise())
+                .loan(postRequestDto.isLoan())
+                .cctv(postRequestDto.isCctv())
+                .hill(postRequestDto.isHill())
+                .mart(postRequestDto.isMart())
+                .hospital(postRequestDto.isHospital())
+                .accessibility(postRequestDto.isAccessibility())
+                .park(postRequestDto.isPark())
+                .createDate(LocalDateTime.now())
+                .user(userDetails.getUser())
+                .build();
+        footstepsRepository.save(footstepsPost);
+        return footstepsPost;
+    }
+
+    public List<FootstepsPost> getMyPosts(UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        return footstepsRepository.findByUser(userDetails.getUser());
+    }
+
+    public List<FootstepsPost> getMyAdviceRequest(UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        List<FootstepsPost> posts = footstepsRepository.findByUserInfo(userDetails.getUser().getId());
+
+        for (FootstepsPost post : posts) {
+            post.setCreateDate(LocalDateTime.parse(post.getCreateDate()
+                    .format(DateTimeFormatter.ofPattern("yyyy.MM.dd")), DateTimeFormatter.ofPattern("yyyy.MM.dd")));
+        }
+
+        return posts;
+    }
+
+    public void validAuth(UserDetailsImpl userDetails){
+        if(userDetails == null) throw new UserUnauthorizedException();
+    }
+
 }
