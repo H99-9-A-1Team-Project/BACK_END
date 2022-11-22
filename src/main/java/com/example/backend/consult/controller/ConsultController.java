@@ -1,6 +1,7 @@
 package com.example.backend.consult.controller;
 
 import com.example.backend.consult.dto.RegisterConsultDto;
+import com.example.backend.consult.dto.RepliedConsultResponseDto;
 import com.example.backend.consult.dto.UserAllConsultResponseDto;
 import com.example.backend.consult.service.ConsultService;
 import com.example.backend.global.config.auth.UserDetailsImpl;
@@ -36,6 +37,11 @@ public class ConsultController {
     public ResponseEntity<?> waitConsult(@AuthenticationPrincipal UserDetailsImpl userDetails){
     List<UserAllConsultResponseDto> redDtos = consultService.waitConsult(userDetails);
         return ResponseEntity.ok(redDtos);
+    }
+
+    @GetMapping("/replied")
+    public ResponseEntity<?> getRepliedConsult(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(consultService.getRepliedConsult(userDetails));
     }
 
 //    @GetMapping("/replied")

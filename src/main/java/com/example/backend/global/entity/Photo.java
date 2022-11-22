@@ -1,5 +1,6 @@
 package com.example.backend.global.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class Photo {
     @Id
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="footstepsPost_id")
     private FootstepsPost footstepsPost;

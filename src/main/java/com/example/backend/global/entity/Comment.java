@@ -22,12 +22,10 @@ public class Comment extends BaseTimeEntity {
     @Lob
     private String content;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    private Realtor realtor;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "consult_id", nullable = false)
     private Consult consult;
