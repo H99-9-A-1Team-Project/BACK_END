@@ -1,74 +1,70 @@
 package com.example.backend.Comment.service;
 
-import com.example.backend.Comment.dto.ConsultMessageRequestDto;
-import com.example.backend.Comment.dto.ImageResponseDto;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.util.IOUtils;
+import com.example.backend.Comment.dto.CommentResponse;
 import com.example.backend.Comment.repository.CommentRepository;
 import com.example.backend.consult.repository.ConsultRepository;
-import com.example.backend.global.S3.dto.AwsS3;
-import com.example.backend.global.S3.service.AmazonS3Service;
+import com.example.backend.global.config.S3.CommonUtils;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.Comment;
 import com.example.backend.global.entity.Consult;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
-import com.example.backend.global.exception.customexception.common.ImageNotFoundException;
-import com.example.backend.global.exception.customexception.consult.ConsultNotFoundException;
-import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
+import com.example.backend.global.response.Response;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CommentService {
-
+    private final AmazonS3Client amazonS3Client;
+    private final CommentRepository commentrepository;
     private final ConsultRepository consultRepository;
-    private final CommentRepository commentRepository;
-    private final AmazonS3Service amazonS3Service;
-    @Value("${cloud.aws.credentials.domain}")
-    private String amazonS3Domain;
-
-    @Transactional
-    public ImageResponseDto registerConsultCommentImg(UserDetailsImpl userDetails, MultipartFile multipartFile) throws IOException {
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+    public Response createCommentImg(MultipartFile multipartFile, Long consultId, UserDetailsImpl userDetails)  throws IOException {
         validRealtor(userDetails);
+        Consult consult = consultRepository.findById(consultId).orElseThrow(  //Null이면 던저라
+                () -> new IllegalArgumentException("해당 아이디를 가진 게시글이 존재하지 않습니다.")
+        );
+        String imgurl = null;
 
-        if(multipartFile == null || multipartFile.isEmpty()){
-            throw new ImageNotFoundException();
+        if (!multipartFile.isEmpty()) {
+            String fileName = CommonUtils.buildFileName(multipartFile.getOriginalFilename());
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(multipartFile.getContentType());
+
+            byte[] bytes = IOUtils.toByteArray(multipartFile.getInputStream());
+            objectMetadata.setContentLength(bytes.length);
+            ByteArrayInputStream byteArrayIs = new ByteArrayInputStream(bytes);
+
+            amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+            imgurl = amazonS3Client.getUrl(bucketName, fileName).toString();
         }
 
-        AwsS3 image = amazonS3Service.upload(multipartFile, "CommentAnswerPhotos", userDetails.getUser().getEmail());
-        String imgUrl = amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
-        return new ImageResponseDto(imgUrl);
-    }
-
-    @Transactional
-    public void registerConsultCommentMessage(UserDetailsImpl userDetails, Long consultId, ConsultMessageRequestDto dto) {
-        validRealtor(userDetails);
-
-        Consult consult = consultRepository.findById(consultId).orElseThrow(ConsultNotFoundException::new);
-        consult.updateState();
-
         Comment comment = Comment.builder()
-                .content(dto.getAnswerMessage())
                 .user(userDetails.getUser())
                 .consult(consult)
+                .imgurl(imgurl)
                 .build();
 
-        commentRepository.save(comment);
-    }
+        commentrepository.save(comment);
 
-    public void validAuth(UserDetailsImpl userDetails){
-        if(userDetails == null) throw new UserUnauthorizedException();
+        return Response.success(new CommentResponse(comment));
     }
-
     private void validRealtor(UserDetailsImpl userDetails){
-        validAuth(userDetails);
         if(userDetails.getAuthority() != Authority.ROLE_REALTOR)
             throw new AccessDeniedException();
     }
