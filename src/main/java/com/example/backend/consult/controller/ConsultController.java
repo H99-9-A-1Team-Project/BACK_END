@@ -1,5 +1,6 @@
 package com.example.backend.consult.controller;
 
+import com.example.backend.consult.dto.DetailConsultResponseDto;
 import com.example.backend.consult.dto.RegisterConsultDto;
 import com.example.backend.consult.dto.UserAllConsultResponseDto;
 import com.example.backend.consult.service.ConsultService;
@@ -45,6 +46,13 @@ public class ConsultController {
     @GetMapping("/replied")
     public ResponseEntity<?> repliedConsult(@AuthenticationPrincipal UserDetailsImpl userDetails){
         List<UserAllConsultResponseDto> redDtos = consultService.repliedConsult(userDetails);
+        return ResponseEntity.ok(redDtos);
+    }
+
+    @GetMapping("/consult/{consult_id}")
+    public ResponseEntity<?> detailConsult(@PathVariable("consult_id") Long consult_id,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
+        DetailConsultResponseDto redDtos = consultService.detailConsult(consult_id, userDetails);
         return ResponseEntity.ok(redDtos);
     }
 

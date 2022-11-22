@@ -16,13 +16,12 @@ public class ConsultRepositoryImpl implements ConsultRepositoryCustom{
 
     private final JPAQueryFactory jpaQueryFactory;
     @Override
-    public List<Consult> findProductByAnswerStateAndCommentAndUserId(Long userId) {
+    public List<Consult> findProductByUserId(Long userId) {
         return jpaQueryFactory
                 .selectFrom(consult)
                 .where(consult.user.id.eq(userId),
                         consult.answerState.goe(AnswerState.ANSWER),
-                        consult.answerState.goe(AnswerState.FINISH),
-                        comment.user.id.eq(userId)
+                        comment.realtor.id.eq(userId)
                 )
                 .fetch();
     }

@@ -10,6 +10,7 @@ import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.Comment;
 import com.example.backend.global.entity.Consult;
+import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.common.ImageNotFoundException;
 import com.example.backend.global.exception.customexception.consult.ConsultNotFoundException;
@@ -56,7 +57,7 @@ public class CommentService {
 
         Comment comment = Comment.builder()
                 .content(dto.getAnswerMessage())
-                .user(userDetails.getUser())
+                .realtor((Realtor) userDetails.getUser())
                 .consult(consult)
                 .build();
 

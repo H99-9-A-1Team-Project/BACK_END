@@ -31,6 +31,7 @@ public class Consult {
 
     @OneToMany(mappedBy = "consult")
     private List<Comment> commentList = new ArrayList<>();
+
     @Column
     private String title;
 
