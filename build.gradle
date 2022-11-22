@@ -42,6 +42,10 @@ dependencies {
 
     // mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+//    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.964'
+//    runtimeOnly group: 'org.springframework.cloud', name: 'spring-cloud-dependencies', version: 'Hoxton.SR10', ext: 'pom'
+//    implementation group: 'org.apache.tika', name: 'tika-parsers', version: '1.25'
 }
 
 tasks.named('test') {
