@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Comment extends BaseTimeEntity {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +23,18 @@ public class Comment extends BaseTimeEntity {
     private String content;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consult_id", nullable = false)
     private Consult consult;
+
+    public Comment(User user, Consult consult, String imgurl) {
+        this.user = user;
+        this.consult = consult;
+        this.imgurl = imgurl;
+    }
 }
