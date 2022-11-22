@@ -1,17 +1,14 @@
 package com.example.backend.consult.service;
 
+import com.example.backend.consult.dto.RegisterConsultDto;
 import com.example.backend.consult.dto.UserAllConsultResponseDto;
-import com.example.backend.footsteps.repository.FootstepsRepository;
+import com.example.backend.consult.repository.ConsultRepository;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.AnswerState;
 import com.example.backend.global.entity.Authority;
 import com.example.backend.global.entity.Consult;
-import com.example.backend.consult.dto.RegisterConsultDto;
-import com.example.backend.consult.repository.ConsultRepository;
-import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
-import com.example.backend.user.repository.RealtorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +39,7 @@ public class ConsultService {
                 .consultMessage(dto.getConsultMessage())
                 .createDate(LocalDateTime.now())
                 .user(userDetails.getUser())
-                .answerState(AnswerState.ROLE_WAIT)
+                .answerState(AnswerState.WAIT)
                 .build();
         consultRepository.save(consult);
     }
@@ -57,7 +54,7 @@ public class ConsultService {
 
     public List<UserAllConsultResponseDto> waitConsult(UserDetailsImpl userDetails) {
         validRealtor(userDetails);
-        List<Consult> consultList = consultRepository.findAllByAnswerState(AnswerState.ROLE_WAIT.ordinal());
+        List<Consult> consultList = consultRepository.findAllByAnswerState(AnswerState.WAIT.ordinal());
         return consultList.stream()
                 .map(UserAllConsultResponseDto::new)
                 .collect(Collectors.toList());
