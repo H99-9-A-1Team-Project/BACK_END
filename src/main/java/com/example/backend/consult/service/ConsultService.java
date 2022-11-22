@@ -1,5 +1,8 @@
 package com.example.backend.consult.service;
 
+import com.example.backend.comment.dto.CommentResponseDto;
+import com.example.backend.comment.repository.CommentRepository;
+import com.example.backend.consult.dto.DetailConsultResponseDto;
 import com.example.backend.consult.dto.UserAllConsultResponseDto;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.*;
@@ -8,10 +11,13 @@ import com.example.backend.consult.repository.ConsultRepository;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +27,7 @@ import java.util.stream.Collectors;
 public class ConsultService {
 
     private final ConsultRepository consultRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public void registerConsult(UserDetailsImpl userDetails, RegisterConsultDto dto) {
@@ -59,6 +66,47 @@ public class ConsultService {
                 .collect(Collectors.toList());
 
     }
+    public List<UserAllConsultResponseDto> repliedConsult(UserDetailsImpl userDetails) {
+        validRealtor(userDetails);
+        List<Consult> consultList = consultRepository.findProductByUserId(userDetails.getUser().getId());
+        return consultList.stream()
+                .map(UserAllConsultResponseDto::new)
+                .collect(Collectors.toList());
+    }
+    public DetailConsultResponseDto detailConsult(Long consultId, UserDetailsImpl userDetails) {
+        validUser(userDetails);
+        Consult consult = consultRepository.findById(consultId).orElseThrow();
+        List<Comment> commentList = commentRepository.findAllById(consultId);
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        for(Comment comment: commentList){
+        commentResponseDtos.add(
+                CommentResponseDto.builder()
+                        .nickname(comment.getRealtor().getNickname())
+                        .profile(comment.getRealtor().getProfile())
+                        .introMessage(comment.getRealtor().getIntroMessage())
+                        .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                        .answerMessage(comment.getContent())
+                        .build()
+        );
+        }
+        return DetailConsultResponseDto.builder()
+                        .Id(consult.getId())
+                        .title(consult.getTitle())
+                        .coordX(consult.getCoordX())
+                        .coordY(consult.getCoordY())
+                        .answerState(consult.getAnswerState())
+                        .check1(consult.isCheck1())
+                        .check2(consult.isCheck2())
+                        .check3(consult.isCheck3())
+                        .check4(consult.isCheck4())
+                        .check5(consult.isCheck5())
+                        .check6(consult.isCheck6())
+                        .comments(commentResponseDtos)
+                        .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                        .build();
+
+
+    }
 
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
@@ -69,5 +117,11 @@ public class ConsultService {
         if(userDetails.getAuthority() != Authority.ROLE_REALTOR)
             throw new AccessDeniedException();
     }
+    private void validUser(UserDetailsImpl userDetails){
+        validAuth(userDetails);
+        if(userDetails.getAuthority() != Authority.ROLE_USER)
+            throw new AccessDeniedException();
+    }
+
 
 }

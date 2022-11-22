@@ -5,14 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Comment extends BaseTimeEntity {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,13 +25,23 @@ public class Comment extends BaseTimeEntity {
     @Lob
     private String content;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
-    @JoinColumn(name = "user_id",nullable = false)
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "realtor_id",nullable = false)
+    private Realtor realtor;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consult_id", nullable = false)
     private Consult consult;
+    @DateTimeFormat
+    private LocalDateTime createdAt; // 날짜
+    @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
+    public void createDate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Comment(Realtor realtor, Consult consult, String imgurl) {
+        this.realtor = realtor;
+        this.consult = consult;
+    }
+
 }
