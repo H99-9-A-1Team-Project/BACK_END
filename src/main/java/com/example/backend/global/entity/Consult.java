@@ -9,6 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -27,6 +29,8 @@ public class Consult {
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "consult")
+    private List<Comment> commentList = new ArrayList<>();
     @Column
     private String title;
 

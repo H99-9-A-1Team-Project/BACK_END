@@ -41,11 +41,11 @@ public class ConsultController {
     List<UserAllConsultResponseDto> redDtos = consultService.waitConsult(userDetails);
         return ResponseEntity.ok(redDtos);
     }
-//    @GetMapping("/replied")
-//    public ResponseEntity<?> repliedConsult(@AuthenticationPrincipal UserDetailsImpl userDetails){
-//        List<UserAllConsultResponseDto> redDtos = consultService.repliedConsult(userDetails);
-//        return ResponseEntity.ok(redDtos);
-//    }
+    @GetMapping("/replied")
+    public ResponseEntity<?> repliedConsult(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        List<UserAllConsultResponseDto> redDtos = consultService.repliedConsult(userDetails);
+        return ResponseEntity.ok(redDtos);
+    }
 
 
 }

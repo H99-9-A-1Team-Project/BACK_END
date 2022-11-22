@@ -63,6 +63,13 @@ public class ConsultService {
                 .collect(Collectors.toList());
 
     }
+    public List<UserAllConsultResponseDto> repliedConsult(UserDetailsImpl userDetails) {
+        validRealtor(userDetails);
+        List<Consult> consultList = consultRepository.findProductByAnswerStateAndCommentAndUserId(userDetails.getUser().getId());
+        return consultList.stream()
+                .map(UserAllConsultResponseDto::new)
+                .collect(Collectors.toList());
+    }
 
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
@@ -71,6 +78,7 @@ public class ConsultService {
         if(userDetails.getAuthority() != Authority.ROLE_REALTOR)
             throw new AccessDeniedException();
     }
+
 
 
 }
