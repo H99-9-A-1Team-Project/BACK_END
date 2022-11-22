@@ -1,5 +1,8 @@
 package com.example.backend.consult.dto;
 
+import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.entity.AnswerState;
+import com.example.backend.global.entity.Consult;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,5 +19,4 @@ public class RegisterConsultDto {
     private boolean check5;
     private boolean check6;
     private String consultMessage;
-
 }

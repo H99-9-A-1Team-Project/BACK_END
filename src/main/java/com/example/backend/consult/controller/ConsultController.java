@@ -3,7 +3,6 @@ package com.example.backend.consult.controller;
 import com.example.backend.consult.dto.RegisterConsultDto;
 import com.example.backend.consult.dto.UserAllConsultResponseDto;
 import com.example.backend.consult.service.ConsultService;
-import com.example.backend.footsteps.dto.ResponseDto;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.response.Response;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +37,7 @@ public class ConsultController {
     List<UserAllConsultResponseDto> redDtos = consultService.waitConsult(userDetails);
         return ResponseEntity.ok(redDtos);
     }
+
 //    @GetMapping("/replied")
 //    public ResponseEntity<?> repliedConsult(@AuthenticationPrincipal UserDetailsImpl userDetails){
 //        List<UserAllConsultResponseDto> redDtos = consultService.repliedConsult(userDetails);

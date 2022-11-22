@@ -29,7 +29,7 @@ public class AmazonS3Service {
 
     public AwsS3 upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
         File file = convertMultipartFileToFile(multipartFile)
-                .orElseThrow( ()-> new IllegalArgumentException("파일 변환 실패!"));
+                .orElseThrow( ()-> new IllegalArgumentException("파일 업로드에 실패했습니다"));
         String key = randomFileName(email, dirName);
         String path = putS3(file, key);
         file.delete();

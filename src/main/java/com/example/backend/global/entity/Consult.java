@@ -68,4 +68,7 @@ public class Consult {
         this.createDate = LocalDateTime.now();
     }
 
+    public void updateState() {
+        this.answerState = AnswerState.ANSWER;
+    }
 }

@@ -16,6 +16,7 @@ public enum ErrorCode {
     NOT_FOUND(HttpStatus.NOT_FOUND, "C004", "요청을 찾을 수 없습니다."),
     SQL_CONFLICT(HttpStatus.CONFLICT, "C006", "중복된 값이 존재합니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"C007", "서버에서 오류가 발생했습니다."),
+    IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "C008", "이미지를 첨부해주세요"),
 
     // User
     USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "U001", "로그인 해주세요"),
@@ -35,6 +36,7 @@ public enum ErrorCode {
 
     // Consult
     EXCEED_MAXIMUM_CONSULT(HttpStatus.BAD_REQUEST, "CO01", "최대 상담 횟수를 초과했습니다."),
+    CONSULT_NOT_FOUND(HttpStatus.NOT_FOUND, "C002", "잘못된 상담 ID입니다."),
 
     // Premises
     PREMISE_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 공인중개사입니다.");
