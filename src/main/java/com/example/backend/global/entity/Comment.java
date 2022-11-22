@@ -1,5 +1,6 @@
 package com.example.backend.global.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,13 +22,12 @@ public class Comment {
     @Lob
     private String content;
 
-    @Column
-    private String imgurl;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consult_id", nullable = false)
     private Consult consult;
