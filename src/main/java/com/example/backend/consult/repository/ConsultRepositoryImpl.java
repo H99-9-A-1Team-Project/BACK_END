@@ -20,8 +20,8 @@ public class ConsultRepositoryImpl implements ConsultRepositoryCustom{
         return jpaQueryFactory
                 .selectFrom(consult)
                 .where(consult.user.id.eq(userId),
-                        consult.answerState.goe(AnswerState.ROLE_ANSWER),
-                        consult.answerState.goe(AnswerState.ROLE_FINISH),
+                        consult.answerState.goe(AnswerState.ANSWER),
+                        consult.answerState.goe(AnswerState.FINISH),
                         comment.user.id.eq(userId)
                 )
                 .fetch();

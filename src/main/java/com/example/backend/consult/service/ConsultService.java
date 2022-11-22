@@ -42,7 +42,7 @@ public class ConsultService {
                 .consultMessage(dto.getConsultMessage())
                 .createDate(LocalDateTime.now())
                 .user(userDetails.getUser())
-                .answerState(AnswerState.ROLE_WAIT)
+                .answerState(AnswerState.WAIT)
                 .build();
         consultRepository.save(consult);
     }
@@ -57,7 +57,7 @@ public class ConsultService {
 
     public List<UserAllConsultResponseDto> waitConsult(UserDetailsImpl userDetails) {
         validRealtor(userDetails);
-        List<Consult> consultList = consultRepository.findAllByAnswerState(AnswerState.ROLE_WAIT.ordinal());
+        List<Consult> consultList = consultRepository.findAllByAnswerState(AnswerState.WAIT.ordinal());
         return consultList.stream()
                 .map(UserAllConsultResponseDto::new)
                 .collect(Collectors.toList());
