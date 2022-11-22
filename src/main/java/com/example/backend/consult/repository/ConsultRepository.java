@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ConsultRepository extends JpaRepository<Consult, Long> {
+public interface ConsultRepository extends JpaRepository<Consult, Long>,ConsultRepositoryCustom {
     @Query("select c from Consult c where c.user.id = :userId")
     List<Consult> findAllByUserId(@Param("userId")Long userid);
     @Query("select c from Consult c where c.answerState = 0")
