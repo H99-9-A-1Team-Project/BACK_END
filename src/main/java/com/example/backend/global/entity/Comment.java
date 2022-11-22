@@ -32,8 +32,10 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consult_id", nullable = false)
     private Consult consult;
+    
     @DateTimeFormat
     private LocalDateTime createdAt; // 날짜
+    
     @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
     public void createDate() {
         this.createdAt = LocalDateTime.now();

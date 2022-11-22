@@ -2,6 +2,7 @@ package com.example.backend.consult.controller;
 
 import com.example.backend.consult.dto.DetailConsultResponseDto;
 import com.example.backend.consult.dto.RegisterConsultDto;
+import com.example.backend.consult.dto.RepliedConsultResponseDto;
 import com.example.backend.consult.dto.UserAllConsultResponseDto;
 import com.example.backend.consult.service.ConsultService;
 import com.example.backend.footsteps.dto.FootstepsRequstDto;
@@ -44,9 +45,8 @@ public class ConsultController {
     }
 
     @GetMapping("/replied")
-    public ResponseEntity<?> repliedConsult(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        List<UserAllConsultResponseDto> redDtos = consultService.repliedConsult(userDetails);
-        return ResponseEntity.ok(redDtos);
+    public ResponseEntity<?> getRepliedConsult(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(consultService.getRepliedConsult(userDetails));
     }
 
     @GetMapping("/consult/{consult_id}")

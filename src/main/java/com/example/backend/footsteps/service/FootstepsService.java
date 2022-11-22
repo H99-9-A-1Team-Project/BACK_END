@@ -12,9 +12,12 @@ import com.example.backend.global.config.S3.CommonUtils;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
+import com.example.backend.global.exception.customexception.common.NotFoundException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -126,6 +129,13 @@ public class FootstepsService {
         }
 
         return posts;
+    }
+
+    public List<Photo> getFootstepDetailImages(Long premisesId, UserDetailsImpl userDetails, Pageable pageable) {
+        validAuth(userDetails);
+
+        FootstepsPost post = footstepsRepository.findById(premisesId).orElseThrow(NotFoundException::new);
+        return photoRepository.findAllByFootstepsPost(post, pageable).getContent();
     }
 
     public void validAuth(UserDetailsImpl userDetails){

@@ -12,4 +12,7 @@ public interface ConsultRepository extends JpaRepository<Consult, Long>,ConsultR
     List<Consult> findAllByUserId(@Param("userId")Long userid);
     @Query("select c from Consult c where c.answerState = 0")
     List<Consult> findAllByAnswerState(@Param("answerState")int answerstate);
+
+    @Query(value = "SELECT * FROM Consult WHERE realtor", nativeQuery = true)
+    List<Consult> findByRealtorAndAnswerState();
 }

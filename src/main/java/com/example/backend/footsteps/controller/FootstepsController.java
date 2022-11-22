@@ -6,6 +6,7 @@ import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.response.Response;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,6 +40,15 @@ public class FootstepsController {
     @GetMapping("/premises/advicerrequest")
     private ResponseEntity<?> getMyAdviceRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return  ResponseEntity.ok(footstepsService.getMyAdviceRequest(userDetails));
+
+    }
+
+    @GetMapping("/premises/{premisesId}")
+    private ResponseEntity<?> getFootstepDetailImages(@PathVariable Long premisesId,
+                                                      @AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                      Pageable pageable
+    ){
+        return ResponseEntity.ok(footstepsService.getFootstepDetailImages(premisesId, userDetails, pageable));
 
     }
 
