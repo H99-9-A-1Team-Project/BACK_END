@@ -55,6 +55,13 @@ public class ConsultController {
         DetailConsultResponseDto redDtos = consultService.detailConsult(consult_id, userDetails);
         return ResponseEntity.ok(redDtos);
     }
+//    @PutMapping("/consult/{consult_id}")
+//    public ResponseEntity<?> PutdetailConsult(@PathVariable("consult_id") Long consult_id,
+//                                           @RequestBody
+//                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
+//        DetailConsultResponseDto redDtos = consultService.PutdetailConsult(consult_id, userDetails);
+//        return ResponseEntity.ok(redDtos);
+//    }
 
 
 }

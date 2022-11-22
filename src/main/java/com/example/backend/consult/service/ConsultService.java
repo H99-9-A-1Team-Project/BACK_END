@@ -71,15 +71,8 @@ public class ConsultService {
                 .collect(Collectors.toList());
 
     }
-    public List<UserAllConsultResponseDto> repliedConsult(UserDetailsImpl userDetails) {
-        validRealtor(userDetails);
-        List<Consult> consultList = consultRepository.findProductByUserId(userDetails.getUser().getId());
-        return consultList.stream()
-                .map(UserAllConsultResponseDto::new)
-                .collect(Collectors.toList());
-    }
     public DetailConsultResponseDto detailConsult(Long consultId, UserDetailsImpl userDetails) {
-        validUser(userDetails);
+        validAuth(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
         List<Comment> commentList = commentRepository.findAllById(consultId);
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
@@ -125,6 +118,8 @@ public class ConsultService {
 
         return result;
     }
+//    public DetailConsultResponseDto PutdetailConsult(Long consult_id, UserDetailsImpl userDetails) {
+//    }
 
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
@@ -140,6 +135,7 @@ public class ConsultService {
         if(userDetails.getAuthority() != Authority.ROLE_USER)
             throw new AccessDeniedException();
     }
+
 
 
 }
