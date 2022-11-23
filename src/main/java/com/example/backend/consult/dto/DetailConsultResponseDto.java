@@ -21,7 +21,7 @@ public class DetailConsultResponseDto {
     private double coordX;
     private double coordY;
     private String consultMessage;
-    private CheckListDto checks;
+    private List<Boolean> checks;
 
     private AnswerState answerState;
     private String createdAt;
