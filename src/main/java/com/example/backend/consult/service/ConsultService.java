@@ -1,13 +1,10 @@
 package com.example.backend.consult.service;
 
 import com.example.backend.comment.repository.CommentRepository;
-import com.example.backend.consult.dto.RepliedConsultResponseDto;
+import com.example.backend.consult.dto.*;
 import com.example.backend.comment.dto.CommentResponseDto;
-import com.example.backend.consult.dto.DetailConsultResponseDto;
-import com.example.backend.consult.dto.UserAllConsultResponseDto;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.*;
-import com.example.backend.consult.dto.RegisterConsultDto;
 import com.example.backend.consult.repository.ConsultRepository;
 import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
@@ -118,8 +115,45 @@ public class ConsultService {
 
         return result;
     }
-//    public DetailConsultResponseDto PutdetailConsult(Long consult_id, UserDetailsImpl userDetails) {
-//    }
+    public DetailConsultResponseDto PutdetailConsult(Long consultId, PutDetailConsultRequestDto dto, UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        Consult consult = consultRepository.findById(consultId).orElseThrow();
+        checkOwner(consult,userDetails);
+        consult.updateState2(dto.getAnswerState());
+        consultRepository.save(consult);
+        ////
+        List<Comment> commentList = commentRepository.findAllById(consultId);
+        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        for(Comment comment: commentList){
+            commentResponseDtos.add(
+                    CommentResponseDto.builder()
+                            .nickname(comment.getRealtor().getNickname())
+                            .profile(comment.getRealtor().getProfile())
+                            .introMessage(comment.getRealtor().getIntroMessage())
+                            .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                            .answerMessage(comment.getContent())
+                            .build()
+            );
+        }
+        return DetailConsultResponseDto.builder()
+                .Id(consult.getId())
+                .title(consult.getTitle())
+                .coordX(consult.getCoordX())
+                .coordY(consult.getCoordY())
+                .answerState(consult.getAnswerState())
+                .check1(consult.isCheck1())
+                .check2(consult.isCheck2())
+                .check3(consult.isCheck3())
+                .check4(consult.isCheck4())
+                .check5(consult.isCheck5())
+                .check6(consult.isCheck6())
+                .comments(commentResponseDtos)
+                .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                .build();
+
+
+    }
+
 
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
@@ -135,7 +169,11 @@ public class ConsultService {
         if(userDetails.getAuthority() != Authority.ROLE_USER)
             throw new AccessDeniedException();
     }
-
+    private void checkOwner(Consult consult, UserDetailsImpl userDetails){
+        if(!consult.checkOwnerByUserId(userDetails)){
+            throw new IllegalArgumentException("회원님이 작성한 글이 아닙니다.");
+        }
+    }
 
 
 }
