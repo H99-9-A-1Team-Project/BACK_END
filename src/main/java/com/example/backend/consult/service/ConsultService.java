@@ -114,6 +114,7 @@ public class ConsultService {
 
         return result;
     }
+    @Transactional
     public DetailConsultResponseDto PutdetailConsult(Long consultId, PutDetailConsultRequestDto dto, UserDetailsImpl userDetails) {
         validUser(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
