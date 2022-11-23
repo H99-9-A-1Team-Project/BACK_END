@@ -1,6 +1,8 @@
 package com.example.backend.consult.dto;
 
+import com.example.backend.comment.dto.CommentResponseDto;
 import com.example.backend.global.entity.AnswerState;
+import com.example.backend.global.entity.Comment;
 import com.example.backend.global.entity.Consult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -21,6 +25,8 @@ public class UserAllConsultResponseDto {
     private double coordY;
     private String consultMessage;
 
+    private List<String> comments;
+
     private AnswerState answerState;
     private String createdAt;
 
@@ -30,6 +36,10 @@ public class UserAllConsultResponseDto {
         this.coordY = consult.getCoordY();
         this.coordX = consult.getCoordX();
         this.consultMessage = consult.getConsultMessage();
+        this.comments = consult.getCommentList()
+                .stream()
+                .map(Comment::getContent)
+                .collect(Collectors.toList());
         this.answerState = consult.getAnswerState();
         this.createdAt = consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
     }

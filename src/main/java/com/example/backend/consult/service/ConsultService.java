@@ -115,7 +115,7 @@ public class ConsultService {
         return result;
     }
     public DetailConsultResponseDto PutdetailConsult(Long consultId, PutDetailConsultRequestDto dto, UserDetailsImpl userDetails) {
-        validAuth(userDetails);
+        validUser(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
         CheckListDto checkList = new CheckListDto(consult.isCheck1(), consult.isCheck2(), consult.isCheck3(), consult.isCheck4(), consult.isCheck5(), consult.isCheck6());
         checkOwner(consult,userDetails);
