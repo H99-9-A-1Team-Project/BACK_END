@@ -1,12 +1,11 @@
 package com.example.backend.global.entity;
 
 
+import com.example.backend.user.dto.editUserInfoRequestDto;
 import com.example.backend.user.dto.SignUpMemberRequestDto;
 import com.example.backend.user.dto.SignUpRealtorRequestDto;
-import com.example.backend.user.dto.SignUpRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -47,6 +46,9 @@ public class User {
         this.createDate = LocalDateTime.now();
     }
 
+    public User(editUserInfoRequestDto nicknameRequestDto) {
+        this.nickname = nicknameRequestDto.getNickname();
+    }
 
     public User(SignUpRealtorRequestDto dto){
         this.email = dto.getEmail();
@@ -62,8 +64,7 @@ public class User {
         this.authority = Authority.ROLE_USER;
     }
 
-
-    public void update(String nickname) {
-        this.nickname = nickname;
+    public void updateNickname(editUserInfoRequestDto nicknameRequestDto) {
+        this.nickname = nicknameRequestDto.getNickname();
     }
 }
