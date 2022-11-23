@@ -2,20 +2,14 @@ package com.example.backend.user.controller;
 
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.user.dto.IntroMessageDto;
-import com.example.backend.user.dto.NicknameRequestDto;
-import com.example.backend.global.entity.User;
-import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
-import com.example.backend.user.dto.RealtorApproveDto;
+import com.example.backend.user.dto.editUserInfoRequestDto;
 import com.example.backend.user.repository.UserRepository;
 import com.example.backend.global.response.Response;
 import com.example.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/v1")
@@ -45,8 +39,8 @@ public class UserController {
         return Response.success();
     }
 
-    @PutMapping("/user/edit-nickname")
-    public Response editUserNickname(@RequestBody NicknameRequestDto nicknameRequestDto,
+    @PutMapping("/user/profile")
+    public Response editUserNickname(@RequestBody editUserInfoRequestDto nicknameRequestDto,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
         userService.editUserNickname(nicknameRequestDto, userDetails);
         return Response.success();

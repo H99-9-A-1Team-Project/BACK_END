@@ -1,11 +1,11 @@
 package com.example.backend.user.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class NicknameRequestDto {
+public class editUserInfoRequestDto {
     private String nickname;
+    private int profileImg;
 }

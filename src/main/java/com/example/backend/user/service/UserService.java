@@ -3,13 +3,13 @@ package com.example.backend.user.service;
 
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.Authority;
-import com.example.backend.global.exception.customexception.common.AccessDeniedException;
+import com.example.backend.global.entity.Member;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import com.example.backend.user.dto.*;
 import com.example.backend.global.entity.Realtor;
 import com.example.backend.global.entity.User;
-import com.example.backend.global.exception.customexception.user.MemberNotEqualsException;
 import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
+import com.example.backend.user.repository.MemberRepository;
 import com.example.backend.user.repository.RealtorRepository;
 import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RealtorRepository realtorRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public List<UserDto> findAllUsers() {
@@ -49,21 +50,25 @@ public class UserService {
     }
 
     @Transactional
-    public void editUserNickname(NicknameRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
+    public void editUserNickname(editUserInfoRequestDto nicknameRequestDto, UserDetailsImpl userDetails){
         validAuth(userDetails);
-        User user = userRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow();
-        user.update(nicknameRequestDto.getNickname());
+        Member member = memberRepository.findByEmail(userDetails.getUser().getEmail());
+        member.updateProfileImage(nicknameRequestDto);
+        member.updateNickname(nicknameRequestDto);
     }
 
     public Object getMyProfile(UserDetailsImpl userDetails) {
         validAuth(userDetails);
+
         Authority authority = userDetails.getUser().getAuthority();
+
         if(authority.equals(Authority.ROLE_USER)){
-            return new UserProfileResponseDto(userDetails.getUser());
+            Member member = memberRepository.findByEmail(userDetails.getUser().getEmail());
+            return new MemberProfileResponseDto(member);
         }
 
-        Realtor user = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(MemberNotFoundException::new);
-        return new RealtorProfileResponseDto(user);
+        Realtor realtor = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(MemberNotFoundException::new);
+        return new RealtorProfileResponseDto(realtor);
 
     }
 
