@@ -74,7 +74,8 @@ public class ConsultService {
 
         List<Comment> commentList = commentRepository.findAllById(consultId);
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
-        CheckListDto checkList = new CheckListDto(consult.isCheck1(), consult.isCheck2(), consult.isCheck3(), consult.isCheck4(), consult.isCheck5(), consult.isCheck6());
+
+        List<Boolean> checkList = getConsultCheckList(consult);
 
 
         for(Comment comment: commentList){
@@ -102,6 +103,17 @@ public class ConsultService {
 
     }
 
+    private static List<Boolean> getConsultCheckList(Consult consult) {
+        List<Boolean> checkList = new ArrayList<>();
+        checkList.add(consult.isCheck1());
+        checkList.add(consult.isCheck2());
+        checkList.add(consult.isCheck3());
+        checkList.add(consult.isCheck4());
+        checkList.add(consult.isCheck5());
+        checkList.add(consult.isCheck6());
+        return checkList;
+    }
+
     public List<RepliedConsultResponseDto> getRepliedConsult(UserDetailsImpl userDetails) {
         validRealtor(userDetails);
         List<RepliedConsultResponseDto> result = new ArrayList<>();
@@ -118,7 +130,7 @@ public class ConsultService {
     public DetailConsultResponseDto PutdetailConsult(Long consultId, PutDetailConsultRequestDto dto, UserDetailsImpl userDetails) {
         validUser(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
-        CheckListDto checkList = new CheckListDto(consult.isCheck1(), consult.isCheck2(), consult.isCheck3(), consult.isCheck4(), consult.isCheck5(), consult.isCheck6());
+        List<Boolean> checkList = getConsultCheckList(consult);
         checkOwner(consult,userDetails);
         consult.updateState2(dto.getAnswerState());
         consultRepository.save(consult);
