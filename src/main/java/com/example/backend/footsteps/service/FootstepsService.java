@@ -5,11 +5,15 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
+import com.example.backend.consult.dto.DetailConsultResponseDto;
+import com.example.backend.consult.repository.ConsultRepository;
+import com.example.backend.footsteps.dto.FootstepsDetailResponseDto;
 import com.example.backend.footsteps.dto.FootstepsRequstDto;
 import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
 import com.example.backend.global.config.S3.CommonUtils;
 import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.entity.Consult;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
 import com.example.backend.global.exception.customexception.common.ImageNotFoundException;
@@ -41,6 +45,7 @@ public class FootstepsService {
     private final PhotoRepository photoRepository;
 
     private final FootstepsRepository footstepsRepository;
+    private final ConsultRepository consultRepository;
 
     @Transactional
     public void createPost(List<MultipartFile> multipartFile, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) throws IOException {
@@ -130,6 +135,74 @@ public class FootstepsService {
         }
 
         return posts;
+    }
+    public FootstepsDetailResponseDto getFootstepDetail(Long premisesId, UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        FootstepsPost footstepsPost = footstepsRepository.findById(premisesId).orElseThrow(NotFoundException::new);
+        Consult consult = consultRepository.findAllByUser(userDetails.getUser().getId());
+        if(consult.getCoordX().equals(footstepsPost.getCoordFX()) && consult.getCoordY().equals(footstepsPost.getCoordFY())){
+            return FootstepsDetailResponseDto.builder()
+                    .title(footstepsPost.getTitle())
+                    .coordFX(footstepsPost.getCoordFX())
+                    .coordFY(footstepsPost.getCoordFY())
+                    .price(footstepsPost.getPrice())
+                    .size(footstepsPost.getSize())
+                    .review(footstepsPost.getReview())
+                    .sun(footstepsPost.isSun())
+                    .mold(footstepsPost.isMold())
+                    .vent(footstepsPost.isVent())
+                    .water(footstepsPost.isWater())
+                    .ventil(footstepsPost.isVentil())
+                    .drain(footstepsPost.isDrain())
+                    .draft(footstepsPost.isDraft())
+                    .extraMemo(footstepsPost.getExtraMemo())
+                    .option(footstepsPost.getOption())
+                    .destroy(footstepsPost.isDestroy())
+                    .utiRoom(footstepsPost.isUtiRoom())
+                    .securityWindow(footstepsPost.isSecurityWindow())
+                    .noise(footstepsPost.isNoise())
+                    .loan(footstepsPost.isLoan())
+                    .cctv(footstepsPost.isCctv())
+                    .hill(footstepsPost.isHill())
+                    .mart(footstepsPost.isMart())
+                    .hospital(footstepsPost.isHospital())
+                    .accessibility(footstepsPost.isAccessibility())
+                    .park(footstepsPost.isPark())
+                    .createdAt(footstepsPost.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                    .YesOrNo(true)
+                    .build();
+        }else{
+            return FootstepsDetailResponseDto.builder()
+                .title(footstepsPost.getTitle())
+                .coordFX(footstepsPost.getCoordFX())
+                .coordFY(footstepsPost.getCoordFY())
+                .price(footstepsPost.getPrice())
+                .size(footstepsPost.getSize())
+                .review(footstepsPost.getReview())
+                .sun(footstepsPost.isSun())
+                .mold(footstepsPost.isMold())
+                .vent(footstepsPost.isVent())
+                .water(footstepsPost.isWater())
+                .ventil(footstepsPost.isVentil())
+                .drain(footstepsPost.isDrain())
+                .draft(footstepsPost.isDraft())
+                .extraMemo(footstepsPost.getExtraMemo())
+                .option(footstepsPost.getOption())
+                .destroy(footstepsPost.isDestroy())
+                .utiRoom(footstepsPost.isUtiRoom())
+                .securityWindow(footstepsPost.isSecurityWindow())
+                .noise(footstepsPost.isNoise())
+                .loan(footstepsPost.isLoan())
+                .cctv(footstepsPost.isCctv())
+                .hill(footstepsPost.isHill())
+                .mart(footstepsPost.isMart())
+                .hospital(footstepsPost.isHospital())
+                .accessibility(footstepsPost.isAccessibility())
+                .park(footstepsPost.isPark())
+                .createdAt(footstepsPost.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                .YesOrNo(false)
+                .build();
+        }
     }
 
     public List<Photo> getFootstepDetailImages(Long premisesId, UserDetailsImpl userDetails, Pageable pageable) {
