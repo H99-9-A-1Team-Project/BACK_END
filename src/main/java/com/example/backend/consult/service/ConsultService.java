@@ -120,7 +120,7 @@ public class ConsultService {
         Realtor realtor = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(MemberNotFoundException::new);
 
         commentRepository.findByRealtor(realtor)
-                .forEach(comment -> { if(comment.getConsult().getAnswerState() == AnswerState.ANSWER ){
+                .forEach(comment -> { if(comment.getConsult().getAnswerState() != AnswerState.WAIT ){
                     result.add(new RepliedConsultResponseDto(comment.getConsult(), comment.getContent()));
                 }});
 

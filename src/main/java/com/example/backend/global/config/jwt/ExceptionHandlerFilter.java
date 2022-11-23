@@ -9,6 +9,7 @@ import com.example.backend.global.exception.customexception.user.RealtorNotAppro
 import com.example.backend.global.exception.customexception.user.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -33,7 +34,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             setErrorResponse(REALTOR_NOT_APPROVED, response,ex);
         }  catch (TokenExpiredException ex) {
             setErrorResponse(TOKEN_EXPIRED_EXCEPTION, response,ex);
-        } catch (MemberNotFoundException ex) {
+        } catch (MemberNotFoundException | UsernameNotFoundException ex) {
             setErrorResponse(MEMBER_NOT_FOUND, response, ex);
         } catch (IOException ex) {
             setErrorResponse(INTERNAL_SERVER_ERROR, response, ex);
