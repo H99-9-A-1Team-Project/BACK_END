@@ -116,7 +116,7 @@ public class ConsultService {
         return result;
     }
     public DetailConsultResponseDto PutdetailConsult(Long consultId, PutDetailConsultRequestDto dto, UserDetailsImpl userDetails) {
-        validAuth(userDetails);
+        validUser(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
         checkOwner(consult,userDetails);
         consult.updateState2(dto.getAnswerState());
