@@ -1,5 +1,6 @@
 package com.example.backend.global.entity;
 
+import com.example.backend.global.config.auth.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -75,5 +76,12 @@ public class Consult {
 
     public void updateState() {
         this.answerState = AnswerState.ANSWER;
+    }
+    public void updateState2(AnswerState answerState) {
+        this.answerState = AnswerState.FINISH;
+    }
+
+    public boolean checkOwnerByUserId(UserDetailsImpl userDetails) {
+        return this.user.getEmail().equals(userDetails.getUser().getEmail());
     }
 }

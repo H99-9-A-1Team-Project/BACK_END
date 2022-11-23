@@ -1,9 +1,6 @@
 package com.example.backend.consult.controller;
 
-import com.example.backend.consult.dto.DetailConsultResponseDto;
-import com.example.backend.consult.dto.RegisterConsultDto;
-import com.example.backend.consult.dto.RepliedConsultResponseDto;
-import com.example.backend.consult.dto.UserAllConsultResponseDto;
+import com.example.backend.consult.dto.*;
 import com.example.backend.consult.service.ConsultService;
 import com.example.backend.footsteps.dto.FootstepsRequstDto;
 import com.example.backend.footsteps.dto.ResponseDto;
@@ -55,13 +52,13 @@ public class ConsultController {
         DetailConsultResponseDto redDtos = consultService.detailConsult(consult_id, userDetails);
         return ResponseEntity.ok(redDtos);
     }
-//    @PutMapping("/consult/{consult_id}")
-//    public ResponseEntity<?> PutdetailConsult(@PathVariable("consult_id") Long consult_id,
-//                                           @RequestBody
-//                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
-//        DetailConsultResponseDto redDtos = consultService.PutdetailConsult(consult_id, userDetails);
-//        return ResponseEntity.ok(redDtos);
-//    }
+    @PutMapping("/consult/{consult_id}")
+    public ResponseEntity<?> PutdetailConsult(@PathVariable("consult_id") Long consult_id,
+                                           @RequestBody PutDetailConsultRequestDto dto,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
+        DetailConsultResponseDto redDtos = consultService.PutdetailConsult(consult_id,dto,userDetails);
+        return ResponseEntity.ok(redDtos);
+    }
 
 
 }

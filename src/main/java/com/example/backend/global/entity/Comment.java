@@ -41,9 +41,4 @@ public class Comment {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Comment(Realtor realtor, Consult consult, String imgurl) {
-        this.realtor = realtor;
-        this.consult = consult;
-    }
-
 }

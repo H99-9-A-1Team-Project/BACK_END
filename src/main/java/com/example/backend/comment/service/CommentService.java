@@ -51,7 +51,6 @@ public class CommentService {
     @Transactional
     public void registerConsultCommentMessage(UserDetailsImpl userDetails, Long consultId, ConsultMessageRequestDto dto) {
         validRealtor(userDetails);
-
         Consult consult = consultRepository.findById(consultId).orElseThrow(ConsultNotFoundException::new);
         consult.updateState();
 

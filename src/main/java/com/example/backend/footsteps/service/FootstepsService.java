@@ -12,6 +12,7 @@ import com.example.backend.global.config.S3.CommonUtils;
 import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
+import com.example.backend.global.exception.customexception.common.ImageNotFoundException;
 import com.example.backend.global.exception.customexception.common.NotFoundException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class FootstepsService {
         List<String> imgUrlList = new ArrayList<>();
 
         for (MultipartFile file : multipartFile) {
-            if (!multipartFile.isEmpty()) {
+            if (multipartFile != null && !multipartFile.isEmpty()) {
                 String fileName = CommonUtils.buildFileName(file.getOriginalFilename());
                 ObjectMetadata objectMetadata = new ObjectMetadata();
                 objectMetadata.setContentType(file.getContentType());
@@ -74,7 +75,7 @@ public class FootstepsService {
                 amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayIs, objectMetadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
                 imgUrlList.add(amazonS3Client.getUrl(bucketName, fileName).toString());
-            }
+            }else { throw new ImageNotFoundException(); }
         }
         return imgUrlList;
     }
