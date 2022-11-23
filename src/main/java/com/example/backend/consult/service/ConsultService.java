@@ -71,8 +71,12 @@ public class ConsultService {
     public DetailConsultResponseDto detailConsult(Long consultId, UserDetailsImpl userDetails) {
         validAuth(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
+
         List<Comment> commentList = commentRepository.findAllById(consultId);
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        CheckListDto checkList = new CheckListDto(consult.isCheck1(), consult.isCheck2(), consult.isCheck3(), consult.isCheck4(), consult.isCheck5(), consult.isCheck6());
+
+
         for(Comment comment: commentList){
         commentResponseDtos.add(
                 CommentResponseDto.builder()
@@ -82,7 +86,7 @@ public class ConsultService {
                         .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                         .answerMessage(comment.getContent())
                         .build()
-        );
+               );
         }
         return DetailConsultResponseDto.builder()
                         .Id(consult.getId())
@@ -90,12 +94,7 @@ public class ConsultService {
                         .coordX(consult.getCoordX())
                         .coordY(consult.getCoordY())
                         .answerState(consult.getAnswerState())
-                        .check1(consult.isCheck1())
-                        .check2(consult.isCheck2())
-                        .check3(consult.isCheck3())
-                        .check4(consult.isCheck4())
-                        .check5(consult.isCheck5())
-                        .check6(consult.isCheck6())
+                        .checks(checkList)
                         .comments(commentResponseDtos)
                         .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                         .build();
@@ -118,6 +117,7 @@ public class ConsultService {
     public DetailConsultResponseDto PutdetailConsult(Long consultId, PutDetailConsultRequestDto dto, UserDetailsImpl userDetails) {
         validUser(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
+        CheckListDto checkList = new CheckListDto(consult.isCheck1(), consult.isCheck2(), consult.isCheck3(), consult.isCheck4(), consult.isCheck5(), consult.isCheck6());
         checkOwner(consult,userDetails);
         consult.updateState2(dto.getAnswerState());
         consultRepository.save(consult);
@@ -141,12 +141,7 @@ public class ConsultService {
                 .coordX(consult.getCoordX())
                 .coordY(consult.getCoordY())
                 .answerState(consult.getAnswerState())
-                .check1(consult.isCheck1())
-                .check2(consult.isCheck2())
-                .check3(consult.isCheck3())
-                .check4(consult.isCheck4())
-                .check5(consult.isCheck5())
-                .check6(consult.isCheck6())
+                .checks(checkList)
                 .comments(commentResponseDtos)
                 .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                 .build();
