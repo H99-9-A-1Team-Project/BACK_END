@@ -20,5 +20,5 @@ public interface ConsultRepository extends JpaRepository<Consult, Long>,ConsultR
     @Query("select c from Consult c where c.coordY = :coordy")
     Object findAllByCoordY(@Param("coordy")double coordy);
 
-    Consult findAllByUser(Long id);
+    Consult findByCoordXAndCoordYAndUserId(double x, double y, Long id);
 }

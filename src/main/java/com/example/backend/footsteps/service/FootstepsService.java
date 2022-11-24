@@ -16,6 +16,7 @@ import com.example.backend.global.config.auth.UserDetailsImpl;
 import com.example.backend.global.entity.Consult;
 import com.example.backend.global.entity.FootstepsPost;
 import com.example.backend.global.entity.Photo;
+import com.example.backend.global.exception.customexception.common.AccessDeniedException;
 import com.example.backend.global.exception.customexception.common.ImageNotFoundException;
 import com.example.backend.global.exception.customexception.common.NotFoundException;
 import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
@@ -138,71 +139,47 @@ public class FootstepsService {
     }
     public FootstepsDetailResponseDto getFootstepDetail(Long premisesId, UserDetailsImpl userDetails) {
         validAuth(userDetails);
+        boolean yesOrNo = false;
+
         FootstepsPost footstepsPost = footstepsRepository.findById(premisesId).orElseThrow(NotFoundException::new);
-        Consult consult = consultRepository.findAllByUser(userDetails.getUser().getId());
-        if(consult.getCoordX().equals(footstepsPost.getCoordFX()) && consult.getCoordY().equals(footstepsPost.getCoordFY())){
-            return FootstepsDetailResponseDto.builder()
-                    .title(footstepsPost.getTitle())
-                    .coordFX(footstepsPost.getCoordFX())
-                    .coordFY(footstepsPost.getCoordFY())
-                    .price(footstepsPost.getPrice())
-                    .size(footstepsPost.getSize())
-                    .review(footstepsPost.getReview())
-                    .sun(footstepsPost.isSun())
-                    .mold(footstepsPost.isMold())
-                    .vent(footstepsPost.isVent())
-                    .water(footstepsPost.isWater())
-                    .ventil(footstepsPost.isVentil())
-                    .drain(footstepsPost.isDrain())
-                    .draft(footstepsPost.isDraft())
-                    .extraMemo(footstepsPost.getExtraMemo())
-                    .option(footstepsPost.getOption())
-                    .destroy(footstepsPost.isDestroy())
-                    .utiRoom(footstepsPost.isUtiRoom())
-                    .securityWindow(footstepsPost.isSecurityWindow())
-                    .noise(footstepsPost.isNoise())
-                    .loan(footstepsPost.isLoan())
-                    .cctv(footstepsPost.isCctv())
-                    .hill(footstepsPost.isHill())
-                    .mart(footstepsPost.isMart())
-                    .hospital(footstepsPost.isHospital())
-                    .accessibility(footstepsPost.isAccessibility())
-                    .park(footstepsPost.isPark())
-                    .createdAt(footstepsPost.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                    .YesOrNo(true)
-                    .build();
-        }else{
-            return FootstepsDetailResponseDto.builder()
-                .title(footstepsPost.getTitle())
-                .coordFX(footstepsPost.getCoordFX())
-                .coordFY(footstepsPost.getCoordFY())
-                .price(footstepsPost.getPrice())
-                .size(footstepsPost.getSize())
-                .review(footstepsPost.getReview())
-                .sun(footstepsPost.isSun())
-                .mold(footstepsPost.isMold())
-                .vent(footstepsPost.isVent())
-                .water(footstepsPost.isWater())
-                .ventil(footstepsPost.isVentil())
-                .drain(footstepsPost.isDrain())
-                .draft(footstepsPost.isDraft())
-                .extraMemo(footstepsPost.getExtraMemo())
-                .option(footstepsPost.getOption())
-                .destroy(footstepsPost.isDestroy())
-                .utiRoom(footstepsPost.isUtiRoom())
-                .securityWindow(footstepsPost.isSecurityWindow())
-                .noise(footstepsPost.isNoise())
-                .loan(footstepsPost.isLoan())
-                .cctv(footstepsPost.isCctv())
-                .hill(footstepsPost.isHill())
-                .mart(footstepsPost.isMart())
-                .hospital(footstepsPost.isHospital())
-                .accessibility(footstepsPost.isAccessibility())
-                .park(footstepsPost.isPark())
-                .createdAt(footstepsPost.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                .YesOrNo(false)
-                .build();
-        }
+        Consult consult = consultRepository.findByCoordXAndCoordYAndUserId(footstepsPost.getCoordFX(),footstepsPost.getCoordFY(),userDetails.getUser().getId());
+
+        if(!footstepsPost.getUser().getId().equals(userDetails.getUser().getId()))
+            throw new AccessDeniedException();
+
+        if(consult != null)
+             yesOrNo= true;
+
+        return FootstepsDetailResponseDto.builder()
+            .title(footstepsPost.getTitle())
+            .coordFX(footstepsPost.getCoordFX())
+            .coordFY(footstepsPost.getCoordFY())
+            .price(footstepsPost.getPrice())
+            .size(footstepsPost.getSize())
+            .review(footstepsPost.getReview())
+            .sun(footstepsPost.isSun())
+            .mold(footstepsPost.isMold())
+            .vent(footstepsPost.isVent())
+            .water(footstepsPost.isWater())
+            .ventil(footstepsPost.isVentil())
+            .drain(footstepsPost.isDrain())
+            .draft(footstepsPost.isDraft())
+            .extraMemo(footstepsPost.getExtraMemo())
+            .option(footstepsPost.getOption())
+            .destroy(footstepsPost.isDestroy())
+            .utiRoom(footstepsPost.isUtiRoom())
+            .securityWindow(footstepsPost.isSecurityWindow())
+            .noise(footstepsPost.isNoise())
+            .loan(footstepsPost.isLoan())
+            .cctv(footstepsPost.isCctv())
+            .hill(footstepsPost.isHill())
+            .mart(footstepsPost.isMart())
+            .hospital(footstepsPost.isHospital())
+            .accessibility(footstepsPost.isAccessibility())
+            .park(footstepsPost.isPark())
+            .createdAt(footstepsPost.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+            .YesOrNo(yesOrNo)
+            .build();
     }
 
     public List<Photo> getFootstepDetailImages(Long premisesId, UserDetailsImpl userDetails, Pageable pageable) {
