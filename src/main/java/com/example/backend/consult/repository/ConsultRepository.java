@@ -15,4 +15,10 @@ public interface ConsultRepository extends JpaRepository<Consult, Long>,ConsultR
 
     @Query(value = "SELECT * FROM Consult WHERE realtor", nativeQuery = true)
     List<Consult> findByRealtorAndAnswerState();
+    @Query("select c from Consult c where c.coordX = :coordx")
+    Object findAllByCoordX(@Param("coordx")double coordx);
+    @Query("select c from Consult c where c.coordY = :coordy")
+    Object findAllByCoordY(@Param("coordy")double coordy);
+
+    Consult findByCoordXAndCoordYAndUserId(double x, double y, Long id);
 }

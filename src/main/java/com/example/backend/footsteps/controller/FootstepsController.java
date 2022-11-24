@@ -1,5 +1,7 @@
 package com.example.backend.footsteps.controller;
 
+import com.example.backend.consult.dto.DetailConsultResponseDto;
+import com.example.backend.footsteps.dto.FootstepsDetailResponseDto;
 import com.example.backend.footsteps.dto.FootstepsRequstDto;
 import com.example.backend.footsteps.service.FootstepsService;
 import com.example.backend.global.config.auth.UserDetailsImpl;
@@ -41,6 +43,12 @@ public class FootstepsController {
     private ResponseEntity<?> getMyAdviceRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return  ResponseEntity.ok(footstepsService.getMyAdviceRequest(userDetails));
 
+    }
+    @GetMapping("/premises/{premisesId}/detail")
+    public ResponseEntity<?> getFootstepDetail(@PathVariable("premisesId") Long premisesId,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
+        FootstepsDetailResponseDto redDtos = footstepsService.getFootstepDetail(premisesId, userDetails);
+        return ResponseEntity.ok(redDtos);
     }
 
     @GetMapping("/premises/{premisesId}")
