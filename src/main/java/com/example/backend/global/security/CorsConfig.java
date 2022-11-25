@@ -13,10 +13,10 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
         config.addAllowedOriginPattern("*");
 
-        config.addAllowedOrigin("*");  // CORS 요청 허용 Site
+        config.addAllowedOrigin("http://localhost:3000");  // CORS 요청 허용 Site
+
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setMaxAge(3600L);

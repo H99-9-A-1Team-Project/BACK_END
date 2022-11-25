@@ -47,8 +47,7 @@ public class AuthService {
         validateRealtorSignUpInfo(signUpRealtorRequestDto);
         signUpRealtorRequestDto.setPassword(passwordEncoder.encode(signUpRealtorRequestDto.getPassword()));
 
-        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication", signUpRealtorRequestDto.getEmail());
-        String imageUrl = amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
+        String imageUrl = amazonS3Service.upload(multipartFile, "realtor-authentication", signUpRealtorRequestDto.getEmail());
 
         Realtor realtor = new Realtor(signUpRealtorRequestDto);
         realtor.setLicense(imageUrl);
@@ -56,11 +55,10 @@ public class AuthService {
     }
     @Transactional
     public void emailConfirm(EmailConfirmRequestDto emailConfirmRequestDto) {
-        if (!realtorRepository.findByEmail(emailConfirmRequestDto.getEmail()).isEmpty()) {
+        if (realtorRepository.findByEmail(emailConfirmRequestDto.getEmail()).isPresent()) {
             throw new MemberEmailAlreadyExistsException();
         }
     }
-
 
     private void validateMemberSignUpInfo(SignUpMemberRequestDto signUpRequestDto) {
         if (userRepository.existsByEmail(signUpRequestDto.getEmail()))

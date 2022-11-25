@@ -106,6 +106,8 @@ public class FootstepsPost {
     //주차장
     @Column
     private boolean park;
+    @Column
+    private Long expenses;
     @DateTimeFormat
     private LocalDateTime createDate; // 날짜
 

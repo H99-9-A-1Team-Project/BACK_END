@@ -2,7 +2,6 @@ package com.example.backend.consult.service;
 
 import com.example.backend.comment.model.Comment;
 import com.example.backend.comment.repository.CommentRepository;
-import com.example.backend.comment.dto.CommentResponseDto;
 import com.example.backend.consult.dto.request.PutDetailConsultRequestDto;
 import com.example.backend.consult.dto.request.RegisterConsultRequestDto;
 import com.example.backend.consult.dto.response.DetailConsultResponseDto;
@@ -22,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,21 +37,7 @@ public class ConsultService {
     @Transactional
     public void registerConsult(UserDetailsImpl userDetails, RegisterConsultRequestDto dto) {
         validAuth(userDetails);
-        Consult consult = Consult.builder()
-                .title(dto.getTitle())
-                .coordX(dto.getCoordX())
-                .coordY(dto.getCoordY())
-                .check1(dto.isCheck1())
-                .check2(dto.isCheck2())
-                .check3(dto.isCheck3())
-                .check4(dto.isCheck4())
-                .check5(dto.isCheck5())
-                .check6(dto.isCheck6())
-                .consultMessage(dto.getConsultMessage())
-                .createDate(LocalDateTime.now())
-                .user(userDetails.getUser())
-                .answerState(AnswerState.WAIT)
-                .build();
+        Consult consult = dto.toConsultDto(dto, userDetails);
         consultRepository.save(consult);
     }
 
@@ -78,33 +61,11 @@ public class ConsultService {
         validAuth(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
 
-        List<Comment> commentList = commentRepository.findAllById(consultId);
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
+        Comment comment = commentRepository.findByConsultId(consultId);
 
         List<Boolean> checkList = getConsultCheckList(consult);
 
-
-        for(Comment comment: commentList){
-        commentResponseDtos.add(
-                CommentResponseDto.builder()
-                        .nickname(comment.getRealtor().getNickname())
-                        .profile(comment.getRealtor().getProfile())
-                        .introMessage(comment.getRealtor().getIntroMessage())
-                        .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                        .answerMessage(comment.getContent())
-                        .build()
-               );
-        }
-        return DetailConsultResponseDto.builder()
-                        .Id(consult.getId())
-                        .title(consult.getTitle())
-                        .coordX(consult.getCoordX())
-                        .coordY(consult.getCoordY())
-                        .answerState(consult.getAnswerState())
-                        .checks(checkList)
-                        .comments(commentResponseDtos)
-                        .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                        .build();
+        return new DetailConsultResponseDto(consult, comment, checkList);
 
 
     }
@@ -141,33 +102,12 @@ public class ConsultService {
         consult.updateState2(dto.getAnswerState());
         consultRepository.save(consult);
         ////
-        List<Comment> commentList = commentRepository.findAllById(consultId);
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
-        for(Comment comment: commentList){
-            commentResponseDtos.add(
-                    CommentResponseDto.builder()
-                            .nickname(comment.getRealtor().getNickname())
-                            .profile(comment.getRealtor().getProfile())
-                            .introMessage(comment.getRealtor().getIntroMessage())
-                            .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                            .answerMessage(comment.getContent())
-                            .build()
-            );
-        }
-        return DetailConsultResponseDto.builder()
-                .Id(consult.getId())
-                .title(consult.getTitle())
-                .coordX(consult.getCoordX())
-                .coordY(consult.getCoordY())
-                .answerState(consult.getAnswerState())
-                .checks(checkList)
-                .comments(commentResponseDtos)
-                .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                .build();
+        Comment comment = commentRepository.findByConsultId(consultId);
+
+        return new DetailConsultResponseDto(consult,comment, checkList);
 
 
     }
-
 
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
