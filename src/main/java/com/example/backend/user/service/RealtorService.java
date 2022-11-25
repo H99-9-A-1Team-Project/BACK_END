@@ -75,13 +75,8 @@ public class RealtorService {
             return;
         }
 
-        String imageUrl = uploadImage(multipartFile, userDetails.getUser());
+        String imageUrl = amazonS3Service.upload(multipartFile, "realtor-authentication", userDetails.getUser().getEmail());
         realtor.update(realtorEditRequestDto, imageUrl);
-    }
-
-    private String uploadImage(MultipartFile multipartFile, User user) throws IOException {
-        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication", user.getEmail());
-        return amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
     }
 
     private void validAuth(UserDetailsImpl userDetails){

@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.backend.global.S3.dto.AwsS3;
+import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.exception.customexception.common.ImageNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,22 +31,17 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public AwsS3 upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
+    public String upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
         File file = convertMultipartFileToFile(multipartFile)
                 .orElseThrow( ()-> new IllegalArgumentException("파일 업로드에 실패했습니다"));
         String key = randomFileName(email, dirName);
         String path = putS3(file, key);
         file.delete();
 
-        return AwsS3
-                .builder()
-                .key(key)
-                .path(path)
-                .build();
+        return path;
     }
 
     public Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        // 일단 업로드된 파일을 프로젝트 내 폴더에 생성
         File file = new File(System.getProperty("user.dir") + "/" + multipartFile.getOriginalFilename());
 
         if (file.createNewFile()) {
@@ -67,6 +66,19 @@ public class AmazonS3Service {
 
     public String getS3(String bucket, String fileName) {
         return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    public List<String> uploadMultipleS3Photo(List<MultipartFile> multipartFile, UserDetailsImpl userDetails) throws IOException {
+        List<String> imgUrlList = new ArrayList<>();
+
+        for (MultipartFile file : multipartFile) {
+            if(multipartFile == null || multipartFile.isEmpty()){
+                throw new ImageNotFoundException();
+            }
+            String imageUrl = upload(file, "FootstepPhotos", userDetails.getUser().getEmail());
+            imgUrlList.add(imageUrl);
+        }
+        return imgUrlList;
     }
 
 

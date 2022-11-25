@@ -136,6 +136,7 @@ public class ConsultService {
         consultRepository.save(consult);
         ////
         List<Comment> commentList = commentRepository.findAllById(consultId);
+
         List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
         for(Comment comment: commentList){
             commentResponseDtos.add(

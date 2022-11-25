@@ -1,4 +1,4 @@
-package com.example.backend.global.config.S3;
+package com.example.backend.global.config.infra;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
