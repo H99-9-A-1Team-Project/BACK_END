@@ -79,6 +79,7 @@ public class ConsultService {
                             .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                             .answerMessage(comment.getContent())
                             .likeCount(comment.getLikeCount())
+                            .realtorLike(comment.getRealtor().getLikeCount())
                             .build()
             );
         }
@@ -140,6 +141,7 @@ public class ConsultService {
                             .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                             .answerMessage(comment.getContent())
                             .likeCount(comment.getLikeCount())
+                            .realtorLike(comment.getRealtor().getLikeCount())
                             .build()
             );
         }
