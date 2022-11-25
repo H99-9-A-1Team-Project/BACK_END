@@ -72,11 +72,13 @@ public class ConsultService {
         for(Comment comment: commentList){
             commentResponseDtos.add(
                     CommentResponseDto.builder()
+                            .Id(comment.getId())
                             .nickname(comment.getRealtor().getNickname())
                             .profile(comment.getRealtor().getProfile())
                             .introMessage(comment.getRealtor().getIntroMessage())
                             .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                             .answerMessage(comment.getContent())
+                            .likeCount(comment.getLikeCount())
                             .build()
             );
         }
@@ -131,11 +133,13 @@ public class ConsultService {
         for(Comment comment: commentList){
             commentResponseDtos.add(
                     CommentResponseDto.builder()
+                            .Id(comment.getId())
                             .nickname(comment.getRealtor().getNickname())
                             .profile(comment.getRealtor().getProfile())
                             .introMessage(comment.getRealtor().getIntroMessage())
                             .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                             .answerMessage(comment.getContent())
+                            .likeCount(comment.getLikeCount())
                             .build()
             );
         }
