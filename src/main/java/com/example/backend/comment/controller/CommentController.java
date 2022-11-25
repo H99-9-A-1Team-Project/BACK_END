@@ -2,7 +2,7 @@ package com.example.backend.comment.controller;
 
 import com.example.backend.comment.dto.ConsultMessageRequestDto;
 import com.example.backend.comment.service.CommentService;
-import com.example.backend.global.config.auth.UserDetailsImpl;
+import com.example.backend.global.security.auth.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -5,24 +5,22 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
-import com.example.backend.consult.dto.DetailConsultResponseDto;
 import com.example.backend.consult.repository.ConsultRepository;
-import com.example.backend.footsteps.dto.FootstepsDetailResponseDto;
-import com.example.backend.footsteps.dto.FootstepsRequstDto;
+import com.example.backend.footsteps.dto.response.FootstepsDetailResponseDto;
+import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
 import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
-import com.example.backend.global.config.S3.CommonUtils;
-import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.entity.Consult;
-import com.example.backend.global.entity.FootstepsPost;
-import com.example.backend.global.entity.Photo;
-import com.example.backend.global.exception.customexception.common.AccessDeniedException;
-import com.example.backend.global.exception.customexception.common.ImageNotFoundException;
-import com.example.backend.global.exception.customexception.common.NotFoundException;
-import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
+import com.example.backend.global.config.S3examination.CommonUtils;
+import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.consult.model.Consult;
+import com.example.backend.footsteps.model.FootstepsPost;
+import com.example.backend.consult.model.Photo;
+import com.example.backend.global.exception.customexception.AccessDeniedException;
+import com.example.backend.global.exception.customexception.ImageNotFoundException;
+import com.example.backend.global.exception.customexception.NotFoundException;
+import com.example.backend.user.exception.user.UserUnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,16 +49,12 @@ public class FootstepsService {
     @Transactional
     public void createPost(List<MultipartFile> multipartFile, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) throws IOException {
         validAuth(userDetails);
-
         List<Photo> photos = new ArrayList<>();
-
         FootstepsPost footstepsPost = saveFootStepPost(postRequestDto, userDetails);
         List<String> imgUrlList = uploadS3Photo(multipartFile);
-
         for (String imgUrl : imgUrlList) {
             photos.add(new Photo(imgUrl, footstepsPost));
         }
-
         photoRepository.saveAll(photos);
 
     }
@@ -128,14 +122,7 @@ public class FootstepsService {
 
     public List<FootstepsPost> getMyAdviceRequest(UserDetailsImpl userDetails) {
         validAuth(userDetails);
-        List<FootstepsPost> posts = footstepsRepository.findByUserInfo(userDetails.getUser().getId());
-
-        for (FootstepsPost post : posts) {
-            post.setCreateDate(LocalDateTime.parse(post.getCreateDate()
-                    .format(DateTimeFormatter.ofPattern("yyyy.MM.dd")), DateTimeFormatter.ofPattern("yyyy.MM.dd")));
-        }
-
-        return posts;
+        return footstepsRepository.findByUserInfo(userDetails.getUser().getId());
     }
     public FootstepsDetailResponseDto getFootstepDetail(Long premisesId, UserDetailsImpl userDetails) {
         validAuth(userDetails);

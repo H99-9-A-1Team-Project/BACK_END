@@ -1,14 +1,14 @@
 package com.example.backend.global.config.jwt;
 
-import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.entity.Authority;
-import com.example.backend.global.entity.Realtor;
-import com.example.backend.global.entity.User;
-import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
-import com.example.backend.global.exception.customexception.user.RealtorNotApprovedException;
-import com.example.backend.global.exception.customexception.user.RealtorNotApprovedYetException;
-import com.example.backend.global.exception.customexception.user.TokenExpiredException;
-import com.example.backend.user.dto.LoginRequestDto;
+import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.user.model.Authority;
+import com.example.backend.user.model.Realtor;
+import com.example.backend.user.model.User;
+import com.example.backend.user.exception.user.MemberNotFoundException;
+import com.example.backend.user.exception.user.RealtorNotApprovedException;
+import com.example.backend.user.exception.user.RealtorNotApprovedYetException;
+import com.example.backend.user.exception.user.TokenExpiredException;
+import com.example.backend.user.dto.request.LoginRequestDto;
 import com.example.backend.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

@@ -1,6 +1,6 @@
 package com.example.backend.consult.repository;
 
-import com.example.backend.global.entity.Consult;
+import com.example.backend.consult.model.Consult;
 
 import java.util.List;
 

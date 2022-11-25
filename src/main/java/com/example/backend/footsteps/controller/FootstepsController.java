@@ -1,12 +1,11 @@
 package com.example.backend.footsteps.controller;
 
-import com.example.backend.consult.dto.DetailConsultResponseDto;
-import com.example.backend.footsteps.dto.FootstepsDetailResponseDto;
-import com.example.backend.footsteps.dto.FootstepsRequstDto;
+import com.example.backend.footsteps.dto.response.FootstepsDetailResponseDto;
+import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
 import com.example.backend.footsteps.service.FootstepsService;
-import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.entity.FootstepsPost;
-import com.example.backend.global.response.Response;
+import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.footsteps.model.FootstepsPost;
+//import com.example.backend.global.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,11 +26,11 @@ public class FootstepsController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/premises")
-    private Response createPost(@RequestPart(required = false, value = "file") List<MultipartFile> multipartFile,
+    private ResponseEntity<?> createPost(@RequestPart(required = false, value = "file") List<MultipartFile> multipartFile,
                                 @RequestPart(value = "post") @Valid FootstepsRequstDto postRequestDto,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         footstepsService.createPost(multipartFile, postRequestDto, userDetails);
-        return Response.success();
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/premises/allpost")

@@ -1,11 +1,14 @@
 package com.example.backend.user.service;
 
-import com.example.backend.global.S3.service.AmazonS3Service;
-import com.example.backend.global.S3.dto.AwsS3;
-import com.example.backend.global.entity.Member;
-import com.example.backend.user.dto.*;
-import com.example.backend.global.entity.Realtor;
-import com.example.backend.global.exception.customexception.register.MemberEmailAlreadyExistsException;
+import com.example.backend.global.infra.S3.service.AmazonS3Service;
+import com.example.backend.global.infra.S3.dto.AwsS3;
+//import com.example.backend.global.response.Response;
+import com.example.backend.user.dto.request.EmailConfirmRequestDto;
+import com.example.backend.user.dto.request.SignUpMemberRequestDto;
+import com.example.backend.user.dto.request.SignUpRealtorRequestDto;
+import com.example.backend.user.model.Member;
+import com.example.backend.user.model.Realtor;
+import com.example.backend.user.exception.register.MemberEmailAlreadyExistsException;
 import com.example.backend.user.repository.RealtorRepository;
 import com.example.backend.user.repository.UserRepository;
 
@@ -50,6 +53,12 @@ public class AuthService {
         Realtor realtor = new Realtor(signUpRealtorRequestDto);
         realtor.setLicense(imageUrl);
         realtorRepository.save(realtor);
+    }
+    @Transactional
+    public void emailConfirm(EmailConfirmRequestDto emailConfirmRequestDto) {
+        if (!realtorRepository.findByEmail(emailConfirmRequestDto.getEmail()).isEmpty()) {
+            throw new MemberEmailAlreadyExistsException();
+        }
     }
 
 
