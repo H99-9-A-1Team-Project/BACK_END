@@ -3,15 +3,15 @@ package com.example.backend.user.model;
 import com.example.backend.user.dto.request.RealtorApproveRequestDto;
 import com.example.backend.user.dto.request.RealtorEditRequestDto;
 import com.example.backend.user.dto.request.SignUpRealtorRequestDto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class Realtor extends User {
 
@@ -20,7 +20,7 @@ public class Realtor extends User {
     private String introMessage;
 
     @Column
-    private Long accountCheck;
+    private AccountCheck accountCheck;
 
     @Column
     private String license;
@@ -32,7 +32,7 @@ public class Realtor extends User {
     public Realtor(SignUpRealtorRequestDto dto) {
         super(dto);
         this.license = dto.getLicense();
-        this.accountCheck = 0L;
+        this.accountCheck = AccountCheck.APPROVE_WAIT;
     }
 
     public void update(RealtorApproveRequestDto dto) {

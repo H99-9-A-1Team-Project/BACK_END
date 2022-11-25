@@ -1,9 +1,13 @@
 package com.example.backend.user.dto.request;
 
-import lombok.Data;
+import com.example.backend.user.model.AccountCheck;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class RealtorApproveRequestDto {
-    private Long accountCheck;
+    private AccountCheck accountCheck;
     private String email;
 }
