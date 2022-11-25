@@ -30,7 +30,7 @@ public class UserController {
     @PutMapping("/user/profile")
     public ResponseEntity<?> editUserNickname(@RequestBody editUserInfoRequestDto nicknameRequestDto,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
-        userService.editUserNickname(nicknameRequestDto, userDetails);
+        userService.editUserProfile(nicknameRequestDto, userDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

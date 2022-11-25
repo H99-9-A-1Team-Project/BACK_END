@@ -1,5 +1,6 @@
 package com.example.backend.user.dto.response;
 
+import com.example.backend.user.model.AccountCheck;
 import com.example.backend.user.model.Realtor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ public class RealtorListResponseDto {
     private String nickname;
     private String createDate;
     private String license;
-    private Long accountCheck;
+    private AccountCheck accountCheck;
 
     public RealtorListResponseDto(Realtor realtor) {
         this.email = realtor.getEmail();

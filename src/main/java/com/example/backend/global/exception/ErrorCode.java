@@ -42,7 +42,6 @@ public enum ErrorCode {
     PREMISE_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 공인중개사입니다.");
 
 
-
     private HttpStatus status;
     private String code;
     private String message;

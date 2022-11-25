@@ -1,6 +1,7 @@
 package com.example.backend.global.config.jwt;
 
 import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.user.model.AccountCheck;
 import com.example.backend.user.model.Authority;
 import com.example.backend.user.model.Realtor;
 import com.example.backend.user.model.User;
@@ -86,9 +87,9 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         User user = userDetails.getUser();
         if(user.getAuthority() == Authority.ROLE_REALTOR){
             Realtor realtor = (Realtor) user;
-            if(realtor.getAccountCheck() == 0) {
+            if(realtor.getAccountCheck() == AccountCheck.APPROVE_WAIT) {
                 throw new RealtorNotApprovedYetException();
-            } else if (realtor.getAccountCheck() == 2) {
+            } else if (realtor.getAccountCheck() == AccountCheck.APPROVE_COMPLETE) {
                 throw new RealtorNotApprovedException();
             }
         }
