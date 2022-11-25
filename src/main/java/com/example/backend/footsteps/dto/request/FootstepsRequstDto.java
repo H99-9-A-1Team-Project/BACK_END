@@ -1,9 +1,13 @@
 package com.example.backend.footsteps.dto.request;
 
+import com.example.backend.footsteps.model.FootstepsPost;
+import com.example.backend.global.security.auth.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -62,4 +66,37 @@ public class FootstepsRequstDto {
     private boolean accessibility;
     //주차장
     private boolean park;
+    public FootstepsPost toFootstepsPost(FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
+
+        return FootstepsPost.builder()
+                .title(postRequestDto.getTitle())
+                .coordFY(postRequestDto.getCoordFY())
+                .coordFX(postRequestDto.getCoordFX())
+                .price(postRequestDto.getPrice())
+                .size(postRequestDto.getSize())
+                .review(postRequestDto.getReview())
+                .sun(postRequestDto.isSun())
+                .mold(postRequestDto.isMold())
+                .vent(postRequestDto.isVent())
+                .water(postRequestDto.isWater())
+                .ventil(postRequestDto.isVentil())
+                .drain(postRequestDto.isDrain())
+                .draft(postRequestDto.isDraft())
+                .extraMemo(postRequestDto.getExtraMemo())
+                .option(postRequestDto.getOption())
+                .destroy(postRequestDto.isDestroy())
+                .utiRoom(postRequestDto.isUtiRoom())
+                .securityWindow(postRequestDto.isSecurityWindow())
+                .noise(postRequestDto.isNoise())
+                .loan(postRequestDto.isLoan())
+                .cctv(postRequestDto.isCctv())
+                .hill(postRequestDto.isHill())
+                .mart(postRequestDto.isMart())
+                .hospital(postRequestDto.isHospital())
+                .accessibility(postRequestDto.isAccessibility())
+                .park(postRequestDto.isPark())
+                .createDate(LocalDateTime.now())
+                .user(userDetails.getUser())
+                .build();
+    }
 }

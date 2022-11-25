@@ -65,10 +65,34 @@ public class FootstepsDetailResponseDto {
 
     private String createdAt;
     private boolean YesOrNo;
-
-    public void FootstepsResponseDto(FootstepsPost footstepsPost){
+    public FootstepsDetailResponseDto(FootstepsPost footstepsPost, boolean yesOrNo){
+     this.title = footstepsPost.getTitle();
         this.title = footstepsPost.getTitle();
-        this.coordFX = footstepsPost.getCoordFX();
         this.coordFY = footstepsPost.getCoordFY();
+        this.coordFX = footstepsPost.getCoordFX();
+        this.price = footstepsPost.getPrice();
+        this.size = footstepsPost.getSize();
+        this.sun = footstepsPost.isSun();
+        this.mold = footstepsPost.isMold();
+        this.vent = footstepsPost.isVent();
+        this.water = footstepsPost.isWater();
+        this.ventil = footstepsPost.isVentil();
+        this.drain = footstepsPost.isDrain();
+        this.draft = footstepsPost.isDraft();
+        this.extraMemo = footstepsPost.getExtraMemo();
+        this.option = footstepsPost.getOption();
+        this.utiRoom = footstepsPost.isUtiRoom();
+        this.securityWindow = footstepsPost.isSecurityWindow();
+        this.noise = footstepsPost.isNoise();
+        this.loan = footstepsPost.isLoan();
+        this.cctv = footstepsPost.isCctv();
+        this.hill = footstepsPost.isHill();
+        this.mart = footstepsPost.isMart();
+        this.hospital = footstepsPost.isHospital();
+        this.accessibility = footstepsPost.isAccessibility();
+        this.park = footstepsPost.isPark();
+        this.createdAt = footstepsPost.getTitle();
+        this.YesOrNo = yesOrNo;
+
     }
 }

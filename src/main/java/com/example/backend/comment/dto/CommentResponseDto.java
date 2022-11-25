@@ -10,6 +10,8 @@ import lombok.Getter;
 
 import java.time.format.DateTimeFormatter;
 
+//import java.time.format.DateTimeFormatter;
+
 @Builder
 @AllArgsConstructor
 @Getter
@@ -24,11 +26,14 @@ public class CommentResponseDto {
     private String introMessage;
     private String createdAt;
 
-    public CommentResponseDto(Realtor realtor, Comment comment){
-        this.profile = realtor.getProfile();
-        this.introMessage = realtor.getIntroMessage();
-        this.content = comment.getContent();
-        this.nickname = comment.getRealtor().getNickname();
-        this.createdAt = comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+    private CommentResponseDto toResponseDto(Comment comment){
+        return CommentResponseDto.builder()
+                .nickname(comment.getRealtor().getNickname())
+                .profile(comment.getRealtor().getProfile())
+                .introMessage(comment.getRealtor().getIntroMessage())
+                .createdAt(comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                .answerMessage(comment.getContent())
+                .build();
     }
+
 }

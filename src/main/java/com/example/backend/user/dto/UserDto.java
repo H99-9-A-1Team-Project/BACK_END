@@ -13,8 +13,5 @@ public class UserDto {
     private String email; // 로그인 아이디
     private String Nickname; // 유저 실명
 
-    public static UserDto toDto(User user) {
-        return new UserDto(user.getId(), user.getEmail(), user.getNickname());
-    }
 
 }

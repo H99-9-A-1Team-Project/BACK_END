@@ -81,39 +81,10 @@ public class FootstepsService {
     }
 
     private FootstepsPost saveFootStepPost(FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
-        FootstepsPost footstepsPost = FootstepsPost.builder()
-                .title(postRequestDto.getTitle())
-                .coordFY(postRequestDto.getCoordFY())
-                .coordFX(postRequestDto.getCoordFX())
-                .price(postRequestDto.getPrice())
-                .size(postRequestDto.getSize())
-                .review(postRequestDto.getReview())
-                .sun(postRequestDto.isSun())
-                .mold(postRequestDto.isMold())
-                .vent(postRequestDto.isVent())
-                .water(postRequestDto.isWater())
-                .ventil(postRequestDto.isVentil())
-                .drain(postRequestDto.isDrain())
-                .draft(postRequestDto.isDraft())
-                .extraMemo(postRequestDto.getExtraMemo())
-                .option(postRequestDto.getOption())
-                .destroy(postRequestDto.isDestroy())
-                .utiRoom(postRequestDto.isUtiRoom())
-                .securityWindow(postRequestDto.isSecurityWindow())
-                .noise(postRequestDto.isNoise())
-                .loan(postRequestDto.isLoan())
-                .cctv(postRequestDto.isCctv())
-                .hill(postRequestDto.isHill())
-                .mart(postRequestDto.isMart())
-                .hospital(postRequestDto.isHospital())
-                .accessibility(postRequestDto.isAccessibility())
-                .park(postRequestDto.isPark())
-                .createDate(LocalDateTime.now())
-                .user(userDetails.getUser())
-                .build();
+        FootstepsPost footstepsPost = postRequestDto.toFootstepsPost(postRequestDto, userDetails);
         footstepsRepository.save(footstepsPost);
         return footstepsPost;
-    }
+        }
 
     public List<FootstepsPost> getMyPosts(UserDetailsImpl userDetails) {
         validAuth(userDetails);
@@ -137,36 +108,7 @@ public class FootstepsService {
         if(consult != null)
              yesOrNo= true;
 
-        return FootstepsDetailResponseDto.builder()
-            .title(footstepsPost.getTitle())
-            .coordFX(footstepsPost.getCoordFX())
-            .coordFY(footstepsPost.getCoordFY())
-            .price(footstepsPost.getPrice())
-            .size(footstepsPost.getSize())
-            .review(footstepsPost.getReview())
-            .sun(footstepsPost.isSun())
-            .mold(footstepsPost.isMold())
-            .vent(footstepsPost.isVent())
-            .water(footstepsPost.isWater())
-            .ventil(footstepsPost.isVentil())
-            .drain(footstepsPost.isDrain())
-            .draft(footstepsPost.isDraft())
-            .extraMemo(footstepsPost.getExtraMemo())
-            .option(footstepsPost.getOption())
-            .destroy(footstepsPost.isDestroy())
-            .utiRoom(footstepsPost.isUtiRoom())
-            .securityWindow(footstepsPost.isSecurityWindow())
-            .noise(footstepsPost.isNoise())
-            .loan(footstepsPost.isLoan())
-            .cctv(footstepsPost.isCctv())
-            .hill(footstepsPost.isHill())
-            .mart(footstepsPost.isMart())
-            .hospital(footstepsPost.isHospital())
-            .accessibility(footstepsPost.isAccessibility())
-            .park(footstepsPost.isPark())
-            .createdAt(footstepsPost.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-            .YesOrNo(yesOrNo)
-            .build();
+        return new FootstepsDetailResponseDto(footstepsPost,yesOrNo);
     }
 
     public List<Photo> getFootstepDetailImages(Long premisesId, UserDetailsImpl userDetails, Pageable pageable) {
