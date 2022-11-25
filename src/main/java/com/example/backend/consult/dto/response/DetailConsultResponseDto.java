@@ -1,9 +1,11 @@
 package com.example.backend.consult.dto.response;
 
+import com.example.backend.comment.dto.CommentResponseDto;
 import com.example.backend.comment.model.Comment;
 import com.example.backend.consult.model.AnswerState;
 import com.example.backend.consult.model.Consult;
 import com.example.backend.like.model.Like;
+import com.example.backend.user.model.Realtor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,18 +29,8 @@ public class DetailConsultResponseDto {
 
     private AnswerState answerState;
     private String createdAt;
-    private List<Comment> comments;
+    private List<CommentResponseDto> comments;
 
 
-    public DetailConsultResponseDto(Consult consult, List<Comment> comments, List<Boolean> checks){
-        this.Id = consult.getId();
-        this.title = consult.getTitle();
-        this.coordY = consult.getCoordY();
-        this.coordX = consult.getCoordX();
-        this.answerState = consult.getAnswerState();
-        this.checks = checks;
-        this.comments = comments;
-        this.createdAt = consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
-
-    }
 }
+
