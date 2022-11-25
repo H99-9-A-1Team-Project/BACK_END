@@ -1,8 +1,16 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+}
 plugins {
     id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'java'
+    //querydsl plugins 추가
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
+
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -24,8 +32,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-//    runtimeOnly 'com.mysql:mysql-connector-j'
+	// runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -35,10 +43,51 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-    //s3
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation("com.auth0:java-jwt:3.16.0")
+    // s3
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.2'
+
+    // mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+//    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.964'
+//    runtimeOnly group: 'org.springframework.cloud', name: 'spring-cloud-dependencies', version: 'Hoxton.SR10', ext: 'pom'
+//    implementation group: 'org.apache.tika', name: 'tika-parsers', version: '1.25'
+// querydsl
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jar {
+    enabled = false
+}
+/*
+* queryDSL 설정 추가
+*/
+// querydsl에서 사용할 경로 설정
+def querydslDir = "$buildDir/generated/querydsl"
+// JPA 사용 여부와 사용할 경로를 설정
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+// build 시 사용할 sourceSet 추가
+sourceSets {
+    main.java.srcDir querydslDir
+}
+// querydsl 컴파일시 사용할 옵션 설정
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+// querydsl 이 compileClassPath 를 상속하도록 설정
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
 }
