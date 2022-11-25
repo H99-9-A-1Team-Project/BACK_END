@@ -1,9 +1,13 @@
 package com.example.backend.footsteps.dto.request;
 
+import com.example.backend.footsteps.model.FootstepsPost;
+import com.example.backend.global.security.auth.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 
 @Getter
