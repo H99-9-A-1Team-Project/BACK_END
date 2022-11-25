@@ -66,6 +66,7 @@ public class FootstepsRequstDto {
     private boolean accessibility;
     //주차장
     private boolean park;
+    private Long expenses;
     public FootstepsPost toFootstepsPost(FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
 
         return FootstepsPost.builder()
@@ -97,6 +98,7 @@ public class FootstepsRequstDto {
                 .park(postRequestDto.isPark())
                 .createDate(LocalDateTime.now())
                 .user(userDetails.getUser())
+                .expenses(postRequestDto.expenses)
                 .build();
     }
 }

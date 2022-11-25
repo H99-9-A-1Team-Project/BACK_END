@@ -65,6 +65,7 @@ public class FootstepsDetailResponseDto {
 
     private String createdAt;
     private boolean YesOrNo;
+    private Long expenses;
     public FootstepsDetailResponseDto(FootstepsPost footstepsPost, boolean yesOrNo){
      this.title = footstepsPost.getTitle();
         this.title = footstepsPost.getTitle();
@@ -92,6 +93,7 @@ public class FootstepsDetailResponseDto {
         this.accessibility = footstepsPost.isAccessibility();
         this.park = footstepsPost.isPark();
         this.createdAt = footstepsPost.getTitle();
+        this.expenses =footstepsPost.getExpenses();
         this.YesOrNo = yesOrNo;
 
     }
