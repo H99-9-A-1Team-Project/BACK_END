@@ -89,7 +89,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             Realtor realtor = (Realtor) user;
             if(realtor.getAccountCheck() == AccountCheck.APPROVE_WAIT) {
                 throw new RealtorNotApprovedYetException();
-            } else if (realtor.getAccountCheck() == AccountCheck.APPROVE_COMPLETE) {
+            } else if (realtor.getAccountCheck() == AccountCheck.APPROVE_REJECT) {
                 throw new RealtorNotApprovedException();
             }
         }
