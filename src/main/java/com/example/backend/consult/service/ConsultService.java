@@ -61,13 +61,11 @@ public class ConsultService {
         validAuth(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow();
 
-        Comment comment = commentRepository.findByConsultId(consultId);
+        List<Comment> comments = commentRepository.findByConsultId(consultId);
 
         List<Boolean> checkList = getConsultCheckList(consult);
 
-        return new DetailConsultResponseDto(consult, comment, checkList);
-
-
+        return new DetailConsultResponseDto(consult, comments, checkList);
     }
 
     private static List<Boolean> getConsultCheckList(Consult consult) {
@@ -102,7 +100,7 @@ public class ConsultService {
         consult.updateState2(dto.getAnswerState());
         consultRepository.save(consult);
         ////
-        Comment comment = commentRepository.findByConsultId(consultId);
+        List<Comment> comment = commentRepository.findByConsultId(consultId);
 
         return new DetailConsultResponseDto(consult,comment, checkList);
 

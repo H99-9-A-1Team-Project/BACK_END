@@ -29,7 +29,7 @@ public class Realtor extends User {
     private String profile;
 
     @Column
-    private Long likeCount = 0L;
+    private Long likeCount;
 
     public Realtor(SignUpRealtorRequestDto dto) {
         super(dto);

@@ -2,6 +2,7 @@ package com.example.backend.comment.model;
 
 import com.example.backend.consult.model.Consult;
 import com.example.backend.user.model.Realtor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,14 +30,15 @@ public class Comment {
     @Lob
     private String content;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "realtor_id",nullable = false)
     private Realtor realtor;
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consult_id", nullable = false)
     private Consult consult;
-    
+
     @DateTimeFormat
     private LocalDateTime createdAt; // 날짜
     @Column
