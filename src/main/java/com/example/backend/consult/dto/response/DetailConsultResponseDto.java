@@ -3,6 +3,7 @@ package com.example.backend.consult.dto.response;
 import com.example.backend.comment.model.Comment;
 import com.example.backend.consult.model.AnswerState;
 import com.example.backend.consult.model.Consult;
+import com.example.backend.like.model.Like;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -25,18 +27,18 @@ public class DetailConsultResponseDto {
 
     private AnswerState answerState;
     private String createdAt;
-    private Comment comments;
+    private List<Comment> comments;
 
-public DetailConsultResponseDto(Consult consult, Comment comments, List<Boolean> checks){
-    DetailConsultResponseDto.builder()
-            .Id(consult.getId())
-            .title(consult.getTitle())
-            .coordX(consult.getCoordX())
-            .coordY(consult.getCoordY())
-            .answerState(consult.getAnswerState())
-            .checks(checks)
-            .comments(comments)
-            .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-            .build();
-}
+
+    public DetailConsultResponseDto(Consult consult, List<Comment> comments, List<Boolean> checks){
+        this.Id = consult.getId();
+        this.title = consult.getTitle();
+        this.coordY = consult.getCoordY();
+        this.coordX = consult.getCoordX();
+        this.answerState = consult.getAnswerState();
+        this.checks = checks;
+        this.comments = comments;
+        this.createdAt = consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+
+    }
 }

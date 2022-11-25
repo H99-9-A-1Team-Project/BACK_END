@@ -83,6 +83,7 @@ public class Consult {
         this.answerState = AnswerState.FINISH;
     }
 
+
     public boolean checkOwnerByUserId(UserDetailsImpl userDetails) {
         return this.user.getEmail().equals(userDetails.getUser().getEmail());
     }
