@@ -32,8 +32,6 @@ public class CommentService {
     private final ConsultRepository consultRepository;
     private final CommentRepository commentRepository;
     private final AmazonS3Service amazonS3Service;
-    @Value("${cloud.aws.credentials.domain}")
-    private String amazonS3Domain;
 
     @Transactional
     public ImageResponseDto registerConsultCommentImg(UserDetailsImpl userDetails, MultipartFile multipartFile) throws IOException {
@@ -43,9 +41,8 @@ public class CommentService {
             throw new ImageNotFoundException();
         }
 
-        AwsS3 image = amazonS3Service.upload(multipartFile, "CommentAnswerPhotos", userDetails.getUser().getEmail());
-        String imgUrl = amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
-        return new ImageResponseDto(imgUrl);
+        String imageUrl = amazonS3Service.upload(multipartFile, "CommentAnswerPhotos", userDetails.getUser().getEmail());
+        return new ImageResponseDto(imageUrl);
     }
 
     @Transactional

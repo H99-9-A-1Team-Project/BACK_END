@@ -3,7 +3,9 @@ package com.example.backend.global.infra.S3.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.backend.global.exception.customexception.ImageNotFoundException;
 import com.example.backend.global.infra.S3.dto.AwsS3;
+import com.example.backend.global.security.auth.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,18 +28,14 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public AwsS3 upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
+    public String upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
         File file = convertMultipartFileToFile(multipartFile)
                 .orElseThrow( ()-> new IllegalArgumentException("파일 업로드에 실패했습니다"));
         String key = randomFileName(email, dirName);
         String path = putS3(file, key);
         file.delete();
 
-        return AwsS3
-                .builder()
-                .key(key)
-                .path(path)
-                .build();
+        return path;
     }
 
     public Optional<File> convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
@@ -66,5 +66,16 @@ public class AmazonS3Service {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
+    public List<String> uploadMultipleS3Photo(List<MultipartFile> multipartFile, UserDetailsImpl userDetails) throws IOException {
+        List<String> imgUrlList = new ArrayList<>();
 
+        for (MultipartFile file : multipartFile) {
+            if(multipartFile == null || multipartFile.isEmpty()){
+                throw new ImageNotFoundException();
+            }
+            String imageUrl = upload(file, "FootstepPhotos", userDetails.getUser().getEmail());
+            imgUrlList.add(imageUrl);
+        }
+        return imgUrlList;
+    }
 }
