@@ -30,7 +30,6 @@ public class Comment {
     @Lob
     private String content;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "realtor_id",nullable = false)
     private Realtor realtor;
