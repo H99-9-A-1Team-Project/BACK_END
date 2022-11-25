@@ -27,6 +27,7 @@ public class CommentResponseDto {
     private String introMessage;
     private String createdAt;
     private Long likeCount;
+    private Long realtorLike;
 
     private CommentResponseDto toResponseDto(Comment comment){
         return CommentResponseDto.builder()
