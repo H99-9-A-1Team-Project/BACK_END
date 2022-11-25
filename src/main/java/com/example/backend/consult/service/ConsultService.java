@@ -109,7 +109,6 @@ public class ConsultService {
 
     }
 
-
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
     }

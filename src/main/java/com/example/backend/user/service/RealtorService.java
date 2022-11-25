@@ -7,6 +7,7 @@ import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.user.dto.request.RealtorApproveRequestDto;
 import com.example.backend.user.dto.request.RealtorEditRequestDto;
 import com.example.backend.user.dto.response.RealtorListResponseDto;
+import com.example.backend.user.model.AccountCheck;
 import com.example.backend.user.model.Authority;
 import com.example.backend.user.model.Realtor;
 import com.example.backend.user.model.User;
@@ -52,9 +53,9 @@ public class RealtorService {
     private void sendApproveResultEmail(RealtorApproveRequestDto dto, Realtor realtor) {
         MailDto mail = new MailDto(realtor.getEmail());
 
-        Long accountCheck = dto.getAccountCheck();
-        if(accountCheck == 1) { mail.setRealtorApproveMessage(); }
-        else if (accountCheck == 2) { mail.setRealtorRejectMessage(); }
+        AccountCheck accountCheck = dto.getAccountCheck();
+        if(accountCheck == AccountCheck.APPROVE_COMPLETE) { mail.setRealtorApproveMessage(); }
+        else if (accountCheck == AccountCheck.APPROVE_REJECT) { mail.setRealtorRejectMessage(); }
 
         mailService.sendSimpleMessage(mail);
     }
@@ -77,14 +78,10 @@ public class RealtorService {
             return;
         }
 
-        String imageUrl = uploadImage(multipartFile, userDetails.getUser());
+        String imageUrl = amazonS3Service.upload(multipartFile, "realtor-authentication", userDetails.getUser().getEmail());
         realtor.update(realtorEditRequestDto, imageUrl);
     }
 
-    private String uploadImage(MultipartFile multipartFile, User user) throws IOException {
-        AwsS3 image = amazonS3Service.upload(multipartFile, "realtor-authentication", user.getEmail());
-        return amazonS3Domain + URLEncoder.encode(image.getKey(), StandardCharsets.US_ASCII);
-    }
 
     private void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null)
