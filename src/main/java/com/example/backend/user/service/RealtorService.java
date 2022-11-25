@@ -1,18 +1,20 @@
 package com.example.backend.user.service;
 
 
-import com.example.backend.global.S3.dto.AwsS3;
-import com.example.backend.global.S3.service.AmazonS3Service;
-import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.entity.Authority;
-import com.example.backend.global.entity.Realtor;
-import com.example.backend.global.entity.User;
-import com.example.backend.global.exception.customexception.common.AccessDeniedException;
-import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
-import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
-import com.example.backend.mail.MailDto;
-import com.example.backend.mail.MailService;
-import com.example.backend.user.dto.*;
+import com.example.backend.global.infra.S3.dto.AwsS3;
+import com.example.backend.global.infra.S3.service.AmazonS3Service;
+import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.user.dto.request.RealtorApproveRequestDto;
+import com.example.backend.user.dto.request.RealtorEditRequestDto;
+import com.example.backend.user.dto.response.RealtorListResponseDto;
+import com.example.backend.user.model.Authority;
+import com.example.backend.user.model.Realtor;
+import com.example.backend.user.model.User;
+import com.example.backend.global.exception.customexception.AccessDeniedException;
+import com.example.backend.user.exception.user.MemberNotFoundException;
+import com.example.backend.user.exception.user.UserUnauthorizedException;
+import com.example.backend.global.util.mail.MailDto;
+import com.example.backend.global.util.mail.MailService;
 import com.example.backend.user.repository.RealtorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +40,7 @@ public class RealtorService {
     private String amazonS3Domain;
 
     @Transactional
-    public void approveRealtor(RealtorApproveDto dto, UserDetailsImpl userDetails) {
+    public void approveRealtor(RealtorApproveRequestDto dto, UserDetailsImpl userDetails) {
         validateManager(userDetails);
 
         Realtor realtor = realtorRepository.findByEmail(dto.getEmail()).orElseThrow(MemberNotFoundException::new);
@@ -47,7 +49,7 @@ public class RealtorService {
         sendApproveResultEmail(dto, realtor);
     }
 
-    private void sendApproveResultEmail(RealtorApproveDto dto, Realtor realtor) {
+    private void sendApproveResultEmail(RealtorApproveRequestDto dto, Realtor realtor) {
         MailDto mail = new MailDto(realtor.getEmail());
 
         Long accountCheck = dto.getAccountCheck();

@@ -1,18 +1,13 @@
 package com.example.backend.user.controller;
 
-import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.response.Response;
-import com.example.backend.user.dto.SignUpMemberRequestDto;
-import com.example.backend.user.dto.SignUpRealtorRequestDto;
-import com.example.backend.user.dto.SignUpRequestDto;
-import com.example.backend.user.repository.UserRepository;
+//import com.example.backend.global.response.Response;
+import com.example.backend.user.dto.request.EmailConfirmRequestDto;
+import com.example.backend.user.dto.request.SignUpMemberRequestDto;
+import com.example.backend.user.dto.request.SignUpRealtorRequestDto;
 import com.example.backend.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +15,7 @@ import javax.validation.Valid;
 
 import java.io.IOException;
 
-import static com.example.backend.global.response.Response.success;
+//import static com.example.backend.global.response.Response.success;
 
 
 @RequiredArgsConstructor
@@ -32,16 +27,22 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
-    public Response memberSignup(@Valid @RequestBody SignUpMemberRequestDto signUpMemberRequestDto) {
+    public ResponseEntity<?> memberSignup(@Valid @RequestBody SignUpMemberRequestDto signUpMemberRequestDto) {
         authService.memberSignUp(signUpMemberRequestDto);
-        return success();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/realtor/signup")
-    public Response relatorSignup(@RequestPart(value = "content") SignUpRealtorRequestDto signUpRealtorRequestDto,
+    public ResponseEntity<?> relatorSignup(@RequestPart(value = "content") SignUpRealtorRequestDto signUpRealtorRequestDto,
                                   @RequestPart(value = "license") MultipartFile multipartFile) throws IOException {
         authService.realtorSignUp(signUpRealtorRequestDto, multipartFile);
-        return success();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/emailconfirm")
+    public ResponseEntity<?> emailConfirm(@RequestBody EmailConfirmRequestDto emailConfirmRequestDto){
+        authService.emailConfirm(emailConfirmRequestDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

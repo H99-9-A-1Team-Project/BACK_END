@@ -1,13 +1,9 @@
 package com.example.backend.global.config.jwt;
 
-import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.config.auth.UserDetailsServiceImpl;
-import com.example.backend.global.exception.ErrorResponse;
-import com.example.backend.global.exception.customexception.user.TokenExpiredException;
+import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.global.security.auth.UserDetailsServiceImpl;
+import com.example.backend.user.exception.user.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

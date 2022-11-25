@@ -1,18 +1,24 @@
 package com.example.backend.consult.service;
 
+import com.example.backend.comment.model.Comment;
 import com.example.backend.comment.repository.CommentRepository;
-import com.example.backend.consult.dto.*;
 import com.example.backend.comment.dto.CommentResponseDto;
-import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.entity.*;
+import com.example.backend.consult.dto.request.PutDetailConsultRequestDto;
+import com.example.backend.consult.dto.request.RegisterConsultRequestDto;
+import com.example.backend.consult.dto.response.DetailConsultResponseDto;
+import com.example.backend.consult.dto.response.RepliedConsultResponseDto;
+import com.example.backend.consult.dto.response.UserAllConsultResponseDto;
+import com.example.backend.consult.model.AnswerState;
+import com.example.backend.consult.model.Consult;
+import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.consult.repository.ConsultRepository;
-import com.example.backend.global.exception.customexception.common.AccessDeniedException;
-import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
-import com.example.backend.global.exception.customexception.user.UserUnauthorizedException;
+import com.example.backend.global.exception.customexception.AccessDeniedException;
+import com.example.backend.user.exception.user.MemberNotFoundException;
+import com.example.backend.user.exception.user.UserUnauthorizedException;
+import com.example.backend.user.model.Authority;
+import com.example.backend.user.model.Realtor;
 import com.example.backend.user.repository.RealtorRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +38,7 @@ public class ConsultService {
     private final RealtorRepository realtorRepository;
 
     @Transactional
-    public void registerConsult(UserDetailsImpl userDetails, RegisterConsultDto dto) {
+    public void registerConsult(UserDetailsImpl userDetails, RegisterConsultRequestDto dto) {
         validAuth(userDetails);
         Consult consult = Consult.builder()
                 .title(dto.getTitle())

@@ -1,6 +1,6 @@
 package com.example.backend.user.dto;
 
-import com.example.backend.global.entity.User;
+import com.example.backend.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

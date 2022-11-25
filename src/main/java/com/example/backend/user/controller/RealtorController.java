@@ -1,9 +1,9 @@
 package com.example.backend.user.controller;
 
 
-import com.example.backend.global.config.auth.UserDetailsImpl;
-import com.example.backend.global.response.Response;
-import com.example.backend.user.dto.*;
+import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.user.dto.request.RealtorApproveRequestDto;
+import com.example.backend.user.dto.request.RealtorEditRequestDto;
 import com.example.backend.user.service.RealtorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,10 +23,10 @@ public class RealtorController {
 
     // realtor 회원가입 승인 여부 수정 (관리자 권한)
     @PutMapping("/realtor-approval")
-    public ResponseEntity approveRealtor(@RequestBody RealtorApproveDto dto,
+    public ResponseEntity<?> approveRealtor(@RequestBody RealtorApproveRequestDto dto,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         realtorService.approveRealtor(dto, userDetails);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // realtor 회원가입 요청 목록 조회 (관리자 권한)

@@ -1,12 +1,11 @@
 package com.example.backend.global.config.jwt;
 
-import com.example.backend.global.exception.CustomException;
 import com.example.backend.global.exception.ErrorCode;
 import com.example.backend.global.exception.ErrorResponse;
-import com.example.backend.global.exception.customexception.user.MemberNotFoundException;
-import com.example.backend.global.exception.customexception.user.RealtorNotApprovedException;
-import com.example.backend.global.exception.customexception.user.RealtorNotApprovedYetException;
-import com.example.backend.global.exception.customexception.user.TokenExpiredException;
+import com.example.backend.user.exception.user.MemberNotFoundException;
+import com.example.backend.user.exception.user.RealtorNotApprovedException;
+import com.example.backend.user.exception.user.RealtorNotApprovedYetException;
+import com.example.backend.user.exception.user.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

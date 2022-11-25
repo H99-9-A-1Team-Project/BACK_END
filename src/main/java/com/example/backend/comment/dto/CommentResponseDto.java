@@ -1,7 +1,7 @@
 package com.example.backend.comment.dto;
 
-import com.example.backend.global.entity.Comment;
-import com.example.backend.global.entity.Realtor;
+import com.example.backend.comment.model.Comment;
+import com.example.backend.user.model.Realtor;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
