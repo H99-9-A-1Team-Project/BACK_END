@@ -24,9 +24,8 @@ import java.util.List;
 public class FootstepsController {
     private final FootstepsService footstepsService;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/premises")
-    private ResponseEntity<?> createPost(@RequestPart(required = false, value = "file") List<MultipartFile> multipartFile,
+    private ResponseEntity<?> createPost(@RequestParam(required = false, value = "file") List<MultipartFile> multipartFile,
                                 @RequestPart(value = "post") @Valid FootstepsRequstDto postRequestDto,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         footstepsService.createPost(multipartFile, postRequestDto, userDetails);
