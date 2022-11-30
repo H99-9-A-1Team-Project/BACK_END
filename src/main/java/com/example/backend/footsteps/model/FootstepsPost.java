@@ -34,7 +34,8 @@ public class FootstepsPost {
     @JsonIgnore
     @OneToMany(mappedBy = "footstepsPost",fetch = FetchType.LAZY)
     private List<Photo> photos= new ArrayList<>();
-    //제목
+
+    @Column
     private String title;
 
     @Column
