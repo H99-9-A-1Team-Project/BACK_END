@@ -5,6 +5,8 @@ import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
 import com.example.backend.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -26,13 +28,14 @@ public class FootstepsPost {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
     @JsonIgnore
     @OneToMany(mappedBy = "footstepsPost",fetch = FetchType.LAZY)
     private List<Photo> photos= new ArrayList<>();
-    //제목
+
     @Column
     private String title;
 

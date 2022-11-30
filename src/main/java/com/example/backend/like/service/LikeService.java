@@ -14,12 +14,12 @@ import com.example.backend.user.model.Authority;
 import com.example.backend.user.model.Realtor;
 import com.example.backend.user.repository.RealtorRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class LikeService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
@@ -28,12 +28,13 @@ public class LikeService {
     public void likeComment(Long id, UserDetailsImpl userDetails) {
         validUser(userDetails);
         Comment comment = commentRepository.findById(id).orElseThrow(ConsultNotFoundException::new);
-        Like like = likeRepository.findByUserAndComment(userDetails.getUser().getId(), comment);
+        Like like = likeRepository.findByUserIdAndComment(userDetails.getUser().getId(), comment);
         Realtor realtor = comment.getRealtor();
         if(like == null){
             comment.update(comment.getLikeCount() + 1);
             realtor.update(realtor.getLikeCount() + 1);
-            likeRepository.save(new Like(userDetails.getUser(),comment.getRealtor(),comment));
+            Like newLike = new Like(userDetails.getUser(),comment.getRealtor(),comment);
+            likeRepository.save(newLike);
         return;
 
         }

@@ -14,11 +14,14 @@ public class RealtorProfileResponseDto {
     private String introMessage;
     private String email;
 
+    private Long likeCount;
+
     public RealtorProfileResponseDto(Realtor realtor) {
         this.introMessage = realtor.getIntroMessage();
         this.accountState = realtor.getAuthority().getNum();
         this.profile = realtor.getProfile();
         this.nickname = realtor.getNickname();
         this.email = realtor.getEmail();
+        this.likeCount = realtor.getLikeCount();
     }
 }

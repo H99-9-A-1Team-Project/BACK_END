@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Data
 public class CommentResponseDto {
+    private Long Id;
     private String nickname;
     private String answerMessage;
 
@@ -25,6 +26,8 @@ public class CommentResponseDto {
     private String content;
     private String introMessage;
     private String createdAt;
+    private Long likeCount;
+    private Long realtorLike;
 
     private CommentResponseDto toResponseDto(Comment comment){
         return CommentResponseDto.builder()
