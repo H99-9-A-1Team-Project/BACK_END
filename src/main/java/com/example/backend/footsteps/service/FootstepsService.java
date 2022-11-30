@@ -53,6 +53,19 @@ public class FootstepsService {
 
         savePhotos(footstepsPost, imgUrlList);
     }
+    @Transactional
+    public void updatePost(Long premisesId, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        FootstepsPost footstepsPost = footstepsRepository.findById(premisesId).orElseThrow(NotFoundException::new);
+        footstepsPost.updatePost(postRequestDto);
+        footstepsRepository.save(footstepsPost);
+    }
+    @Transactional
+    public void deletePost(Long premisesId, UserDetailsImpl userDetails) {
+        validAuth(userDetails);
+        FootstepsPost footstepsPost = footstepsRepository.findById(premisesId).orElseThrow(NotFoundException::new);
+        footstepsRepository.delete(footstepsPost);
+    }
 
     private void savePhotos(FootstepsPost footstepsPost, List<String> imgUrlList) {
         List<Photo> photos = new ArrayList<>();
@@ -102,5 +115,6 @@ public class FootstepsService {
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
     }
+
 
 }
