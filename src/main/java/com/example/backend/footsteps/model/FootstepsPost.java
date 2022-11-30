@@ -1,6 +1,7 @@
 package com.example.backend.footsteps.model;
 
 import com.example.backend.consult.model.Photo;
+import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
 import com.example.backend.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -119,4 +120,33 @@ public class FootstepsPost {
         this.createDate = LocalDateTime.now();
     }
 
+    public void updatePost(FootstepsRequstDto postRequestDto) {
+        this.title = postRequestDto.getTitle();
+        this.coordFY = postRequestDto.getCoordFY();
+        this.coordFX = postRequestDto.getCoordFX();
+        this.price = postRequestDto.getPrice();
+        this.size = postRequestDto.getSize();
+        this.review = postRequestDto.getReview();
+        this.sun = postRequestDto.isSun();
+        this.mold = postRequestDto.isMold();
+        this.vent = postRequestDto.isVent();
+        this.water = postRequestDto.isWater();
+        this.ventil = postRequestDto.isVentil();
+        this.drain = postRequestDto.isDrain();
+        this.draft = postRequestDto.isDraft();
+        this.extraMemo = postRequestDto.getExtraMemo();
+        this.option = postRequestDto.getOption();
+        this.destroy = postRequestDto.isDestroy();
+        this.utiRoom = postRequestDto.isUtiRoom();
+        this.securityWindow = postRequestDto.isSecurityWindow();
+        this.noise = postRequestDto.isNoise();
+        this.loan = postRequestDto.isLoan();
+        this.cctv = postRequestDto.isCctv();
+        this.hill = postRequestDto.isHill();
+        this.mart = postRequestDto.isMart();
+        this.hospital = postRequestDto.isHospital();
+        this.accessibility = postRequestDto.isAccessibility();
+        this.park = postRequestDto.isPark();
+        this.expenses = postRequestDto.getExpenses();
+    }
 }

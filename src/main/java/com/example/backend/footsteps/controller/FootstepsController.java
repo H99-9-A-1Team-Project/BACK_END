@@ -31,6 +31,19 @@ public class FootstepsController {
         footstepsService.createPost(multipartFile, postRequestDto, userDetails);
         return new ResponseEntity(HttpStatus.OK);
     }
+    @PutMapping("/premises/{premisesId}")
+    private ResponseEntity<?> updatePost(@PathVariable("premisesId") Long postId,
+                                         @RequestBody FootstepsRequstDto postRequestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
+        footstepsService.updatePost(postId, postRequestDto, userDetails);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @DeleteMapping("/premises/{premisesId}")
+    private ResponseEntity<?> deletePost(@PathVariable("premisesId") Long postId,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
+        footstepsService.deletePost(postId, userDetails);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @GetMapping("/premises/allpost")
     private ResponseEntity<List<FootstepsPost>> getMyPosts(@AuthenticationPrincipal UserDetailsImpl userDetails){
