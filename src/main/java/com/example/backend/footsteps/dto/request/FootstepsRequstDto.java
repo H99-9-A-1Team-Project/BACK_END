@@ -21,9 +21,9 @@ public class FootstepsRequstDto {
 
     private double coordFX;
     //가격
-    private Long price;
+    private String price;
     //평수
-    private Long size;
+    private String size;
     //한줄평
     private String review;
     //햇빛
@@ -66,7 +66,7 @@ public class FootstepsRequstDto {
     private boolean accessibility;
     //주차장
     private boolean park;
-    private Long expenses;
+    private String expenses;
     public FootstepsPost toFootstepsPost(FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
 
         return FootstepsPost.builder()

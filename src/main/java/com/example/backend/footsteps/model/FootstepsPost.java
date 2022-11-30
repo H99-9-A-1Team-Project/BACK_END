@@ -46,10 +46,10 @@ public class FootstepsPost {
     private double coordFX;
     //가격
     @Column
-    private Long price;
+    private String price;
     //평수
     @Column
-    private Long size;
+    private String size;
     //한줄평
     @Column
     private String review;
@@ -111,7 +111,7 @@ public class FootstepsPost {
     @Column
     private boolean park;
     @Column
-    private Long expenses;
+    private String expenses;
     @DateTimeFormat
     private LocalDateTime createDate; // 날짜
 

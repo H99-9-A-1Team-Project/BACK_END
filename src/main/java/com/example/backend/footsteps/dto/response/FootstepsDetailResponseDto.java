@@ -17,9 +17,9 @@ public class FootstepsDetailResponseDto {
 
     private double coordFX;
     //가격
-    private Long price;
+    private String price;
     //평수
-    private Long size;
+    private String size;
     //한줄평
     private String review;
     //햇빛
@@ -65,7 +65,7 @@ public class FootstepsDetailResponseDto {
 
     private String createdAt;
     private boolean YesOrNo;
-    private Long expenses;
+    private String expenses;
     public FootstepsDetailResponseDto(FootstepsPost footstepsPost, boolean yesOrNo){
      this.title = footstepsPost.getTitle();
         this.title = footstepsPost.getTitle();
