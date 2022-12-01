@@ -96,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**", "/v3/**", "/v1/**","/test").permitAll() // swagger
                 .antMatchers(HttpMethod.GET, "/image/**").permitAll()
 
-                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**").permitAll()
+                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**", "/awsHealthCheck").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.POST, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
