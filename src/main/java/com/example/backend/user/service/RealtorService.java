@@ -1,7 +1,6 @@
 package com.example.backend.user.service;
 
 
-import com.example.backend.global.infra.S3.dto.AwsS3;
 import com.example.backend.global.infra.S3.service.AmazonS3Service;
 import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.user.dto.request.RealtorApproveRequestDto;
@@ -10,7 +9,6 @@ import com.example.backend.user.dto.response.RealtorListResponseDto;
 import com.example.backend.user.model.AccountCheck;
 import com.example.backend.user.model.Authority;
 import com.example.backend.user.model.Realtor;
-import com.example.backend.user.model.User;
 import com.example.backend.global.exception.customexception.AccessDeniedException;
 import com.example.backend.user.exception.user.MemberNotFoundException;
 import com.example.backend.user.exception.user.UserUnauthorizedException;
@@ -18,14 +16,14 @@ import com.example.backend.global.util.mail.MailDto;
 import com.example.backend.global.util.mail.MailService;
 import com.example.backend.user.repository.RealtorRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,12 +34,11 @@ public class RealtorService {
     private final RealtorRepository realtorRepository;
     private final AmazonS3Service amazonS3Service;
     private final MailService mailService;
+    private final SpringTemplateEngine templateEngine;
 
-    @Value("${cloud.aws.credentials.domain}")
-    private String amazonS3Domain;
 
     @Transactional
-    public void approveRealtor(RealtorApproveRequestDto dto, UserDetailsImpl userDetails) {
+    public void approveRealtor(RealtorApproveRequestDto dto, UserDetailsImpl userDetails) throws MessagingException {
         validateManager(userDetails);
 
         Realtor realtor = realtorRepository.findByEmail(dto.getEmail()).orElseThrow(MemberNotFoundException::new);
@@ -50,14 +47,33 @@ public class RealtorService {
         sendApproveResultEmail(dto, realtor);
     }
 
-    private void sendApproveResultEmail(RealtorApproveRequestDto dto, Realtor realtor) {
-        MailDto mail = new MailDto(realtor.getEmail());
+    private void sendApproveResultEmail(RealtorApproveRequestDto dto, Realtor realtor) throws MessagingException {
+        String htmlTemplate;
+        MailDto mailContent = new MailDto(realtor.getEmail());
+        Context context = new Context();
 
+        context.setVariable("name", realtor.getEmail());
         AccountCheck accountCheck = dto.getAccountCheck();
-        if(accountCheck == AccountCheck.APPROVE_COMPLETE) { mail.setRealtorApproveMessage(); }
-        else if (accountCheck == AccountCheck.APPROVE_REJECT) { mail.setRealtorRejectMessage(); }
 
-        mailService.sendSimpleMessage(mail);
+        htmlTemplate = getMailTemplateByAccountCheck(mailContent, context, accountCheck);
+        mailService.sendSimpleMessage(mailContent, htmlTemplate);
+    }
+
+    private String getMailTemplateByAccountCheck(MailDto mail, Context context, AccountCheck accountCheck) {
+        if(accountCheck == AccountCheck.APPROVE_COMPLETE) {
+            return getApproveMailTemplate(mail, context);
+        }
+        return getRejectMailTemplate(mail, context);
+    }
+
+    private String getRejectMailTemplate(MailDto mail, Context context) {
+        mail.setRealtorRejectMessage();
+        return templateEngine.process("reject-mail-template", context);
+    }
+
+    private String getApproveMailTemplate(MailDto mail, Context context) {
+        mail.setRealtorApproveMessage();
+        return templateEngine.process("approve-mail-template", context);
     }
 
     @Transactional(readOnly = true)
