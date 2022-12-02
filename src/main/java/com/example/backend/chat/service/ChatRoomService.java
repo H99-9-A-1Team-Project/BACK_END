@@ -41,7 +41,7 @@ public class ChatRoomService {
 
 
     @Transactional
-    public ChatRoom createGroupChatRoom(User member, String title) {
+    public ChatRoom createGroupChatRoom(User user, String title) {
         // chatRoom 생성
         ChatRoom chatRoom = ChatRoom.builder()
                 .type("group")
@@ -67,7 +67,7 @@ public class ChatRoomService {
 
         ChatRoomMember chatRoomMember = ChatRoomMember.builder()
                 .chatRoom(chatRoom)
-                .member(member)
+                .user(user)
                 .enterStatus(false)
                 .build();
 
@@ -89,85 +89,53 @@ public class ChatRoomService {
 
     }
 
-    @Transactional(readOnly = true)
-    public List<ChatRoomResponseDto> getChatRooms(HttpServletRequest request, UserDetailsImpl userDetails) {
+//    @Transactional(readOnly = true)
+//    public List<ChatRoomResponseDto> getChatRooms(HttpServletRequest request, UserDetailsImpl userDetails) {
+//
+////        List<ChatRoom> chatRoomList = chatRoomRepository.findByAllChatRoom(userDetails.getUser());
+//        List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
+//
+//        for (ChatRoom chatRoom : chatRoomList) {
+//            List<ChatRoomMember> chatRoomMemberList = chatRoomMemberRepository.findByChatRoom(chatRoom);
+//            List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
+//
+//            for (ChatRoomMember chatRoomMember : chatRoomMemberList) {
+//                memberResponseDtoList.add(
+//                        MemberResponseDto.builder()
+//                                .memberNo(chatRoomMember.getUser().getId())
+//                                .nick(chatRoomMember.getUser().getNickname())
+//                                .build()
+//                );
+//            }
+//
+//            ChatMessage chatMessage = chatMessageRepository.findTop1ByRoomNoOrderByMessageNoDesc(chatRoom.getRoomNo()).orElseThrow(
+//                    NotFoundException::new
+//            );
+//
+//            chatRoomResponseDtoList.add(
+//                    ChatRoomResponseDto.builder()
+//                            .roomNo(chatRoom.getRoomNo())
+//                            .type(chatRoom.getType())
+//                            .title(chatRoom.getTitle())
+//                            .chatRoomMembers(memberResponseDtoList)
+//                            .lastDate(chatMessage.getDate())
+//                            .lastMessage(chatMessage.getMessage())
+//                            .build()
+//            );
+//        }
+//
+//        return chatRoomResponseDtoList;
+//    }
 
-        List<ChatRoom> chatRoomList = chatRoomRepository.findByAllChatRoom(userDetails.getUser());
-        List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
 
-        for (ChatRoom chatRoom : chatRoomList) {
-            List<ChatRoomMember> chatRoomMemberList = chatRoomMemberRepository.findByChatRoom(chatRoom);
-            List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
-
-            for (ChatRoomMember chatRoomMember : chatRoomMemberList) {
-                memberResponseDtoList.add(
-                        MemberResponseDto.builder()
-                                .memberNo(chatRoomMember.getUser().getId())
-                                .nick(chatRoomMember.getUser().getNickname())
-                                .build()
-                );
-            }
-
-            ChatMessage chatMessage = chatMessageRepository.findTop1ByRoomNoOrderByMessageNoDesc(chatRoom.getRoomNo()).orElseThrow(
-                    NotFoundException::new
-            );
-
-            chatRoomResponseDtoList.add(
-                    ChatRoomResponseDto.builder()
-                            .roomNo(chatRoom.getRoomNo())
-                            .type(chatRoom.getType())
-                            .title(chatRoom.getTitle())
-                            .chatRoomMembers(memberResponseDtoList)
-                            .lastDate(chatMessage.getDate())
-                            .lastMessage(chatMessage.getMessage())
-                            .build()
-            );
-        }
-
-        return chatRoomResponseDtoList;
-    }
-
-
-    @Transactional
-    public ChatRoom checkPersonalChatRoomByMembers(Member creator, Member target) {
-        return chatRoomRepository.findByChatRoom(creator, target).orElseGet(
-                () -> {
-                    ChatRoom chatRoom = ChatRoom.builder()
-                            .roomKey(UUID.randomUUID().toString())
-                            .type("personal")
-                            .title("1:1")
-                            .build();
-
-                    chatRoomRepository.save(chatRoom);
-
-                    ChatRoomMember creatorRoomMember = ChatRoomMember.builder()
-                            .chatRoom(chatRoom)
-                            .member(creator)
-                            .enterStatus(false)
-                            .build();
-
-                    chatRoomMemberRepository.save(creatorRoomMember);
-
-                    ChatRoomMember targetRoomMember = ChatRoomMember.builder()
-                            .chatRoom(chatRoom)
-                            .member(target)
-                            .enterStatus(false)
-                            .build();
-
-                    chatRoomMemberRepository.save(targetRoomMember);
-
-                    return chatRoom;
-                }
-        );
-    }
 
     @Transactional
-    public ChatRoomMember checkChatRoomMemberByMemberAndChatRoom(User member, ChatRoom chatRoom) {
-        return chatRoomMemberRepository.findByMemberAndChatRoom(member, chatRoom).orElseGet(
+    public ChatRoomMember checkChatRoomMemberByMemberAndChatRoom(User user, ChatRoom chatRoom) {
+        return chatRoomMemberRepository.findByuserAndChatRoom(user, chatRoom).orElseGet(
                 () -> {
                     ChatRoomMember chatRoomMember = ChatRoomMember.builder()
                             .chatRoom(chatRoom)
-                            .member(member)
+                            .user(user)
                             .enterStatus(false)
                             .build();
 
@@ -186,8 +154,8 @@ public class ChatRoomService {
     }
 
     @Transactional(readOnly = true)
-    public ChatRoomMember getChatRoomByMemberAndChatRoom(User member, ChatRoom chatRoom) {
-        return chatRoomMemberRepository.findByMemberAndChatRoom(member, chatRoom).orElseThrow(
+    public ChatRoomMember getChatRoomByMemberAndChatRoom(User user, ChatRoom chatRoom) {
+        return chatRoomMemberRepository.findByuserAndChatRoom(user, chatRoom).orElseThrow(
                 NotFoundException::new
         );
     }

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class MemberResponseDto {
     private Long memberNo;
 
-
     private Authority role;
 
     private String email;

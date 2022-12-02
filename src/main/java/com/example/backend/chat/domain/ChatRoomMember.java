@@ -33,10 +33,10 @@ public class ChatRoomMember {
     }
 
     @Builder
-    public ChatRoomMember(Long roomMemberNo, ChatRoom chatRoom, User member, Boolean enterStatus) {
+    public ChatRoomMember(Long roomMemberNo, ChatRoom chatRoom, User user, Boolean enterStatus) {
         this.roomMemberNo = roomMemberNo;
         this.chatRoom = chatRoom;
-        this.user = member;
+        this.user = user;
         this.enterStatus = enterStatus;
     }
 

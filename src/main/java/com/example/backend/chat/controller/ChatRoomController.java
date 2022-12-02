@@ -24,9 +24,9 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRoomService.createGroupChatRoomMember(request,userDetails, requestDto));
     }
 
-    @GetMapping("/rooms")
-    public ResponseEntity<?> getChatRooms(HttpServletRequest request,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(chatRoomService.getChatRooms(request,userDetails));
-    }
+//    @GetMapping("/rooms")
+//    public ResponseEntity<?> getChatRooms(HttpServletRequest request,
+//                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return ResponseEntity.ok(chatRoomService.getChatRooms(request,userDetails));
+//    }
 }

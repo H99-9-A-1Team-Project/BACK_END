@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Entity
 @Getter
-public class ChatMessage implements Serializable {
+public class ChatMessage {
     private static final long serialVersionUID = 6494678977089006639L;
 
     @Id

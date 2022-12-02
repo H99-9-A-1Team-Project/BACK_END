@@ -68,14 +68,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User checkMemberByNick(String nick) {
-        return userRepository.findByNick(nick).orElseThrow(
+    public User checkMemberByNick(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
                 MemberNotFoundException::new
         );
     }
 
     @Transactional(readOnly = true)
-    public Member checkMemberByMemberNo(Long memberNo) {
+    public User checkMemberByMemberNo(Long memberNo) {
         return memberRepository.findById(memberNo).orElseThrow(
                 MemberNotFoundException::new
         );
