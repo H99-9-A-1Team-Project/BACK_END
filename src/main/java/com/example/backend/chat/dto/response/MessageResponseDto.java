@@ -2,8 +2,10 @@ package com.example.backend.chat.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class MessageResponseDto {
     private Long messageNo;
     private Long roomNo;
@@ -11,12 +13,8 @@ public class MessageResponseDto {
     private String sender;
     private String message;
     private String date;
-    
-    
-    public MessageResponseDto() {
-        
-    }
-    
+
+
     @Builder
     public MessageResponseDto(Long messageNo, Long roomNo, String type,
                               String sender, String message, String date) {

@@ -72,38 +72,7 @@ public class ChatRoomService {
                         .roomNo(chatRoom.getRoomNo())
                         .build();
     }
-    @Transactional
-    public ChatRoom checkPersonalChatRoomByMembers(User creator, User target) {
-        return chatRoomRepository.findByChatRoom(creator, target).orElseGet(
-                () -> {
-                    ChatRoom chatRoom = ChatRoom.builder()
-                            .roomKey(UUID.randomUUID().toString())
-                            .type("personal")
-                            .title("1:1")
-                            .build();
 
-                    chatRoomRepository.save(chatRoom);
-
-                    ChatRoomMember creatorRoomMember = ChatRoomMember.builder()
-                            .chatRoom(chatRoom)
-                            .user(creator)
-                            .enterStatus(false)
-                            .build();
-
-                    chatRoomMemberRepository.save(creatorRoomMember);
-
-                    ChatRoomMember targetRoomMember = ChatRoomMember.builder()
-                            .chatRoom(chatRoom)
-                            .user(target)
-                            .enterStatus(false)
-                            .build();
-
-                    chatRoomMemberRepository.save(targetRoomMember);
-
-                    return chatRoom;
-                }
-        );
-    }
     @Transactional
     public ChatRoom createGroupChatRoom(User user, String title) {
         // chatRoom 생성
@@ -191,6 +160,39 @@ public class ChatRoomService {
         return chatRoomResponseDtoList;
     }
 
+
+    @Transactional
+    public ChatRoom checkPersonalChatRoomByMembers(User creator, User target) {
+        return chatRoomRepository.findByChatRoom(creator, target).orElseGet(
+                () -> {
+                    ChatRoom chatRoom = ChatRoom.builder()
+                            .roomKey(UUID.randomUUID().toString())
+                            .type("personal")
+                            .title("1:1")
+                            .build();
+
+                    chatRoomRepository.save(chatRoom);
+
+                    ChatRoomMember creatorRoomMember = ChatRoomMember.builder()
+                            .chatRoom(chatRoom)
+                            .user(creator)
+                            .enterStatus(false)
+                            .build();
+
+                    chatRoomMemberRepository.save(creatorRoomMember);
+
+                    ChatRoomMember targetRoomMember = ChatRoomMember.builder()
+                            .chatRoom(chatRoom)
+                            .user(target)
+                            .enterStatus(false)
+                            .build();
+
+                    chatRoomMemberRepository.save(targetRoomMember);
+
+                    return chatRoom;
+                }
+        );
+    }
 
 
     @Transactional

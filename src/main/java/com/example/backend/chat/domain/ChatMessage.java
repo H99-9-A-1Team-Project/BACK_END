@@ -2,13 +2,15 @@ package com.example.backend.chat.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Getter
-public class ChatMessage {
+@NoArgsConstructor
+public class ChatMessage implements Serializable{
     private static final long serialVersionUID = 6494678977089006639L;
 
     @Id
@@ -29,11 +31,6 @@ public class ChatMessage {
 
     @Column(nullable = false)
     private String date;
-
-
-    public ChatMessage() {
-
-    }
 
     @Builder
     public ChatMessage(Long messageNo, Long roomNo, String roomKey, String type,

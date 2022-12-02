@@ -4,12 +4,15 @@ package com.example.backend.chat.domain;
 import com.example.backend.user.model.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Getter
-public class ChatRoomMember {
+@NoArgsConstructor
+public class ChatRoomMember implements Serializable {
     private static final long serialVersionUID = 6494678977089006639L;
 
     @Id
@@ -27,10 +30,6 @@ public class ChatRoomMember {
     @Column(nullable = false)
     private Boolean enterStatus;
 
-
-    public ChatRoomMember() {
-
-    }
 
     @Builder
     public ChatRoomMember(Long roomMemberNo, ChatRoom chatRoom, User user, Boolean enterStatus) {

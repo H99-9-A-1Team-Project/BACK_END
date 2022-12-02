@@ -3,14 +3,15 @@ package com.example.backend.chat.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-
+@NoArgsConstructor
 @Entity
 @Getter
-public class ChatRoom  {
+public class ChatRoom  implements Serializable{
     private static final long serialVersionUID = 6494678977089006639L;
 
     @Id
@@ -25,11 +26,6 @@ public class ChatRoom  {
 
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatRoomMember> chatRoomMembers;
-
-
-    public ChatRoom() {
-
-    }
 
     @Builder
     public ChatRoom(Long roomNo, String roomKey, String type, String title) {

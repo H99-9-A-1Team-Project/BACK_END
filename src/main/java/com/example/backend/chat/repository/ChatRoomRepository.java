@@ -13,12 +13,12 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     @Query(value =
             "SELECT cr.* " +
-                    "FROM chat_room cr " +
-                    "JOIN chat_room_member crm1 ON cr.room_no = crm1.room_no " +
-                    "JOIN chat_room_member crm2 ON cr.room_no = crm2.room_no " +
-                    "WHERE cr.type = 'personal' " +
-                    "AND crm1.member_no = :creator " +
-                    "AND crm2.member_no = :target",
+            "FROM chat_room cr " +
+            "JOIN chat_room_member crm1 ON cr.room_no = crm1.room_no " +
+            "JOIN chat_room_member crm2 ON cr.room_no = crm2.room_no " +
+            "WHERE cr.type = 'personal' " +
+            "AND crm1.member_no = :creator " +
+            "AND crm2.member_no = :target",
             nativeQuery = true)
     Optional<ChatRoom> findByChatRoom(@Param("creator") User creator, @Param("target") User target);
     @Query(value =
