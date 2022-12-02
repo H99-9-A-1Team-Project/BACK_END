@@ -1,6 +1,7 @@
 package com.example.backend.chat.domain;
 
 
+import com.example.backend.user.model.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,7 +22,7 @@ public class ChatRoomMember {
 
     @JoinColumn(name = "memberNo", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User member;
+    private User user;
 
     @Column(nullable = false)
     private Boolean enterStatus;
@@ -32,10 +33,10 @@ public class ChatRoomMember {
     }
 
     @Builder
-    public ChatRoomMember(Long roomMemberNo, ChatRoom chatRoom, Member member, Boolean enterStatus) {
+    public ChatRoomMember(Long roomMemberNo, ChatRoom chatRoom, User member, Boolean enterStatus) {
         this.roomMemberNo = roomMemberNo;
         this.chatRoom = chatRoom;
-        this.member = member;
+        this.user = member;
         this.enterStatus = enterStatus;
     }
 

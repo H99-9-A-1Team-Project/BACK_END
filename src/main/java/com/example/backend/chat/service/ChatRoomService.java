@@ -1,5 +1,21 @@
 package com.example.backend.chat.service;
 
+import com.example.backend.chat.domain.ChatMessage;
+import com.example.backend.chat.domain.ChatRoom;
+import com.example.backend.chat.domain.ChatRoomMember;
+import com.example.backend.chat.dto.request.ChatRoomRequestDto;
+import com.example.backend.chat.dto.response.ChatRoomResponseDto;
+import com.example.backend.chat.repository.ChatMessageRepository;
+import com.example.backend.chat.repository.ChatRoomMemberRepository;
+import com.example.backend.chat.repository.ChatRoomRedisRepository;
+import com.example.backend.chat.repository.ChatRoomRepository;
+import com.example.backend.global.exception.CustomException;
+import com.example.backend.global.exception.customexception.NotFoundException;
+import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.user.dto.response.MemberResponseDto;
+import com.example.backend.user.model.Member;
+import com.example.backend.user.model.User;
+import com.example.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,56 +29,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import static com.sparta.daengtionary.aop.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
-    private final TokenProvider tokenProvider;
-    private final MemberService memberService;
+    private final UserService memberService;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomRedisRepository chatRoomRedisRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final ResponseBodyDto responseBodyDto;
 
 
     @Transactional
-    public ResponseEntity<?> createPersonalChatRoom(HttpServletRequest request,
-                                                    ChatRoomRequestDto requestDto) {
-        Member creator = tokenProvider.getMemberFromAuthentication();
-
-        Member target = memberService.checkMemberByMemberNo(requestDto.getMemberNo());
-
-        if (creator.equals(target)) {
-            throw new CustomException(CANNOT_CHAT_WITH_ME);
-        }
-
-        ChatRoom chatRoom = checkPersonalChatRoomByMembers(creator, target);
-
-        chatRoomRedisRepository.createChatRoom(chatRoom);
-
-        LocalDateTime now = LocalDateTime.now();
-        String date = now.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 E요일 a hh:mm:ss", Locale.KOREA));
-
-        ChatMessage chatMessage = ChatMessage.builder()
-                .roomNo(chatRoom.getRoomNo())
-                .type("SYSTEM")
-                .sender("SYSTEM")
-                .message("대화가 시작되었습니다 :)")
-                .date(date)
-                .build();
-
-        chatMessageRepository.save(chatMessage);
-
-        return responseBodyDto.success(ChatRoomResponseDto.builder()
-                        .roomNo(chatRoom.getRoomNo())
-                        .build(),
-                "채팅방 준비 완료");
-    }
-
-    @Transactional
-    public ChatRoom createGroupChatRoom(Member member, String title) {
+    public ChatRoom createGroupChatRoom(User member, String title) {
         // chatRoom 생성
         ChatRoom chatRoom = ChatRoom.builder()
                 .type("group")
@@ -98,22 +77,22 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public ResponseEntity<?> createGroupChatRoomMember(HttpServletRequest request,
-                                                       ChatRoomRequestDto requestDto) {
-        Member member = tokenProvider.getMemberFromAuthentication();
-
+    public ChatRoomMember createGroupChatRoomMember(HttpServletRequest request,
+                                                    UserDetailsImpl userDetails,
+                                                    ChatRoomRequestDto requestDto) {
+        User user = userDetails.getUser();
         ChatRoom chatRoom = getChatRoomByRoomNo(requestDto.getRoomNo());
 
-        ChatRoomMember chatRoomMember = checkChatRoomMemberByMemberAndChatRoom(member, chatRoom);
+        ChatRoomMember chatRoomMember = checkChatRoomMemberByMemberAndChatRoom(user, chatRoom);
 
-        return responseBodyDto.success("참여가 완료되었습니다 :)");
+        return chatRoomMember;
+
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getChatRooms(HttpServletRequest request) {
-        Member member = tokenProvider.getMemberFromAuthentication();
+    public List<ChatRoomResponseDto> getChatRooms(HttpServletRequest request, UserDetailsImpl userDetails) {
 
-        List<ChatRoom> chatRoomList = chatRoomRepository.findByAllChatRoom(member);
+        List<ChatRoom> chatRoomList = chatRoomRepository.findByAllChatRoom(userDetails.getUser());
         List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
 
         for (ChatRoom chatRoom : chatRoomList) {
@@ -123,14 +102,14 @@ public class ChatRoomService {
             for (ChatRoomMember chatRoomMember : chatRoomMemberList) {
                 memberResponseDtoList.add(
                         MemberResponseDto.builder()
-                                .memberNo(chatRoomMember.getMember().getMemberNo())
-                                .nick(chatRoomMember.getMember().getNick())
+                                .memberNo(chatRoomMember.getUser().getId())
+                                .nick(chatRoomMember.getUser().getNickname())
                                 .build()
                 );
             }
 
             ChatMessage chatMessage = chatMessageRepository.findTop1ByRoomNoOrderByMessageNoDesc(chatRoom.getRoomNo()).orElseThrow(
-                    () -> new CustomException(NOT_FOUND_CHAT_ROOM)
+                    NotFoundException::new
             );
 
             chatRoomResponseDtoList.add(
@@ -145,7 +124,7 @@ public class ChatRoomService {
             );
         }
 
-        return responseBodyDto.success(chatRoomResponseDtoList, "채팅방 조회 완료");
+        return chatRoomResponseDtoList;
     }
 
 
@@ -183,7 +162,7 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public ChatRoomMember checkChatRoomMemberByMemberAndChatRoom(Member member, ChatRoom chatRoom) {
+    public ChatRoomMember checkChatRoomMemberByMemberAndChatRoom(User member, ChatRoom chatRoom) {
         return chatRoomMemberRepository.findByMemberAndChatRoom(member, chatRoom).orElseGet(
                 () -> {
                     ChatRoomMember chatRoomMember = ChatRoomMember.builder()
@@ -202,14 +181,14 @@ public class ChatRoomService {
     @Transactional(readOnly = true)
     public ChatRoom getChatRoomByRoomNo(Long roomNo) {
         return chatRoomRepository.findById(roomNo).orElseThrow(
-                () -> new CustomException(NOT_FOUND_CHAT_ROOM)
+                NotFoundException::new
         );
     }
 
     @Transactional(readOnly = true)
-    public ChatRoomMember getChatRoomByMemberAndChatRoom(Member member, ChatRoom chatRoom) {
+    public ChatRoomMember getChatRoomByMemberAndChatRoom(User member, ChatRoom chatRoom) {
         return chatRoomMemberRepository.findByMemberAndChatRoom(member, chatRoom).orElseThrow(
-                () -> new CustomException(NOT_FOUND_CHAT_ROOM_MEMBER)
+                NotFoundException::new
         );
     }
 }

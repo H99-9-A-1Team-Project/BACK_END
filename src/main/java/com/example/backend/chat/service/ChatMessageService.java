@@ -9,8 +9,9 @@ import com.example.backend.chat.dto.response.MessageResponseDto;
 import com.example.backend.chat.redis.RedisPublisher;
 import com.example.backend.chat.repository.ChatMessageRepository;
 import com.example.backend.chat.repository.ChatRoomRedisRepository;
+import com.example.backend.user.model.User;
+import com.example.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +26,12 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
-    private final ResponseBodyDto responseBodyDto;
-    private final MemberService memberService;
+    private final UserService memberService;
     private final ChatRoomService chatRoomService;
     private final ChatRoomRedisRepository chatRoomRedisRepository;
     private final RedisPublisher redisPublisher;
 
-    public ResponseEntity<?> getMessages(HttpServletRequest request, Long roomNo) {
+    public List<MessageResponseDto> getMessages(HttpServletRequest request, Long roomNo) {
         List<ChatMessage> messageList = chatMessageRepository.findAllByRoomNo(roomNo);
 
         List<MessageResponseDto> messageResponseDtoList = new ArrayList<>();
@@ -48,13 +48,13 @@ public class ChatMessageService {
             );
         }
 
-        return responseBodyDto.success(messageResponseDtoList, "메세지 조회 완료");
+        return messageResponseDtoList;
     }
 
     @Transactional
     public void sendMessage(MessageRequestDto requestDto) {
         if (requestDto.getType().equals("ENTER")) {
-            Member sender = memberService.checkMemberByNick(requestDto.getSender());
+            User sender = memberService.checkMemberByNick(requestDto.getSender());
             ChatRoom chatRoom = chatRoomService.getChatRoomByRoomNo(requestDto.getRoomNo());
             ChatRoomMember chatRoomMember = chatRoomService.getChatRoomByMemberAndChatRoom(sender, chatRoom);
 

@@ -39,7 +39,7 @@ public enum ErrorCode {
     CONSULT_NOT_FOUND(HttpStatus.NOT_FOUND, "C002", "잘못된 상담 ID입니다."),
 
     // Premises
-    PREMISE_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 공인중개사입니다.");
+    PREMISE_NOT_FOUND(HttpStatus.NOT_FOUND, "P001", "존재하지 않는 공인중개사입니다."), ;
 
 
     private HttpStatus status;

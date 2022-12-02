@@ -1,7 +1,7 @@
 package com.example.backend.chat.repository;
 
-import com.sparta.daengtionary.aop.redis.RedisSubscriber;
-import com.sparta.daengtionary.category.chat.domain.ChatRoom;
+import com.example.backend.chat.domain.ChatRoom;
+import com.example.backend.chat.redis.RedisSubscriber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;

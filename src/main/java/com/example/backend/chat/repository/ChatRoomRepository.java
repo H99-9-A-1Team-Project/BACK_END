@@ -1,8 +1,7 @@
 package com.example.backend.chat.repository;
 
 import com.example.backend.chat.domain.ChatRoom;
-import com.sparta.daengtionary.category.chat.domain.ChatRoom;
-import com.sparta.daengtionary.category.member.domain.Member;
+import com.example.backend.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,7 +19,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             "AND crm1.member_no = :creator " +
             "AND crm2.member_no = :target",
             nativeQuery = true)
-    Optional<ChatRoom> findByChatRoom(@Param("creator") Member creator, @Param("target") Member target);
+    Optional<ChatRoom> findByChatRoom(@Param("creator") User creator, @Param("target") User target);
 
     @Query(value =
             "SELECT cr.* " +
@@ -29,5 +28,5 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             "ON cr.room_no = crm.room_no " +
             "WHERE crm.member_no = :member",
             nativeQuery = true)
-    List<ChatRoom> findByAllChatRoom(@Param("member") Member member);
+    List<ChatRoom> findByAllChatRoom(@Param("user") User member);
 }

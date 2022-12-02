@@ -1,7 +1,7 @@
 package com.example.backend.chat.dto.response;
 
+import com.example.backend.user.dto.response.MemberResponseDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sparta.daengtionary.category.member.dto.response.MemberResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 
