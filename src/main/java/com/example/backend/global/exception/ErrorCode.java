@@ -20,7 +20,7 @@ public enum ErrorCode {
 
     // User
     USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "U001", "로그인 해주세요"),
-    LOGIN_FAIL_EXCEPTION(HttpStatus.UNAUTHORIZED, "U002", "로그인에 실패했습니다."),
+    LOGIN_FAIL_EXCEPTION(HttpStatus.UNAUTHORIZED, "U002", "아이디와 비밀번호를 확인해주세요."),
     REALTOR_NOT_APPROVED_YET(HttpStatus.FORBIDDEN, "U003", "공인중개사 인증이 완료되지 않았습니다."),
     REALTOR_NOT_APPROVED(HttpStatus.FORBIDDEN, "U004", "공인중개사 인증이 거부되었습니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND ,"U005","존재하지 않는 회원입니다."),
