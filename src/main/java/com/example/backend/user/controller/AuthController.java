@@ -1,6 +1,7 @@
 package com.example.backend.user.controller;
 
-//import com.example.backend.global.response.Response;
+
+import com.example.backend.global.config.jwt.JWTUtil;
 import com.example.backend.user.dto.request.EmailConfirmRequestDto;
 import com.example.backend.user.dto.request.SignUpMemberRequestDto;
 import com.example.backend.user.dto.request.SignUpRealtorRequestDto;
@@ -10,12 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.validation.Valid;
 
 import java.io.IOException;
 
-//import static com.example.backend.global.response.Response.success;
 
 
 @RequiredArgsConstructor

@@ -64,8 +64,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             if (verify.isSuccess()) {
                 User user = userRepository.findByEmail(verify.getUserId())
                         .orElseThrow(MemberNotFoundException::new);
-                return new UsernamePasswordAuthenticationToken(
-                        new UserDetailsImpl(user), user.getPassword());
+                return new UsernamePasswordAuthenticationToken(new UserDetailsImpl(user), user.getPassword());
 
             } else {
                 throw new TokenExpiredException();

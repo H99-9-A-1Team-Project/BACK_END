@@ -5,6 +5,7 @@ import com.example.backend.user.model.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 
 import java.util.Collection;
@@ -13,7 +14,7 @@ import java.util.Map;
 // OAuth2User, UserDetails 두 인터페이스 상속
 // JWT와 OAuth client 두 개의 principal 객체를 만들지 않고 한 번에 처리할 수 있도록 함.
 @Data
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails, OAuth2User {
 
     private final User user;
 
@@ -75,9 +76,18 @@ public class UserDetailsImpl implements UserDetails {
 
 
     @Override
+    public <A> A getAttribute(String name) {
+        return OAuth2User.super.getAttribute(name);
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
 
 
+    @Override
+    public String getName() {
+        return user.getEmail();
+    }
 }

@@ -4,10 +4,11 @@ import com.example.backend.user.dto.request.RealtorApproveRequestDto;
 import com.example.backend.user.dto.request.RealtorEditRequestDto;
 import com.example.backend.user.dto.request.SignUpRealtorRequestDto;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

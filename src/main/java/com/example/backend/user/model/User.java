@@ -6,16 +6,19 @@ import com.example.backend.user.dto.request.SignUpMemberRequestDto;
 import com.example.backend.user.dto.request.SignUpRealtorRequestDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn
 @Entity
@@ -37,6 +40,12 @@ public class User {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Authority authority;
+
+    @Column
+    private String provider;
+
+    @Column
+    private String providerId;
 
     @DateTimeFormat
     private LocalDateTime createDate; // 날짜

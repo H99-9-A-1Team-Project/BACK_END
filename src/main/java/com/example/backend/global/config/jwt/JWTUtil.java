@@ -4,9 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.backend.global.security.auth.UserDetailsImpl;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
+@Service
 public class JWTUtil {
 
 

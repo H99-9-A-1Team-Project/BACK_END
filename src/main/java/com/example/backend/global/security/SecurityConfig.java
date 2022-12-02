@@ -1,5 +1,6 @@
 package com.example.backend.global.security;
 
+import com.example.backend.global.config.oauth.PrincipalOauth2UserService;
 import com.example.backend.global.security.auth.UserDetailsServiceImpl;
 import com.example.backend.global.config.jwt.ExceptionHandlerFilter;
 import com.example.backend.global.config.jwt.JWTCheckFilter;
@@ -8,6 +9,7 @@ import com.example.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,6 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private ExceptionHandlerFilter exceptionHandlerFilter;
+    @Autowired
+    @Lazy
+    private PrincipalOauth2UserService principalOauth2UserService;
 
     // 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
     @Bean
@@ -87,16 +92,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 여기서는 세션을 사용하지 않기 때문에 세션 설정을 Stateless 로 설정
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                 .and()
+                .formLogin().disable()
+                .httpBasic().disable()
+
                 .authorizeRequests()
 
                 .antMatchers("/swagger-ui/**", "/v3/**", "/v1/**","/test").permitAll() // swagger
                 .antMatchers(HttpMethod.GET, "/image/**").permitAll()
 
-                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**", "/awsHealthCheck").permitAll()
+                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**", "/awsHealthCheck", "/**").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.POST, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -130,6 +136,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
                 .anyRequest().hasAnyRole("ROLE_ADMIN")
+                .and()
+                .oauth2Login()
+                .userInfoEndpoint().userService(principalOauth2UserService)
+                .and()
+                .defaultSuccessUrl("/")
 
                 // .anyRequest().authenticated() // 나머지는 전부 인증 필요
                 // .anyRequest().permitAll()   // 나머지는 모두 그냥 접근 가능
