@@ -1,47 +1,33 @@
 package com.example.backend.chat.controller;
 
-import com.example.backend.chat.model.ChatRoom;
-import com.example.backend.chat.repo.ChatRoomRepository;
+
+import com.example.backend.chat.dto.request.ChatRoomRequestDto;
+import com.example.backend.chat.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
-@RequiredArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/chat")
+@RequiredArgsConstructor
 public class ChatRoomController {
+    private final ChatRoomService chatRoomService;
+    @PostMapping("/room/personal")
+    public ResponseEntity<?> createPersonalChatRoom(HttpServletRequest request,
+                                                    @RequestBody ChatRoomRequestDto requestDto) {
+        return chatRoomService.createPersonalChatRoom(request, requestDto);
+    }
 
-    private final ChatRoomRepository chatRoomRepository;
-
-    @GetMapping("/room")
-    public String rooms(Model model) {
-        return "/chat/room";
+    @PostMapping("/room/into")
+    public ResponseEntity<?> createGroupChatRoomMember(HttpServletRequest request,
+                                                       @RequestBody ChatRoomRequestDto requestDto) {
+        return chatRoomService.createGroupChatRoomMember(request, requestDto);
     }
 
     @GetMapping("/rooms")
-    @ResponseBody
-    public List<ChatRoom> room() {
-        return chatRoomRepository.findAllRoom();
-    }
-
-    @PostMapping("/room")
-    @ResponseBody
-    public ChatRoom createRoom(@RequestParam String name) {
-        return chatRoomRepository.createChatRoom(name);
-    }
-
-    @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId) {
-        model.addAttribute("roomId", roomId);
-        return "/chat/roomdetail";
-    }
-
-    @GetMapping("/room/{roomId}")
-    @ResponseBody
-    public ChatRoom roomInfo(@PathVariable String roomId) {
-        return chatRoomRepository.findRoomById(roomId);
+    public ResponseEntity<?> getChatRooms(HttpServletRequest request) {
+        return chatRoomService.getChatRooms(request);
     }
 }

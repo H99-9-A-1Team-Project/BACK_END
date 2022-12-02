@@ -1,6 +1,6 @@
-package com.example.backend.chat.model;
+package com.example.backend.chat.domain;
 
-import com.example.backend.user.model.User;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,9 +19,9 @@ public class ChatRoomMember {
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatRoom chatRoom;
 
-    @JoinColumn(name = "UserNo", nullable = false)
+    @JoinColumn(name = "memberNo", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private User member;
 
     @Column(nullable = false)
     private Boolean enterStatus;

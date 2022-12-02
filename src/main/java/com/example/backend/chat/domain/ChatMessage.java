@@ -1,4 +1,4 @@
-package com.example.backend.chat.model;
+package com.example.backend.chat.domain;
 
 import lombok.Builder;
 import lombok.Getter;
