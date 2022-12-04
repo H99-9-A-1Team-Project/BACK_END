@@ -42,6 +42,8 @@ public class Comment {
     private LocalDateTime createdAt; // 날짜
     @Column
     private Long likeCount;
+    @Column
+    private Long roomNo;
 
     @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
     public void createDate() {

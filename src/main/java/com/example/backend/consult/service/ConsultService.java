@@ -89,6 +89,7 @@ public class ConsultService {
                 .coordX(consult.getCoordX())
                 .coordY(consult.getCoordY())
                 .answerState(consult.getAnswerState())
+                .consultMessage(consult.getConsultMessage())
                 .checks(checkList)
                 .comments(commentResponseDtos)
                 .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))

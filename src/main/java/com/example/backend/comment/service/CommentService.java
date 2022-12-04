@@ -1,5 +1,7 @@
 package com.example.backend.comment.service;
 
+import com.example.backend.chat.domain.ChatRoom;
+import com.example.backend.chat.service.ChatRoomService;
 import com.example.backend.comment.dto.ImageResponseDto;
 import com.example.backend.comment.dto.ConsultMessageRequestDto;
 import com.example.backend.comment.repository.CommentRepository;
@@ -32,6 +34,7 @@ public class CommentService {
     private final ConsultRepository consultRepository;
     private final CommentRepository commentRepository;
     private final AmazonS3Service amazonS3Service;
+    private final ChatRoomService chatRoomService;
 
     @Transactional
     public ImageResponseDto registerConsultCommentImg(UserDetailsImpl userDetails, MultipartFile multipartFile) throws IOException {
@@ -50,11 +53,12 @@ public class CommentService {
         validRealtor(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow(ConsultNotFoundException::new);
         consult.updateState();
-
+        ChatRoom chatRoom = chatRoomService.createGroupChatRoom(userDetails.getUser(), consult.getTitle());
         Comment comment = Comment.builder()
                 .content(dto.getAnswerMessage())
                 .realtor((Realtor) userDetails.getUser())
                 .consult(consult)
+                .roomNo(chatRoom.getRoomNo())
                 .build();
 
         commentRepository.save(comment);

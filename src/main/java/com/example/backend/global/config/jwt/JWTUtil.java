@@ -3,9 +3,16 @@ package com.example.backend.global.config.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.backend.global.exception.CustomException;
+import com.example.backend.global.exception.ErrorCode;
 import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.user.model.User;
+import com.example.backend.user.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public class JWTUtil {
 

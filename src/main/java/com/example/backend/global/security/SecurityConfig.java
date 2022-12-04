@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -93,10 +94,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
 
-                .antMatchers("/swagger-ui/**", "/v3/**", "/v1/**","/test").permitAll() // swagger
+                .antMatchers("/swagger-ui/**", "/v3/**", "/v1/**","/test","/chat/**").permitAll() // swagger
                 .antMatchers(HttpMethod.GET, "/image/**").permitAll()
+//                .antMatchers("/chat/**").permitAll()
+                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**").permitAll()
 
-                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**", "/awsHealthCheck").permitAll()
+                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**", "/awsHealthCheck","/consult/search/**").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers(HttpMethod.POST, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -140,4 +143,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAt(checkFilter, BasicAuthenticationFilter.class)
                 .addFilterBefore(exceptionHandlerFilter, JWTLoginFilter.class);
     }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication()
+//                .withUser("happydaddy")
+//                .password("{noop}1234")
+//                .roles("USER")
+//                .and()
+//                .withUser("angrydaddy")
+//                .password("{noop}1234")
+//                .roles("USER")
+//                .and()
+//                .withUser("guest")
+//                .password("{noop}1234")
+//                .roles("GUEST");
+//    }
 }
