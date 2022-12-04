@@ -20,43 +20,45 @@ import java.util.stream.Collectors;
 @Service
 public class SearchService {
 
-    private final MemberRepository memberRepository;
     private final ConsultRepository consultRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<MyConsultResponseDto> searchConsult(UserDetailsImpl userDetails, String keyword) {
         validAuth(userDetails);
 
         List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getAnswerState().equals(AnswerState.WAIT)){
-                myConsultResponseDtoList.add(
-                        MyConsultResponseDto.builder()
-                                .searchWord(keyword)
-                                .consultMessage(consult.getConsultMessage())
-                                .answerState(consult.getAnswerState())
-                                .createDate(consult.getCreateDate())
-                                .title(consult.getTitle())
-                                .build()
-                );
-            }else{
-                myConsultResponseDtoList.add(
-                        MyConsultResponseDto.builder()
-                                .searchWord(keyword)
-                                .comment(consult.getCommentList()
-                                        .stream()
-                                        .map(Comment::getContent)
-                                        .collect(Collectors.toList()).toString())
-                                .answerState(consult.getAnswerState())
-                                .createDate(consult.getCreateDate())
-                                .title(consult.getTitle())
-                                .build()
-                );
+            if(consult.getTitle().equals(keyword)){
+                if(consult.getAnswerState().equals(AnswerState.WAIT)){
+                    myConsultResponseDtoList.add(
+                            MyConsultResponseDto.builder()
+                                    .searchWord(keyword)
+                                    .consultMessage(consult.getConsultMessage())
+                                    .answerState(consult.getAnswerState())
+                                    .createDate(consult.getCreateDate())
+                                    .title(consult.getTitle())
+                                    .build()
+                    );
+                }else{
+                    myConsultResponseDtoList.add(
+                            MyConsultResponseDto.builder()
+                                    .searchWord(keyword)
+                                    .comment(consult.getCommentList()
+                                            .stream()
+                                            .map(Comment::getContent)
+                                            .collect(Collectors.toList()).toString())
+                                    .answerState(consult.getAnswerState())
+                                    .createDate(consult.getCreateDate())
+                                    .title(consult.getTitle())
+                                    .build()
+                    );
+                }
+            } else if (myConsultResponseDtoList.isEmpty()) {
+                System.out.println("해당하는 주소에 맞는 상담이 없습니다.");
             }
-
         }
-        return consultRepository.findAllByUserIdAndKeywordContaining(userDetails.getUser().getId(), keyword);
+        return myConsultResponseDtoList;
     }
 
     public void validAuth(UserDetailsImpl userDetails) {
