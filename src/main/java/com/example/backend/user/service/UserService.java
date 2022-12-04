@@ -4,6 +4,9 @@ package com.example.backend.user.service;
 import com.example.backend.global.exception.CustomException;
 import com.example.backend.global.exception.ErrorCode;
 import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.survey.domain.Survey;
+import com.example.backend.survey.dto.UserSurveyRequestDto;
+import com.example.backend.survey.repository.SurveyRepository;
 import com.example.backend.user.dto.request.editUserInfoRequestDto;
 import com.example.backend.user.dto.response.MemberProfileResponseDto;
 import com.example.backend.user.dto.response.RealtorProfileResponseDto;
@@ -27,10 +30,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final RealtorRepository realtorRepository;
     private final MemberRepository memberRepository;
+    private final SurveyRepository surveyRepository;
 
     @Transactional
-    public void deleteUserInfo(UserDetailsImpl userDetails) {
+    public void deleteUserInfo(UserDetailsImpl userDetails, UserSurveyRequestDto userSurveyRequestDto) {
         validAuth(userDetails);
+        Survey survey = userSurveyRequestDto.toSurvey();
+
+        surveyRepository.save(survey);
         userRepository.deleteByEmail(userDetails.getUser().getEmail());
     }
 

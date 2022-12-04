@@ -24,12 +24,24 @@ import java.util.List;
 public class FootstepsController {
     private final FootstepsService footstepsService;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/premises")
-    private ResponseEntity<?> createPost(@RequestPart(required = false, value = "file") List<MultipartFile> multipartFile,
+    private ResponseEntity<?> createPost(@RequestParam(required = false, value = "file") List<MultipartFile> multipartFile,
                                 @RequestPart(value = "post") @Valid FootstepsRequstDto postRequestDto,
                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         footstepsService.createPost(multipartFile, postRequestDto, userDetails);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @PutMapping("/premises/{premisesId}")
+    private ResponseEntity<?> updatePost(@PathVariable("premisesId") Long postId,
+                                         @RequestBody FootstepsRequstDto postRequestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
+        footstepsService.updatePost(postId, postRequestDto, userDetails);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @DeleteMapping("/premises/{premisesId}")
+    private ResponseEntity<?> deletePost(@PathVariable("premisesId") Long postId,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
+        footstepsService.deletePost(postId, userDetails);
         return new ResponseEntity(HttpStatus.OK);
     }
 
