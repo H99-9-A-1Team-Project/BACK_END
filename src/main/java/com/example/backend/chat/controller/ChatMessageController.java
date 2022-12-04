@@ -20,7 +20,7 @@ public class ChatMessageController {
     @GetMapping("/chat/messages/{roomNo}")
     public ResponseEntity<?> getMessages(HttpServletRequest request,
                                          @PathVariable Long roomNo) {
-        return  ResponseEntity.ok(chatMessageService.getMessages(request, roomNo)) ;
+        return ResponseEntity.ok(chatMessageService.getMessages(request, roomNo)) ;
     }
 
     @MessageMapping("/chat/message")

@@ -90,7 +90,7 @@ public class ChatRoomService {
 
         ChatMessage chatMessage = ChatMessage.builder()
                 .roomNo(chatRoom.getRoomNo())
-                .type("SYSTEM")
+                .type("SYSThEM")
                 .sender("SYSTEM")
                 .message("대화가 시작되었습니다 :)")
                 .date(date)

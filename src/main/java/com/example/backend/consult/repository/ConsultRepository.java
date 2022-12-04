@@ -20,6 +20,6 @@ public interface ConsultRepository extends JpaRepository<Consult, Long>,ConsultR
     Consult findByCoordXAndCoordYAndUserId(double x, double y, Long id);
 
     @Query(value = "SELECT * from consult c " +
-            "where title = 'keyword' ", nativeQuery = true)
+            "where title Like '%keyword%' ", nativeQuery = true)
     List<MyConsultResponseDto> findAllByKeywordContaining(@Param("keyword") String keyword);
 }
