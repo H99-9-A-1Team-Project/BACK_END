@@ -31,12 +31,12 @@ public class SearchService {
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> searchConsult(UserDetailsImpl userDetails, String keyword) {
-        validAuth(userDetails);
+        validUser(userDetails);
 
         List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().equals(keyword)){
+            if(consult.getTitle().contains(keyword)){
                 if(consult.getAnswerState().equals(AnswerState.WAIT)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
@@ -70,43 +70,28 @@ public class SearchService {
 
 //    @Transactional(readOnly = true)
 //    public List<ConsultFootStepsResponseDto> searchPremises(UserDetailsImpl userDetails, String keyword) {
-//        validRealtor(userDetails);
-//        FootstepsPost footstepsPost = footstepsRepository.findById(userDetails.getUser().getId()).orElseThrow(NotFoundException::new);
+//        validAuth(userDetails);
+//        List<FootstepsPost> footstepsPostList = footstepsRepository.findByUserId(userDetails.getUser().getId());
 //        List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
 //        List<ConsultFootStepsResponseDto> myConsultResponseDtoList = new ArrayList<>();
 //
-//
 //        for (Consult consult : consultList) {
-//            if (consult.getTitle().equals(keyword) && footstepsPost.getTitle().equals(keyword)) {
-//                myConsultResponseDtoList.add(
-//                        ConsultFootStepsResponseDto.builder()
-//                                .answerState(consult.getAnswerState())
-//                                .title(consult.getTitle())
-//                                .review(footstepsPost.getReview())
-//                                .overLab(true)
-//                                .build()
-//                );
-//            } else if (consult.getTitle().equals(keyword) && footstepsPost.getTitle() == null) {
-//                myConsultResponseDtoList.add(
-//                        ConsultFootStepsResponseDto.builder()
-//                                .overLab(false)
-//                                .answerState(consult.getAnswerState())
-//                                .review(consult.getConsultMessage())
-//                                .title(consult.getTitle())
-//                                .build()
-//                );
-//            } else if (consult.getTitle() == null && footstepsPost.getTitle().equals(keyword)) {
-//                myConsultResponseDtoList.add(
-//                        ConsultFootStepsResponseDto.builder()
-//                                .title(footstepsPost.getTitle())
-//                                .review(footstepsPost.getReview())
-//                                .overLab(false)
-//                                .build()
-//                );
-//            } else if (myConsultResponseDtoList.isEmpty()) {
-//                throw new KeywordNotFoundException();
-//            }
+//            for(FootstepsPost footstepsPost : footstepsPostList){
+//                if (consult.getTitle().equals(footstepsPost.getTitle())) {
+//                    myConsultResponseDtoList.add(
+//                            ConsultFootStepsResponseDto.builder()
+//                                    .answerState(consult.getAnswerState())
+//                                    .title(consult.getTitle())
+//                                    .review(footstepsPost.getReview())
+//                                    .overLab(true)
+//                                    .build()
+//                    );
 //
+//
+//                } else if (myConsultResponseDtoList.isEmpty()) {
+//                    throw new KeywordNotFoundException();
+//                }
+//            }
 //        } return myConsultResponseDtoList;
 //    }
 
@@ -117,7 +102,8 @@ public class SearchService {
         List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().equals(keyword) && consult.getAnswerState().equals(AnswerState.WAIT)){
+            if(consult.getTitle().contains(keyword)){
+                if(consult.getAnswerState().equals(AnswerState.WAIT)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
                                     .searchWord(keyword)
@@ -127,6 +113,7 @@ public class SearchService {
                                     .title(consult.getTitle())
                                     .build()
                     );
+                }
             }else if (myConsultResponseDtoList.isEmpty()) {
                 throw new KeywordNotFoundException();
             }
@@ -143,19 +130,21 @@ public class SearchService {
         List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().equals(keyword) && consult.getAnswerState().equals(AnswerState.ANSWER)){
-                myConsultResponseDtoList.add(
-                        MyConsultResponseDto.builder()
-                                .searchWord(keyword)
-                                .comment(consult.getCommentList()
-                                        .stream()
-                                        .map(Comment::getContent)
-                                        .collect(Collectors.toList()).toString())
-                                .answerState(consult.getAnswerState())
-                                .createDate(consult.getCreateDate())
-                                .title(consult.getTitle())
-                                .build()
-                );
+            if(consult.getTitle().contains(keyword)){
+                if(consult.getAnswerState().equals(AnswerState.ANSWER)){
+                    myConsultResponseDtoList.add(
+                            MyConsultResponseDto.builder()
+                                    .searchWord(keyword)
+                                    .comment(consult.getCommentList()
+                                            .stream()
+                                            .map(Comment::getContent)
+                                            .collect(Collectors.toList()).toString())
+                                    .answerState(consult.getAnswerState())
+                                    .createDate(consult.getCreateDate())
+                                    .title(consult.getTitle())
+                                    .build()
+                    );
+                }
             } else if (myConsultResponseDtoList.isEmpty()) {
                 throw new KeywordNotFoundException();
             }
@@ -165,6 +154,12 @@ public class SearchService {
 
     public void validAuth(UserDetailsImpl userDetails) {
         if (userDetails == null) throw new UserUnauthorizedException();
+    }
+
+    private void validUser(UserDetailsImpl userDetails){
+        validAuth(userDetails);
+        if(userDetails.getAuthority() != Authority.ROLE_USER)
+            throw new AccessDeniedException();
     }
 
     private void validRealtor(UserDetailsImpl userDetails){
