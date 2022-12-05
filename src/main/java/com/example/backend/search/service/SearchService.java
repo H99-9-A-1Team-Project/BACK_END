@@ -7,7 +7,6 @@ import com.example.backend.consult.repository.ConsultRepository;
 import com.example.backend.footsteps.model.FootstepsPost;
 import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.global.exception.customexception.AccessDeniedException;
-import com.example.backend.global.exception.customexception.NotFoundException;
 import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.search.dto.ConsultFootStepsResponseDto;
 import com.example.backend.search.dto.MyConsultResponseDto;
@@ -68,47 +67,71 @@ public class SearchService {
         return myConsultResponseDtoList;
     }
 
-//    @Transactional(readOnly = true)
-//    public List<ConsultFootStepsResponseDto> searchPremises(UserDetailsImpl userDetails, String keyword) {
-//        validRealtor(userDetails);
-//        FootstepsPost footstepsPost = footstepsRepository.findById(userDetails.getUser().getId()).orElseThrow(NotFoundException::new);
-//        List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
-//        List<ConsultFootStepsResponseDto> myConsultResponseDtoList = new ArrayList<>();
-//
-//
-//        for (Consult consult : consultList) {
-//            if (consult.getTitle().equals(keyword) && footstepsPost.getTitle().equals(keyword)) {
-//                myConsultResponseDtoList.add(
-//                        ConsultFootStepsResponseDto.builder()
-//                                .answerState(consult.getAnswerState())
-//                                .title(consult.getTitle())
-//                                .review(footstepsPost.getReview())
-//                                .overLab(true)
-//                                .build()
-//                );
-//            } else if (consult.getTitle().equals(keyword) && footstepsPost.getTitle() == null) {
-//                myConsultResponseDtoList.add(
-//                        ConsultFootStepsResponseDto.builder()
-//                                .overLab(false)
-//                                .answerState(consult.getAnswerState())
-//                                .review(consult.getConsultMessage())
-//                                .title(consult.getTitle())
-//                                .build()
-//                );
-//            } else if (consult.getTitle() == null && footstepsPost.getTitle().equals(keyword)) {
-//                myConsultResponseDtoList.add(
-//                        ConsultFootStepsResponseDto.builder()
-//                                .title(footstepsPost.getTitle())
-//                                .review(footstepsPost.getReview())
-//                                .overLab(false)
-//                                .build()
-//                );
-//            } else if (myConsultResponseDtoList.isEmpty()) {
-//                throw new KeywordNotFoundException();
-//            }
-//
-//        } return myConsultResponseDtoList;
-//    }
+    @Transactional(readOnly = true)
+    public List<ConsultFootStepsResponseDto> searchPremises(UserDetailsImpl userDetails, String keyword) {
+        validAuth(userDetails);
+
+        List<FootstepsPost> footstepsPostList = footstepsRepository.findByUserAndTitleContaining(userDetails.getUser(), keyword);
+        List<Consult> consultList = consultRepository.findAllByUserAndTitleContaining(userDetails.getUser(), keyword);
+
+        List<ConsultFootStepsResponseDto> myConsultResponseDtoList = new ArrayList<>();
+        List<ConsultFootStepsResponseDto> ResponseDtoList = new ArrayList<>();
+
+        for (Consult consult : consultList) {
+            for(FootstepsPost post: footstepsPostList){
+                if(consult.getTitle().equals(post.getTitle())){
+                    ResponseDtoList.add(ConsultFootStepsResponseDto.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .overLab(3)
+                            .coordY(post.getCoordFY())
+                            .coordX(post.getCoordFX())
+                            .review(post.getReview())
+                            .build());
+                }
+            }
+        }
+
+        myConsultResponseDtoList.addAll(ResponseDtoList);
+
+        for(Consult consult : consultList) {
+            int num = 0;
+
+            for (ConsultFootStepsResponseDto dto : ResponseDtoList) {
+                if(consult.getTitle().equals(dto.getTitle())) num++;
+            }
+
+            if(num == 0) myConsultResponseDtoList.add(
+                    ConsultFootStepsResponseDto.builder()
+                            .id(consult.getId())
+                            .title(consult.getTitle())
+                            .overLab(2)
+                            .coordX(consult.getCoordX())
+                            .coordY(consult.getCoordY())
+                            .review(consult.getConsultMessage())
+                            .build());
+        }
+
+        for(FootstepsPost post : footstepsPostList){
+            int num = 0;
+
+            for(ConsultFootStepsResponseDto dto : ResponseDtoList) {
+                if(post.getTitle().equals(dto.getTitle())) num++;
+            }
+
+            if(num == 0) myConsultResponseDtoList.add(
+                    ConsultFootStepsResponseDto.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .coordY(post.getCoordFY())
+                            .coordX(post.getCoordFX())
+                            .overLab(1)
+                            .review(post.getReview())
+                            .build());
+        }
+
+        return myConsultResponseDtoList;
+    }
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> waitCustomerSearch(UserDetailsImpl userDetails, String keyword) {

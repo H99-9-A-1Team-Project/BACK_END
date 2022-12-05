@@ -47,4 +47,6 @@ public interface FootstepsRepository extends JpaRepository<FootstepsPost,Long> {
             " AND consult.coordy = coordfy\n" +
             " WHERE consult.user_id = :user_id AND footsteps_post.user_id = :user_id", nativeQuery = true)
     List<FootstepsPost> findByUserInfo(@Param("user_id") Long user_id);
+
+    List<FootstepsPost> findByUserAndTitleContaining(User user, String keyword);
 }

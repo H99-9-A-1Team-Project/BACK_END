@@ -3,6 +3,7 @@ package com.example.backend.consult.repository;
 import com.example.backend.consult.model.Consult;
 //import com.example.backend.search.dto.MyConsultResponseDto;
 import com.example.backend.search.dto.MyConsultResponseDto;
+import com.example.backend.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +25,6 @@ public interface ConsultRepository extends JpaRepository<Consult, Long>,ConsultR
     List<MyConsultResponseDto> findAllByKeywordContaining(@Param("keyword") String keyword);
 
     Consult findByUserId(Long id);
+
+    List<Consult> findAllByUserAndTitleContaining(User user, String keyword);
 }

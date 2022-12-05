@@ -20,11 +20,11 @@ public class SearchController {
         return ResponseEntity.ok(searchService.searchConsult(userDetails, keyword));
     }
 
-//    @GetMapping("/premises/advicerequest/search")
-//    public ResponseEntity<?> searchpremises(@AuthenticationPrincipal UserDetailsImpl userDetails,
-//                                           @RequestParam(value = "keyword")String keyword) {
-//        return ResponseEntity.ok(searchService.searchPremises(userDetails, keyword));
-//    }
+    @GetMapping("/premises/advicerequest/search")
+    public ResponseEntity<?> searchpremises(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                           @RequestParam(value = "keyword")String keyword) {
+        return ResponseEntity.ok(searchService.searchPremises(userDetails, keyword));
+    }
 
     @GetMapping("/waitcustomer/search")
     public ResponseEntity<?> waitCustomerSearch(@AuthenticationPrincipal UserDetailsImpl userDetails,
