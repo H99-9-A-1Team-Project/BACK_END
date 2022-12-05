@@ -53,12 +53,12 @@ public class CommentService {
         validRealtor(userDetails);
         Consult consult = consultRepository.findById(consultId).orElseThrow(ConsultNotFoundException::new);
         consult.updateState();
-        ChatRoom chatRoom = chatRoomService.createGroupChatRoom(userDetails.getUser(), consult.getTitle());
+//        ChatRoom chatRoom = chatRoomService.createGroupChatRoom(userDetails.getUser(), consult.getTitle());
         Comment comment = Comment.builder()
                 .content(dto.getAnswerMessage())
                 .realtor((Realtor) userDetails.getUser())
                 .consult(consult)
-                .roomNo(chatRoom.getRoomNo())
+//                .roomNo(chatRoom.getRoomNo())
                 .build();
 
         commentRepository.save(comment);
