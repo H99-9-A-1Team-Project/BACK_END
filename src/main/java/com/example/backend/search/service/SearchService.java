@@ -30,12 +30,12 @@ public class SearchService {
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> searchConsult(UserDetailsImpl userDetails, String keyword) {
-        validAuth(userDetails);
+        validUser(userDetails);
 
         List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().equals(keyword)){
+            if(consult.getTitle().contains(keyword)){
                 if(consult.getAnswerState().equals(AnswerState.WAIT)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
@@ -133,6 +133,7 @@ public class SearchService {
         return myConsultResponseDtoList;
     }
 
+
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> waitCustomerSearch(UserDetailsImpl userDetails, String keyword) {
         validRealtor(userDetails);
@@ -140,7 +141,8 @@ public class SearchService {
         List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().equals(keyword) && consult.getAnswerState().equals(AnswerState.WAIT)){
+            if(consult.getTitle().contains(keyword)){
+                if(consult.getAnswerState().equals(AnswerState.WAIT)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
                                     .searchWord(keyword)
@@ -150,6 +152,7 @@ public class SearchService {
                                     .title(consult.getTitle())
                                     .build()
                     );
+                }
             }else if (myConsultResponseDtoList.isEmpty()) {
                 throw new KeywordNotFoundException();
             }
@@ -166,19 +169,21 @@ public class SearchService {
         List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().equals(keyword) && consult.getAnswerState().equals(AnswerState.ANSWER)){
-                myConsultResponseDtoList.add(
-                        MyConsultResponseDto.builder()
-                                .searchWord(keyword)
-                                .comment(consult.getCommentList()
-                                        .stream()
-                                        .map(Comment::getContent)
-                                        .collect(Collectors.toList()).toString())
-                                .answerState(consult.getAnswerState())
-                                .createDate(consult.getCreateDate())
-                                .title(consult.getTitle())
-                                .build()
-                );
+            if(consult.getTitle().contains(keyword)){
+                if(consult.getAnswerState().equals(AnswerState.ANSWER)){
+                    myConsultResponseDtoList.add(
+                            MyConsultResponseDto.builder()
+                                    .searchWord(keyword)
+                                    .comment(consult.getCommentList()
+                                            .stream()
+                                            .map(Comment::getContent)
+                                            .collect(Collectors.toList()).toString())
+                                    .answerState(consult.getAnswerState())
+                                    .createDate(consult.getCreateDate())
+                                    .title(consult.getTitle())
+                                    .build()
+                    );
+                }
             } else if (myConsultResponseDtoList.isEmpty()) {
                 throw new KeywordNotFoundException();
             }
@@ -188,6 +193,12 @@ public class SearchService {
 
     public void validAuth(UserDetailsImpl userDetails) {
         if (userDetails == null) throw new UserUnauthorizedException();
+    }
+
+    private void validUser(UserDetailsImpl userDetails){
+        validAuth(userDetails);
+        if(userDetails.getAuthority() != Authority.ROLE_USER)
+            throw new AccessDeniedException();
     }
 
     private void validRealtor(UserDetailsImpl userDetails){

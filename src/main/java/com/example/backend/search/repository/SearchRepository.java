@@ -11,5 +11,5 @@ import java.util.List;
 public interface SearchRepository extends JpaRepository<Consult, Long> {
     @Query(value = "SELECT * from consult c " +
             "where title Like '%keyword%' ", nativeQuery = true)
-    List<MyConsultResponseDto> findAllByKeywordContaining(@Param("keyword") String keyword);
+    List<MyConsultResponseDto> findAllByKeyword(@Param("keyword") String keyword);
 }
