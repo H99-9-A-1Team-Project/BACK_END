@@ -14,9 +14,27 @@ public class SearchController {
 
     private final SearchService searchService;
 
-    @GetMapping("/consult/search")
+    @GetMapping("/myconsult/search")
     public ResponseEntity<?> searchConsult(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                            @RequestParam(value = "keyword")String keyword) {
         return ResponseEntity.ok(searchService.searchConsult(userDetails, keyword));
+    }
+
+//    @GetMapping("/premises/advicerequest/search")
+//    public ResponseEntity<?> searchpremises(@AuthenticationPrincipal UserDetailsImpl userDetails,
+//                                           @RequestParam(value = "keyword")String keyword) {
+//        return ResponseEntity.ok(searchService.searchPremises(userDetails, keyword));
+//    }
+
+    @GetMapping("/waitcustomer/search")
+    public ResponseEntity<?> waitCustomerSearch(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                           @RequestParam(value = "keyword")String keyword) {
+        return ResponseEntity.ok(searchService.waitCustomerSearch(userDetails, keyword));
+    }
+
+    @GetMapping("/replied/search")
+    public ResponseEntity<?> repliedSearch(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                           @RequestParam(value = "keyword")String keyword) {
+        return ResponseEntity.ok(searchService.repliedSearch(userDetails, keyword));
     }
 }
