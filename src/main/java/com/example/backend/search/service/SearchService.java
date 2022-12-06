@@ -133,8 +133,7 @@ public class SearchService {
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> waitCustomerSearch(UserDetailsImpl userDetails, String keyword) {
         validRealtor(userDetails);
-
-        List<Consult> consultList = consultRepository.findAllByTitleContainingString(keyword);
+        List<Consult> consultList = consultRepository.findAllByTitleContaining(keyword);
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
                 if(consult.getAnswerState().equals(AnswerState.WAIT)){
