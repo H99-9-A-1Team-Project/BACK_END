@@ -146,11 +146,12 @@ public class SearchService {
                                     .title(consult.getTitle())
                                     .build()
                     );
-                }else if (myConsultResponseDtoList.isEmpty()) {
-                    throw new KeywordNotFoundException();
-
                 }
             }
+
+        if (myConsultResponseDtoList.isEmpty()) {
+            throw new KeywordNotFoundException();
+        }
         return myConsultResponseDtoList;
     }
 
@@ -177,11 +178,13 @@ public class SearchService {
                                     .title(consult.getTitle())
                                     .build()
                     );
-                }else if (myConsultResponseDtoList.isEmpty()) {
-                    throw new KeywordNotFoundException();
-
                 }
             }
+
+        if (myConsultResponseDtoList.isEmpty()) {
+            throw new KeywordNotFoundException();
+        }
+
         return myConsultResponseDtoList;
     }
 
