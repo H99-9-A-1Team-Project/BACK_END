@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class RepliedConsultResponseDto {
     private Long id;
     private String title;
-
+    private String consultMessage;
     private String answerMessage;
 
     private AnswerState answerState;
@@ -25,6 +25,7 @@ public class RepliedConsultResponseDto {
     public RepliedConsultResponseDto(Consult consult, String content){
         this.id = consult.getId();
         this.title = consult.getTitle();
+        this.consultMessage = consult.getConsultMessage();
         this.answerMessage = content;
         this.answerState = consult.getAnswerState();
         this.createdAt = consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
