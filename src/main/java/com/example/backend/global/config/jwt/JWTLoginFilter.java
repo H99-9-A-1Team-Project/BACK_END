@@ -50,7 +50,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request,
             HttpServletResponse response) throws AuthenticationException {
 
-        String refreshToken = request.getHeader("refresh_token");
+        String refreshToken = request.getHeader("refresh-token");
 
         if (refreshToken == null) {
             LoginRequestDto userLogin = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
