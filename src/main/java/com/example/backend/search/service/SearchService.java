@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class SearchService {
 
     private final ConsultRepository consultRepository;
+    private final FootstepsRepository footstepsRepository;
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> searchConsult(UserDetailsImpl userDetails, String keyword) {
