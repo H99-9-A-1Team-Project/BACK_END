@@ -27,6 +27,7 @@ public interface ConsultRepository extends JpaRepository<Consult, Long>,ConsultR
     List<Consult> findAllByUserAndTitleContaining(User user, String keyword);
 
     List<Consult> findAllByUserIdAndTitleContaining(Long id, String keyword);
+    List<Consult> findAllByTitleContainingString(String keyword);
 
 
 }
