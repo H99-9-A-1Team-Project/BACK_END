@@ -27,42 +27,37 @@ import java.util.stream.Collectors;
 public class SearchService {
 
     private final ConsultRepository consultRepository;
-    private final FootstepsRepository footstepsRepository;
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> searchConsult(UserDetailsImpl userDetails, String keyword) {
         validUser(userDetails);
 
-        List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
+        List<Consult> consultList = consultRepository.findAllByUserIdAndTitleContaining(userDetails.getUser().getId(), keyword);
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().contains(keyword)){
-                if(consult.getAnswerState().equals(AnswerState.WAIT)){
-                    myConsultResponseDtoList.add(
-                            MyConsultResponseDto.builder()
-                                    .searchWord(keyword)
-                                    .consultMessage(consult.getConsultMessage())
-                                    .answerState(consult.getAnswerState())
-                                    .createDate(consult.getCreateDate())
-                                    .title(consult.getTitle())
-                                    .build()
-                    );
-                }else{
-                    myConsultResponseDtoList.add(
-                            MyConsultResponseDto.builder()
-                                    .searchWord(keyword)
-                                    .comment(consult.getCommentList()
-                                            .stream()
-                                            .map(Comment::getContent)
-                                            .collect(Collectors.toList()).toString())
-                                    .answerState(consult.getAnswerState())
-                                    .createDate(consult.getCreateDate())
-                                    .title(consult.getTitle())
-                                    .build()
-                    );
-                }
-            } else if (myConsultResponseDtoList.isEmpty()) {
-                throw new KeywordNotFoundException();
+            if(consult.getAnswerState().equals(AnswerState.WAIT)){
+                myConsultResponseDtoList.add(
+                        MyConsultResponseDto.builder()
+                                .searchWord(keyword)
+                                .consultMessage(consult.getConsultMessage())
+                                .answerState(consult.getAnswerState())
+                                .createDate(consult.getCreateDate())
+                                .title(consult.getTitle())
+                                .build()
+                );
+            }else{
+                myConsultResponseDtoList.add(
+                        MyConsultResponseDto.builder()
+                                .searchWord(keyword)
+                                .comment(consult.getCommentList()
+                                        .stream()
+                                        .map(Comment::getContent)
+                                        .collect(Collectors.toList()).toString())
+                                .answerState(consult.getAnswerState())
+                                .createDate(consult.getCreateDate())
+                                .title(consult.getTitle())
+                                .build()
+                );
             }
         }
         return myConsultResponseDtoList;
@@ -99,10 +94,10 @@ public class SearchService {
     public List<MyConsultResponseDto> waitCustomerSearch(UserDetailsImpl userDetails, String keyword) {
         validRealtor(userDetails);
 
-        List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
+        List<Consult> consultList = consultRepository.findAllByUserIdAndTitleContaining(userDetails.getUser().getId(), keyword);
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().contains(keyword)){
+
                 if(consult.getAnswerState().equals(AnswerState.WAIT)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
@@ -113,11 +108,11 @@ public class SearchService {
                                     .title(consult.getTitle())
                                     .build()
                     );
+                }else if (myConsultResponseDtoList.isEmpty()) {
+                    throw new KeywordNotFoundException();
+
                 }
-            }else if (myConsultResponseDtoList.isEmpty()) {
-                throw new KeywordNotFoundException();
             }
-        }
         return myConsultResponseDtoList;
     }
 
@@ -127,10 +122,10 @@ public class SearchService {
     public List<MyConsultResponseDto> repliedSearch(UserDetailsImpl userDetails, String keyword) {
         validRealtor(userDetails);
 
-        List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
+        List<Consult> consultList = consultRepository.findAllByUserIdAndTitleContaining(userDetails.getUser().getId(), keyword);
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-            if(consult.getTitle().contains(keyword)){
+
                 if(consult.getAnswerState().equals(AnswerState.ANSWER)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
@@ -144,11 +139,11 @@ public class SearchService {
                                     .title(consult.getTitle())
                                     .build()
                     );
+                }else if (myConsultResponseDtoList.isEmpty()) {
+                    throw new KeywordNotFoundException();
+
                 }
-            } else if (myConsultResponseDtoList.isEmpty()) {
-                throw new KeywordNotFoundException();
             }
-        }
         return myConsultResponseDtoList;
     }
 

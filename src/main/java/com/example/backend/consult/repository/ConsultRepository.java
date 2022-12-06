@@ -23,5 +23,5 @@ public interface ConsultRepository extends JpaRepository<Consult, Long>,ConsultR
             "where title Like '%keyword%' ", nativeQuery = true)
     List<MyConsultResponseDto> findAllByKeywordContaining(@Param("keyword") String keyword);
 
-    Consult findByUserId(Long id);
+    List<Consult> findAllByUserIdAndTitleContaining(Long id, String keyword);
 }
