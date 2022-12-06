@@ -4,12 +4,8 @@ import com.example.backend.comment.model.Comment;
 import com.example.backend.consult.model.AnswerState;
 import com.example.backend.consult.model.Consult;
 import com.example.backend.consult.repository.ConsultRepository;
-import com.example.backend.footsteps.model.FootstepsPost;
-import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.global.exception.customexception.AccessDeniedException;
-import com.example.backend.global.exception.customexception.NotFoundException;
 import com.example.backend.global.security.auth.UserDetailsImpl;
-import com.example.backend.search.dto.ConsultFootStepsResponseDto;
 import com.example.backend.search.dto.MyConsultResponseDto;
 import com.example.backend.search.exception.KeywordNotFoundException;
 import com.example.backend.user.exception.user.UserUnauthorizedException;
@@ -63,32 +59,7 @@ public class SearchService {
         return myConsultResponseDtoList;
     }
 
-//    @Transactional(readOnly = true)
-//    public List<ConsultFootStepsResponseDto> searchPremises(UserDetailsImpl userDetails, String keyword) {
-//        validAuth(userDetails);
-//        List<FootstepsPost> footstepsPostList = footstepsRepository.findByUserId(userDetails.getUser().getId());
-//        List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
-//        List<ConsultFootStepsResponseDto> myConsultResponseDtoList = new ArrayList<>();
-//
-//        for (Consult consult : consultList) {
-//            for(FootstepsPost footstepsPost : footstepsPostList){
-//                if (consult.getTitle().equals(footstepsPost.getTitle())) {
-//                    myConsultResponseDtoList.add(
-//                            ConsultFootStepsResponseDto.builder()
-//                                    .answerState(consult.getAnswerState())
-//                                    .title(consult.getTitle())
-//                                    .review(footstepsPost.getReview())
-//                                    .overLab(true)
-//                                    .build()
-//                    );
-//
-//
-//                } else if (myConsultResponseDtoList.isEmpty()) {
-//                    throw new KeywordNotFoundException();
-//                }
-//            }
-//        } return myConsultResponseDtoList;
-//    }
+
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> waitCustomerSearch(UserDetailsImpl userDetails, String keyword) {
