@@ -1,14 +1,11 @@
 package com.example.backend.global.config.jwt;
 
 import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.user.exception.user.*;
 import com.example.backend.user.model.AccountCheck;
 import com.example.backend.user.model.Authority;
 import com.example.backend.user.model.Realtor;
 import com.example.backend.user.model.User;
-import com.example.backend.user.exception.user.MemberNotFoundException;
-import com.example.backend.user.exception.user.RealtorNotApprovedException;
-import com.example.backend.user.exception.user.RealtorNotApprovedYetException;
-import com.example.backend.user.exception.user.TokenExpiredException;
 import com.example.backend.user.dto.request.LoginRequestDto;
 import com.example.backend.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,7 +50,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletRequest request,
             HttpServletResponse response) throws AuthenticationException {
 
-        String refreshToken = request.getHeader("refresh_token");
+        String refreshToken = request.getHeader("refresh-token");
 
         if (refreshToken == null) {
             LoginRequestDto userLogin = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
@@ -65,7 +62,8 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             VerifyResult verify = JWTUtil.verify(refreshToken);
 
             if (verify.isSuccess()) {
-                User user = userRepository.findByEmail(verify.getUserId()).orElseThrow();
+                User user = userRepository.findByEmail(verify.getUserId())
+                        .orElseThrow(MemberNotFoundException::new);
                 return new UsernamePasswordAuthenticationToken(
                         new UserDetailsImpl(user), user.getPassword());
 
@@ -89,7 +87,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
             Realtor realtor = (Realtor) user;
             if(realtor.getAccountCheck() == AccountCheck.APPROVE_WAIT) {
                 throw new RealtorNotApprovedYetException();
-            } else if (realtor.getAccountCheck() == AccountCheck.APPROVE_COMPLETE) {
+            } else if (realtor.getAccountCheck() == AccountCheck.APPROVE_REJECT) {
                 throw new RealtorNotApprovedException();
             }
         }
@@ -114,7 +112,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
     ) throws IOException, ServletException {
 
         SecurityContextHolder.clearContext();
-        throw new MemberNotFoundException();
+        throw new LoginFailureException();
 
     }
 

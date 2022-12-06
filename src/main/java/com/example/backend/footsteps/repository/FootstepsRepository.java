@@ -11,6 +11,8 @@ import java.util.List;
 public interface FootstepsRepository extends JpaRepository<FootstepsPost,Long> {
     List<FootstepsPost> findByUser(User user);
 
+    List<FootstepsPost> findByUserId(Long id);
+
     @Query(value = "SELECT DISTINCT footsteps_post.accessibility, \n" +
             "\t\t\tfootsteps_post.cctv, \n" +
             " footsteps_post.coordfx,\n" +
@@ -47,4 +49,6 @@ public interface FootstepsRepository extends JpaRepository<FootstepsPost,Long> {
             " AND consult.coordy = coordfy\n" +
             " WHERE consult.user_id = :user_id AND footsteps_post.user_id = :user_id", nativeQuery = true)
     List<FootstepsPost> findByUserInfo(@Param("user_id") Long user_id);
+
+    List<FootstepsPost> findByUserAndTitleContaining(User user, String keyword);
 }

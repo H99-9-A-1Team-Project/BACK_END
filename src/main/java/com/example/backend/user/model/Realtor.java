@@ -28,6 +28,8 @@ public class Realtor extends User {
     @Column
     private String profile;
 
+    @Column
+    private Long likeCount = 0L;
 
     public Realtor(SignUpRealtorRequestDto dto) {
         super(dto);
@@ -48,5 +50,8 @@ public class Realtor extends User {
     public void update(RealtorEditRequestDto dto) {
         this.introMessage = dto.getIntroMessage();
         this.setNickname(dto.getNickname());
+    }
+    public void update(Long likeCount){
+        this.likeCount = likeCount;
     }
 }

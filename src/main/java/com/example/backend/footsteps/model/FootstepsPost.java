@@ -1,9 +1,12 @@
 package com.example.backend.footsteps.model;
 
 import com.example.backend.consult.model.Photo;
+import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
 import com.example.backend.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -25,13 +28,14 @@ public class FootstepsPost {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
     @JsonIgnore
     @OneToMany(mappedBy = "footstepsPost",fetch = FetchType.LAZY)
     private List<Photo> photos= new ArrayList<>();
-    //제목
+
     @Column
     private String title;
 
@@ -42,10 +46,10 @@ public class FootstepsPost {
     private double coordFX;
     //가격
     @Column
-    private Long price;
+    private String price;
     //평수
     @Column
-    private Long size;
+    private String size;
     //한줄평
     @Column
     private String review;
@@ -107,7 +111,7 @@ public class FootstepsPost {
     @Column
     private boolean park;
     @Column
-    private Long expenses;
+    private String expenses;
     @DateTimeFormat
     private LocalDateTime createDate; // 날짜
 
@@ -116,4 +120,33 @@ public class FootstepsPost {
         this.createDate = LocalDateTime.now();
     }
 
+    public void updatePost(FootstepsRequstDto postRequestDto) {
+        this.title = postRequestDto.getTitle();
+        this.coordFY = postRequestDto.getCoordFY();
+        this.coordFX = postRequestDto.getCoordFX();
+        this.price = postRequestDto.getPrice();
+        this.size = postRequestDto.getSize();
+        this.review = postRequestDto.getReview();
+        this.sun = postRequestDto.isSun();
+        this.mold = postRequestDto.isMold();
+        this.vent = postRequestDto.isVent();
+        this.water = postRequestDto.isWater();
+        this.ventil = postRequestDto.isVentil();
+        this.drain = postRequestDto.isDrain();
+        this.draft = postRequestDto.isDraft();
+        this.extraMemo = postRequestDto.getExtraMemo();
+        this.option = postRequestDto.getOption();
+        this.destroy = postRequestDto.isDestroy();
+        this.utiRoom = postRequestDto.isUtiRoom();
+        this.securityWindow = postRequestDto.isSecurityWindow();
+        this.noise = postRequestDto.isNoise();
+        this.loan = postRequestDto.isLoan();
+        this.cctv = postRequestDto.isCctv();
+        this.hill = postRequestDto.isHill();
+        this.mart = postRequestDto.isMart();
+        this.hospital = postRequestDto.isHospital();
+        this.accessibility = postRequestDto.isAccessibility();
+        this.park = postRequestDto.isPark();
+        this.expenses = postRequestDto.getExpenses();
+    }
 }

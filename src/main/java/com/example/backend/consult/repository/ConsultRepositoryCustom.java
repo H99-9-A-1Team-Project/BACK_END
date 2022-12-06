@@ -6,5 +6,5 @@ import java.util.List;
 
 //메서드를 작성하는 곳
 public interface ConsultRepositoryCustom {
-//    List<Consult> findProductByUserId(Long userId);
+    List<Consult> findProductByUserId(Long userId);
 }

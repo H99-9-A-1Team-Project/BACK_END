@@ -2,10 +2,7 @@ package com.example.backend.global.config.jwt;
 
 import com.example.backend.global.exception.ErrorCode;
 import com.example.backend.global.exception.ErrorResponse;
-import com.example.backend.user.exception.user.MemberNotFoundException;
-import com.example.backend.user.exception.user.RealtorNotApprovedException;
-import com.example.backend.user.exception.user.RealtorNotApprovedYetException;
-import com.example.backend.user.exception.user.TokenExpiredException;
+import com.example.backend.user.exception.user.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,6 +32,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             setErrorResponse(TOKEN_EXPIRED_EXCEPTION, response,ex);
         } catch (MemberNotFoundException | UsernameNotFoundException ex) {
             setErrorResponse(MEMBER_NOT_FOUND, response, ex);
+        } catch (LoginFailureException ex){
+            setErrorResponse(LOGIN_FAIL_EXCEPTION, response, ex);
         } catch (IOException ex) {
             setErrorResponse(INTERNAL_SERVER_ERROR, response, ex);
         }

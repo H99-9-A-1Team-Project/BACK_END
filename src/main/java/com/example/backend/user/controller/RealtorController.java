@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 
 @RequestMapping("/v1")
@@ -24,7 +25,7 @@ public class RealtorController {
     // realtor 회원가입 승인 여부 수정 (관리자 권한)
     @PutMapping("/realtor-approval")
     public ResponseEntity<?> approveRealtor(@RequestBody RealtorApproveRequestDto dto,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws MessagingException {
         realtorService.approveRealtor(dto, userDetails);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -1,7 +1,12 @@
 package com.example.backend.user.service;
 
 
+import com.example.backend.global.exception.CustomException;
+import com.example.backend.global.exception.ErrorCode;
 import com.example.backend.global.security.auth.UserDetailsImpl;
+import com.example.backend.survey.domain.Survey;
+import com.example.backend.survey.dto.UserSurveyRequestDto;
+import com.example.backend.survey.repository.SurveyRepository;
 import com.example.backend.user.dto.request.editUserInfoRequestDto;
 import com.example.backend.user.dto.response.MemberProfileResponseDto;
 import com.example.backend.user.dto.response.RealtorProfileResponseDto;
@@ -10,6 +15,7 @@ import com.example.backend.user.model.Member;
 import com.example.backend.user.exception.user.UserUnauthorizedException;
 import com.example.backend.user.model.Realtor;
 import com.example.backend.user.exception.user.MemberNotFoundException;
+import com.example.backend.user.model.User;
 import com.example.backend.user.repository.MemberRepository;
 import com.example.backend.user.repository.RealtorRepository;
 import com.example.backend.user.repository.UserRepository;
@@ -24,10 +30,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final RealtorRepository realtorRepository;
     private final MemberRepository memberRepository;
+    private final SurveyRepository surveyRepository;
 
     @Transactional
-    public void deleteUserInfo(UserDetailsImpl userDetails) {
+    public void deleteUserInfo(UserDetailsImpl userDetails, UserSurveyRequestDto userSurveyRequestDto) {
         validAuth(userDetails);
+        Survey survey = userSurveyRequestDto.toSurvey();
+
+        surveyRepository.save(survey);
         userRepository.deleteByEmail(userDetails.getUser().getEmail());
     }
 
@@ -64,6 +74,19 @@ public class UserService {
         if(userDetails == null) throw new UserUnauthorizedException();
     }
 
+    @Transactional(readOnly = true)
+    public User checkMemberByNick(String email) {
+        return userRepository.findByEmail(email).orElseThrow(
+                MemberNotFoundException::new
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public User checkMemberByMemberNo(Long memberNo) {
+        return memberRepository.findById(memberNo).orElseThrow(
+                MemberNotFoundException::new
+        );
+    }
 }
 
 
