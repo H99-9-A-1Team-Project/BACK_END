@@ -1,6 +1,5 @@
 package com.example.backend.search.dto;
 
-import com.example.backend.consult.model.AnswerState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +10,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class ConsultFootStepsResponseDto {
+    private Long id;
     private String title;
     private String review;
-    private AnswerState answerState;
-    private boolean overLab;
+    private int overLab;
+    private double coordX;
+    private double coordY;
 }

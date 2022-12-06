@@ -28,6 +28,9 @@ public class ConsultSearch {
     private String title;
 
     @Column
+    private String keyword;
+
+    @Column
     private String consultMessage;
 
     @Column

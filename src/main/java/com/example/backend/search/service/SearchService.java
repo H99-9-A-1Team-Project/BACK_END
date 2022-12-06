@@ -59,7 +59,32 @@ public class SearchService {
         return myConsultResponseDtoList;
     }
 
-
+//    @Transactional(readOnly = true)
+//    public List<ConsultFootStepsResponseDto> searchPremises(UserDetailsImpl userDetails, String keyword) {
+//        validAuth(userDetails);
+//        List<FootstepsPost> footstepsPostList = footstepsRepository.findByUserId(userDetails.getUser().getId());
+//        List<Consult> consultList = consultRepository.findAllByUserId(userDetails.getUser().getId());
+//        List<ConsultFootStepsResponseDto> myConsultResponseDtoList = new ArrayList<>();
+//
+//        for (Consult consult : consultList) {
+//            for(FootstepsPost footstepsPost : footstepsPostList){
+//                if (consult.getTitle().equals(footstepsPost.getTitle())) {
+//                    myConsultResponseDtoList.add(
+//                            ConsultFootStepsResponseDto.builder()
+//                                    .answerState(consult.getAnswerState())
+//                                    .title(consult.getTitle())
+//                                    .review(footstepsPost.getReview())
+//                                    .overLab(true)
+//                                    .build()
+//                    );
+//
+//
+//                } else if (myConsultResponseDtoList.isEmpty()) {
+//                    throw new KeywordNotFoundException();
+//                }
+//            }
+//        } return myConsultResponseDtoList;
+//    }
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> waitCustomerSearch(UserDetailsImpl userDetails, String keyword) {

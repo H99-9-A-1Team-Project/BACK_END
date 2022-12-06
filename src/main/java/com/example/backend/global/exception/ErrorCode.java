@@ -24,7 +24,7 @@ public enum ErrorCode {
     REALTOR_NOT_APPROVED_YET(HttpStatus.FORBIDDEN, "U003", "공인중개사 인증이 완료되지 않았습니다."),
     REALTOR_NOT_APPROVED(HttpStatus.FORBIDDEN, "U004", "공인중개사 인증이 거부되었습니다."),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND ,"U005","존재하지 않는 회원입니다."),
-    TOKEN_EXPIRED_EXCEPTION(HttpStatus.UNAUTHORIZED, "U006" , "토큰이 유효하지 않습니다."),
+    TOKEN_EXPIRED_EXCEPTION(HttpStatus.LOCKED, "U006" , "토큰이 유효하지 않습니다."),
     MEMBER_NOT_EQUALS_EXCEPTION(HttpStatus.BAD_REQUEST ,"U007" ,"수정할 권한이 없습니다." ),
 
     // Register
