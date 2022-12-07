@@ -39,11 +39,11 @@ public class User {
     private Authority authority;
 
     @DateTimeFormat
-    private LocalDateTime createdAt; // 날짜
+    private LocalDateTime createDate; // 날짜
 
     @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
-    public void createdAt() {
-        this.createdAt = LocalDateTime.now();
+    public void createDate() {
+        this.createDate = LocalDateTime.now();
     }
 
     public User(editUserInfoRequestDto nicknameRequestDto) {

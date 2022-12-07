@@ -149,19 +149,19 @@ public class SearchService {
         List<Consult> consultList = consultRepository.findAllByTitleContaining(keyword);
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-                if(consult.getAnswerState().equals(AnswerState.WAIT)){
-                    myConsultResponseDtoList.add(
-                            MyConsultResponseDto.builder()
-                                    .id(consult.getId())
-                                    .searchWord(keyword)
-                                    .consultMessage(consult.getConsultMessage())
-                                    .answerState(consult.getAnswerState())
-                                    .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                                    .title(consult.getTitle())
-                                    .build()
-                    );
-                }
+            if(consult.getAnswerState().equals(AnswerState.WAIT)){
+                myConsultResponseDtoList.add(
+                        MyConsultResponseDto.builder()
+                                .id(consult.getId())
+                                .searchWord(keyword)
+                                .consultMessage(consult.getConsultMessage())
+                                .answerState(consult.getAnswerState())
+                                .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                                .title(consult.getTitle())
+                                .build()
+                );
             }
+        }
 
         if (myConsultResponseDtoList.isEmpty()) {
             throw new KeywordNotFoundException();
@@ -201,7 +201,6 @@ public class SearchService {
         }
         return myConsultResponseDtoList;
     }
-
 
     public void validAuth(UserDetailsImpl userDetails) {
         if (userDetails == null) throw new UserUnauthorizedException();
