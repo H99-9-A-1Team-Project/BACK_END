@@ -15,10 +15,11 @@ import java.util.List;
 @Getter
 @Builder
 public class MyConsultResponseDto {
+    private Long id;
     private String title;
     private String consultMessage;
     private AnswerState answerState;
-    private LocalDateTime createDate;
+    private String createdAt;
     private String searchWord;
     private String comment;
 }
