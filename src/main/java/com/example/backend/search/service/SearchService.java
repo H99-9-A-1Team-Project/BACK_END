@@ -63,6 +63,9 @@ public class SearchService {
                                 .build()
                 );
             }
+            if (myConsultResponseDtoList.isEmpty()) {
+                throw new KeywordNotFoundException();
+            }
         }
         return myConsultResponseDtoList;
     }
@@ -170,7 +173,7 @@ public class SearchService {
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
 
-                if(consult.getAnswerState().equals(AnswerState.ANSWER)){
+                if(consult.getAnswerState().equals(AnswerState.ANSWER) || consult.getAnswerState().equals(AnswerState.FINISH)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
                                     .id(consult.getId())
