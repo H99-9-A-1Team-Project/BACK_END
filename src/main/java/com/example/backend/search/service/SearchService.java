@@ -38,23 +38,26 @@ public class SearchService {
             if(consult.getAnswerState().equals(AnswerState.WAIT)){
                 myConsultResponseDtoList.add(
                         MyConsultResponseDto.builder()
+                                .id(consult.getId())
                                 .searchWord(keyword)
                                 .consultMessage(consult.getConsultMessage())
                                 .answerState(consult.getAnswerState())
-                                .createDate(consult.getCreateDate())
+                                .createdAt(consult.getCreateDate())
                                 .title(consult.getTitle())
                                 .build()
                 );
             }else{
                 myConsultResponseDtoList.add(
                         MyConsultResponseDto.builder()
+                                .id(consult.getId())
                                 .searchWord(keyword)
+                                .consultMessage(consult.getConsultMessage())
                                 .comment(consult.getCommentList()
                                         .stream()
                                         .map(Comment::getContent)
                                         .collect(Collectors.toList()).toString())
                                 .answerState(consult.getAnswerState())
-                                .createDate(consult.getCreateDate())
+                                .createdAt(consult.getCreateDate())
                                 .title(consult.getTitle())
                                 .build()
                 );
@@ -139,10 +142,11 @@ public class SearchService {
                 if(consult.getAnswerState().equals(AnswerState.WAIT)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
+                                    .id(consult.getId())
                                     .searchWord(keyword)
                                     .consultMessage(consult.getConsultMessage())
                                     .answerState(consult.getAnswerState())
-                                    .createDate(consult.getCreateDate())
+                                    .createdAt(consult.getCreateDate())
                                     .title(consult.getTitle())
                                     .build()
                     );
@@ -168,13 +172,15 @@ public class SearchService {
                 if(consult.getAnswerState().equals(AnswerState.ANSWER)){
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
+                                    .id(consult.getId())
+                                    .consultMessage(consult.getConsultMessage())
                                     .searchWord(keyword)
                                     .comment(consult.getCommentList()
                                             .stream()
                                             .map(Comment::getContent)
                                             .collect(Collectors.toList()).toString())
                                     .answerState(consult.getAnswerState())
-                                    .createDate(consult.getCreateDate())
+                                    .createdAt(consult.getCreateDate())
                                     .title(consult.getTitle())
                                     .build()
                     );
