@@ -55,7 +55,7 @@ public class AuthService {
     }
     @Transactional
     public void emailConfirm(EmailConfirmRequestDto emailConfirmRequestDto) {
-        if (realtorRepository.findByEmail(emailConfirmRequestDto.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(emailConfirmRequestDto.getEmail()).isPresent()) {
             throw new MemberEmailAlreadyExistsException();
         }
     }

@@ -199,13 +199,14 @@ public class SearchService {
         if (myConsultResponseDtoList.isEmpty()) {
             throw new KeywordNotFoundException();
         }
-
         return myConsultResponseDtoList;
     }
+
 
     public void validAuth(UserDetailsImpl userDetails) {
         if (userDetails == null) throw new UserUnauthorizedException();
     }
+
 
     private void validUser(UserDetailsImpl userDetails){
         validAuth(userDetails);
