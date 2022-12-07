@@ -36,81 +36,81 @@ public class FootstepsPost {
     @OneToMany(mappedBy = "footstepsPost",fetch = FetchType.LAZY)
     private List<Photo> photos= new ArrayList<>();
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
-    @Column
+    @Column(nullable = false)
     private double coordFY;
 
-    @Column
+    @Column(nullable = false)
     private double coordFX;
     //가격
-    @Column
+    @Column(nullable = false)
     private String price;
     //평수
-    @Column
+    @Column(nullable = false)
     private String size;
     //한줄평
-    @Column
+    @Column(nullable = false)
     private String review;
     //햇빛
-    @Column
+    @Column(nullable = false)
     private boolean sun;
     //습도/곰팡이
-    @Column
+    @Column(nullable = false)
     private boolean mold;
     //환기
-    @Column
+    @Column(nullable = false)
     private boolean vent;
-    @Column
+    @Column(nullable = false)
     private boolean water;
-    @Column
+    @Column(nullable = false)
     private boolean ventil;
-    @Column
+    @Column(nullable = false)
     private boolean drain;
     //외풍
-    @Column
+    @Column(nullable = false)
     private boolean draft;
     //매물추가 메모
-    @Column
+    @Column(nullable = false)
     private String extraMemo;
     //옵션상태
-    @Column
+    @Column(nullable = false)
     private String option;
     //파손
-    @Column
+    @Column(nullable = false)
     private boolean destroy;
     //다용도실
-    @Column
+    @Column(nullable = false)
     private boolean utiRoom;
     //방범창
-    @Column
+    @Column(nullable = false)
     private boolean securityWindow;
     //소음
-    @Column
+    @Column(nullable = false)
     private boolean noise;
     //대출
-    @Column
+    @Column(nullable = false)
     private boolean loan;
     //cctv
-    @Column
+    @Column(nullable = false)
     private boolean cctv;
     //언덕
-    @Column
+    @Column(nullable = false)
     private boolean hill;
     //시장,마트
-    @Column
+    @Column(nullable = false)
     private boolean mart;
     //병원
-    @Column
+    @Column(nullable = false)
     private boolean hospital;
     //접근성
-    @Column
+    @Column(nullable = false)
     private boolean accessibility;
     //주차장
-    @Column
+    @Column(nullable = false)
     private boolean park;
-    @Column
+    @Column(nullable = false)
     private String expenses;
     @DateTimeFormat
     private LocalDateTime createDate; // 날짜
