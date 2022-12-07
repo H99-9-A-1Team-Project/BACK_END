@@ -19,7 +19,7 @@ public class MyConsultResponseDto {
     private String title;
     private String consultMessage;
     private AnswerState answerState;
-    private LocalDateTime createdAt;
+    private String createdAt;
     private String searchWord;
     private String comment;
 }
