@@ -1,6 +1,8 @@
 package com.example.backend.search.service;
 
 import com.example.backend.comment.model.Comment;
+import com.example.backend.comment.repository.CommentRepository;
+import com.example.backend.consult.dto.response.RepliedConsultResponseDto;
 import com.example.backend.consult.model.AnswerState;
 import com.example.backend.consult.model.Consult;
 import com.example.backend.consult.repository.ConsultRepository;
@@ -11,8 +13,11 @@ import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.search.dto.ConsultFootStepsResponseDto;
 import com.example.backend.search.dto.MyConsultResponseDto;
 import com.example.backend.search.exception.KeywordNotFoundException;
+import com.example.backend.user.exception.user.MemberNotFoundException;
 import com.example.backend.user.exception.user.UserUnauthorizedException;
 import com.example.backend.user.model.Authority;
+import com.example.backend.user.model.Realtor;
+import com.example.backend.user.repository.RealtorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +33,8 @@ public class SearchService {
 
     private final ConsultRepository consultRepository;
     private final FootstepsRepository footstepsRepository;
+    private final CommentRepository commentRepository;
+    private final RealtorRepository realtorRepository;
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> searchConsult(UserDetailsImpl userDetails, String keyword) {
@@ -168,39 +175,38 @@ public class SearchService {
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> repliedSearch(UserDetailsImpl userDetails, String keyword) {
         validRealtor(userDetails);
+        Realtor realtor = realtorRepository.findByEmail(userDetails.getUser().getEmail()).orElseThrow(MemberNotFoundException::new);
 
-        List<Consult> consultList = consultRepository.findAllByUserIdAndTitleContaining(userDetails.getUser().getId(), keyword);
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
-        for (Consult consult : consultList) {
 
-                if(consult.getAnswerState().equals(AnswerState.ANSWER) || consult.getAnswerState().equals(AnswerState.FINISH)){
-                    myConsultResponseDtoList.add(
-                            MyConsultResponseDto.builder()
-                                    .id(consult.getId())
-                                    .consultMessage(consult.getConsultMessage())
+            commentRepository.findByRealtor(realtor)
+                    .forEach(comment -> {
+                        if (comment.getConsult().getTitle().contains(keyword)) {
+                            myConsultResponseDtoList.add(MyConsultResponseDto.builder()
+                                    .id(comment.getConsult().getId())
+                                    .consultMessage(comment.getConsult().getConsultMessage())
                                     .searchWord(keyword)
-                                    .comment(consult.getCommentList()
+                                    .comment(comment.getConsult().getCommentList()
                                             .stream()
                                             .map(Comment::getContent)
                                             .collect(Collectors.toList()).toString())
-                                    .answerState(consult.getAnswerState())
-                                    .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                                    .title(consult.getTitle())
-                                    .build()
-                    );
-                }
-            }
+                                    .answerState(comment.getConsult().getAnswerState())
+                                    .createdAt(comment.getConsult().getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                                    .title(comment.getConsult().getTitle())
+                                    .build());
+                        }
+                    });
 
         if (myConsultResponseDtoList.isEmpty()) {
             throw new KeywordNotFoundException();
         }
-
         return myConsultResponseDtoList;
     }
 
     public void validAuth(UserDetailsImpl userDetails) {
         if (userDetails == null) throw new UserUnauthorizedException();
     }
+
 
     private void validUser(UserDetailsImpl userDetails){
         validAuth(userDetails);
