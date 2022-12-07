@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class SearchService {
                                 .searchWord(keyword)
                                 .consultMessage(consult.getConsultMessage())
                                 .answerState(consult.getAnswerState())
-                                .createdAt(consult.getCreateDate())
+                                .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                                 .title(consult.getTitle())
                                 .build()
                 );
@@ -57,7 +58,7 @@ public class SearchService {
                                         .map(Comment::getContent)
                                         .collect(Collectors.toList()).toString())
                                 .answerState(consult.getAnswerState())
-                                .createdAt(consult.getCreateDate())
+                                .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                                 .title(consult.getTitle())
                                 .build()
                 );
@@ -146,7 +147,7 @@ public class SearchService {
                                     .searchWord(keyword)
                                     .consultMessage(consult.getConsultMessage())
                                     .answerState(consult.getAnswerState())
-                                    .createdAt(consult.getCreateDate())
+                                    .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                                     .title(consult.getTitle())
                                     .build()
                     );
@@ -180,7 +181,7 @@ public class SearchService {
                                             .map(Comment::getContent)
                                             .collect(Collectors.toList()).toString())
                                     .answerState(consult.getAnswerState())
-                                    .createdAt(consult.getCreateDate())
+                                    .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
                                     .title(consult.getTitle())
                                     .build()
                     );
