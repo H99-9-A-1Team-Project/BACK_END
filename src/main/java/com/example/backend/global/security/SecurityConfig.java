@@ -46,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers("/h2-console/**"
                 , "/favicon.ico"
-                , "/error");
+                , "/error"
+        ,"/swagger-ui/**");
     }
 
 
@@ -94,48 +95,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
 
-                .antMatchers("/swagger-ui/**", "/v3/**", "/v1/**","/test","/chat/**").permitAll() // swagger
-                .antMatchers(HttpMethod.GET, "/image/**").permitAll()
+//                .antMatchers(  "/chat/**").permitAll() // swagger
+//                .antMatchers(HttpMethod.GET, "/image/**").permitAll()
 //                .antMatchers("/chat/**").permitAll()
-                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**", "/waitcustomer/search").permitAll()
 
-                .antMatchers("/api/signup","/api/realtor/signup", "/api/login", "/api/realtor/login", "/api/reissue", "/api/**", "/awsHealthCheck","/myconsult/search/**").permitAll()
+                .antMatchers("/v1/signup", "/v1/emailconfirm", "/v1/realtor/signup", "/v1/login", "/v1/reissue", "/awsHealthCheck").permitAll()
 
-                .antMatchers(HttpMethod.GET, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.POST, "/api/users").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.GET, "/api/users/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.PUT, "/api/users/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.DELETE, "/api/users/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+                .antMatchers("/v1/user").access("hasRole('ROLE_USER')")
+                .antMatchers("/v1/myprofile").access("hasRole('USER') or hasRole('REALTOR')")
+                .antMatchers( "/v1/myconsult").access("hasRole('USER')")
+                .antMatchers( "/v1/waitcustomer").access("hasRole('REALTOR')")
+                .antMatchers( "/v1/replied").access("hasRole('REALTOR')")
+//
+                .antMatchers( "/v1/consult/{consult_id}/img").access("hasRole('REALTOR')")
+                .antMatchers( "/v1/consult/{consult_id}/comment").access("hasRole('REALTOR')")
+                .antMatchers(HttpMethod.GET, "/v1/consult/{consult_id}").access("hasRole('USER') or hasRole('REALTOR')")
+                .antMatchers(HttpMethod.PUT, "/v1/consult/{consult_id}").access("hasRole('USER')")
+                .antMatchers( "/v1/advicerequest").access("hasRole('USER')")
+                .antMatchers( "/v1/user/profile").access("hasRole('USER')")
+                .antMatchers( "/v1/realtor/profile").access("hasRole('REALTOR')")
+                .antMatchers(HttpMethod.GET, "/v1/realtor-approval").access("hasRole('ADMIN')")
+                .antMatchers(HttpMethod.PUT, "/v1/realtor-approval").access("hasRole('ADMIN')")
+                .antMatchers( "/v1/premises").access("hasRole('USER')")
+                .antMatchers( "/v1/premises/advicerequest").access("hasRole('USER')")
+                .antMatchers( "/v1/premises/allpost").access("hasRole('USER')")
+                .antMatchers(HttpMethod.GET, "/v1/premises/{premises_id}").access("hasRole('USER')")
+                .antMatchers(HttpMethod.PUT, "/v1/premises/{premises_id}").access("hasRole('USER')")
+                .antMatchers(HttpMethod.DELETE, "/v1/premises/{premises_id}").access("hasRole('USER')")
+                .antMatchers( "/v1/premises/{premises_id}?page={page}&size=5").access("hasRole('USER')")
+                .antMatchers( "/v1/like/{comment_id}").access("hasRole('USER')")
+                .antMatchers( "/v1/survey?page={page}&size=5").access("hasRole('USER')")
+                .antMatchers( "/v1/myconsult/search?keyword={keyword}").access("hasRole('USER')")
+                .antMatchers( "/v1/premises/advicerequest/search?keyword={keyword}").access("hasRole('USER')")
+                .antMatchers( "/v1/waitcustomer/search?keyword={keyword}").access("hasRole('REALTOR')")
+                .antMatchers( "/v1/replied/search?keyword={keyword}").access("hasRole('REALTOR')")
 
-                .antMatchers(HttpMethod.POST, "/api/post").authenticated()
-                .antMatchers(HttpMethod.GET, "/api/post").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.GET, "/api/post/best").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.GET, "/api/post/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.POST, "/api/post/like/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.POST, "/api/post/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.PUT, "/api/post/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.DELETE, "/api/post/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-
-                .antMatchers(HttpMethod.GET, "/api/mypage/post").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.GET, "/api/mypage/comment").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.GET, "/api/mypage/like").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-
-                .antMatchers(HttpMethod.GET, "/api/post/{postId}/comment").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.GET, "/api/post/comment/{commentId}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.POST, "/api/post/{postId}/comment").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/post/{postId}/comment/{commentId}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.DELETE, "/api/post/{postId}/comment/{commentId}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-
-                .antMatchers(HttpMethod.GET, "/api/comment/nested/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.POST, "/api/comment/{id}/nested").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/comment/nested/{id}").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-                .antMatchers(HttpMethod.DELETE, "/api/comment/nested/{id}").authenticated()
-
-
-                .anyRequest().hasAnyRole("ROLE_ADMIN")
-
-                // .anyRequest().authenticated() // 나머지는 전부 인증 필요
-                // .anyRequest().permitAll()   // 나머지는 모두 그냥 접근 가능
+                 .anyRequest().authenticated() // 나머지는 전부 인증 필요
 
                 // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
                 .and()

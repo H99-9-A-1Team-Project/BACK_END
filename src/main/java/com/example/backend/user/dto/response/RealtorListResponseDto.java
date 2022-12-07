@@ -19,7 +19,7 @@ public class RealtorListResponseDto {
     public RealtorListResponseDto(Realtor realtor) {
         this.email = realtor.getEmail();
         this.nickname = realtor.getNickname();
-        this.createDate = realtor.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+        this.createDate = realtor.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
         this.license = realtor.getLicense();
         this.accountCheck = realtor.getAccountCheck();
     }
