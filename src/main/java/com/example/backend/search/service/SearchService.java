@@ -63,9 +63,9 @@ public class SearchService {
                                 .build()
                 );
             }
-            if (myConsultResponseDtoList.isEmpty()) {
-                throw new KeywordNotFoundException();
-            }
+        }
+        if (myConsultResponseDtoList.isEmpty()) {
+            throw new KeywordNotFoundException();
         }
         return myConsultResponseDtoList;
     }
