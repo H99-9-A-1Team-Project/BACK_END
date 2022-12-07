@@ -51,6 +51,7 @@ public class SearchService {
                         MyConsultResponseDto.builder()
                                 .id(consult.getId())
                                 .searchWord(keyword)
+                                .consultMessage(consult.getConsultMessage())
                                 .comment(consult.getCommentList()
                                         .stream()
                                         .map(Comment::getContent)
@@ -172,6 +173,7 @@ public class SearchService {
                     myConsultResponseDtoList.add(
                             MyConsultResponseDto.builder()
                                     .id(consult.getId())
+                                    .consultMessage(consult.getConsultMessage())
                                     .searchWord(keyword)
                                     .comment(consult.getCommentList()
                                             .stream()
