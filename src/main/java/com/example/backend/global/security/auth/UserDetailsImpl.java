@@ -3,10 +3,12 @@ package com.example.backend.global.security.auth;
 import com.example.backend.user.model.Authority;
 import com.example.backend.user.model.User;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -38,6 +40,9 @@ public class UserDetailsImpl implements UserDetails {
         return user;
     }
 
+    public Authority getRole(){
+        return user.getAuthority();
+    }
 
     public Authority getAuthority() {
         return user.getAuthority();
@@ -73,11 +78,10 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Collection<GrantedAuthority> grantedAuthority = new ArrayList<>();
+        grantedAuthority.add((GrantedAuthority) () -> getRole().toString());
+        return grantedAuthority;
     }
-
-
 }

@@ -2,7 +2,6 @@ package com.example.backend.search.service;
 
 import com.example.backend.comment.model.Comment;
 import com.example.backend.comment.repository.CommentRepository;
-import com.example.backend.consult.dto.response.RepliedConsultResponseDto;
 import com.example.backend.consult.model.AnswerState;
 import com.example.backend.consult.model.Consult;
 import com.example.backend.consult.repository.ConsultRepository;
@@ -150,19 +149,19 @@ public class SearchService {
         List<Consult> consultList = consultRepository.findAllByTitleContaining(keyword);
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
         for (Consult consult : consultList) {
-                if(consult.getAnswerState().equals(AnswerState.WAIT)){
-                    myConsultResponseDtoList.add(
-                            MyConsultResponseDto.builder()
-                                    .id(consult.getId())
-                                    .searchWord(keyword)
-                                    .consultMessage(consult.getConsultMessage())
-                                    .answerState(consult.getAnswerState())
-                                    .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                                    .title(consult.getTitle())
-                                    .build()
-                    );
-                }
+            if(consult.getAnswerState().equals(AnswerState.WAIT)){
+                myConsultResponseDtoList.add(
+                        MyConsultResponseDto.builder()
+                                .id(consult.getId())
+                                .searchWord(keyword)
+                                .consultMessage(consult.getConsultMessage())
+                                .answerState(consult.getAnswerState())
+                                .createdAt(consult.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                                .title(consult.getTitle())
+                                .build()
+                );
             }
+        }
 
         if (myConsultResponseDtoList.isEmpty()) {
             throw new KeywordNotFoundException();
@@ -179,23 +178,23 @@ public class SearchService {
 
         List<MyConsultResponseDto> myConsultResponseDtoList = new ArrayList<>();
 
-            commentRepository.findByRealtor(realtor)
-                    .forEach(comment -> {
-                        if (comment.getConsult().getTitle().contains(keyword)) {
-                            myConsultResponseDtoList.add(MyConsultResponseDto.builder()
-                                    .id(comment.getConsult().getId())
-                                    .consultMessage(comment.getConsult().getConsultMessage())
-                                    .searchWord(keyword)
-                                    .comment(comment.getConsult().getCommentList()
-                                            .stream()
-                                            .map(Comment::getContent)
-                                            .collect(Collectors.toList()).toString())
-                                    .answerState(comment.getConsult().getAnswerState())
-                                    .createdAt(comment.getConsult().getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
-                                    .title(comment.getConsult().getTitle())
-                                    .build());
-                        }
-                    });
+        commentRepository.findByRealtor(realtor)
+                .forEach(comment -> {
+                    if (comment.getConsult().getTitle().contains(keyword)) {
+                        myConsultResponseDtoList.add(MyConsultResponseDto.builder()
+                                .id(comment.getConsult().getId())
+                                .consultMessage(comment.getConsult().getConsultMessage())
+                                .searchWord(keyword)
+                                .comment(comment.getConsult().getCommentList()
+                                        .stream()
+                                        .map(Comment::getContent)
+                                        .collect(Collectors.toList()).toString())
+                                .answerState(comment.getConsult().getAnswerState())
+                                .createdAt(comment.getConsult().getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                                .title(comment.getConsult().getTitle())
+                                .build());
+                    }
+                });
 
         if (myConsultResponseDtoList.isEmpty()) {
             throw new KeywordNotFoundException();
