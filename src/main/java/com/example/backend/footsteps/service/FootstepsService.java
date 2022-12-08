@@ -38,14 +38,15 @@ public class FootstepsService {
     private final ConsultRepository consultRepository;
 
     @Transactional
-    public void createPost(PhotoListRequestDto photoListRequestDto, Photoprofile photoprofileList, UserDetailsImpl userDetails) throws Exception {
+    public void createPost(PhotoListRequestDto photoListRequestDto, List<MultipartFile> multipartFile, Photoprofile photoprofileList, UserDetailsImpl userDetails) throws Exception {
         validAuth(userDetails);
 
+        List<String> imgUrlList = amazonS3Service.uploadMultipleS3Photo1(multipartFile, userDetails);
         saveFootStepPost(photoprofileList, userDetails);
         Long id = saveFootStepPost(photoprofileList, userDetails).getId();
         HashMap<String,String> photoUrlList = amazonS3Service.uploadMultipleS3Photo(photoListRequestDto, userDetails);
 
-        savePhotos(photoUrlList,id);
+        savePhotos(imgUrlList, multipartFile, photoUrlList,id);
     }
     @Transactional
     public void updatePost(Long premisesId, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
@@ -61,7 +62,10 @@ public class FootstepsService {
         footstepsRepository.delete(footstepsPost);
     }
 
-    private void savePhotos(HashMap<String,String> imgUrlList, Long id) {
+    private void savePhotos(FootstepsPost footstepsPost, List<String> imgUrlList1, HashMap<String,String> imgUrlList, Long id) {
+        List<Photo> photos = new ArrayList<>();
+        imgUrlList1.forEach(imgUrl -> photos.add(new Photo(imgUrl, footstepsPost)));
+        photoRepository.saveAll(photos);
         Photo photo = Photo.builder()
                 .accessibilityImg(imgUrlList.get("accessibilityImg"))
                 .cctvImg(imgUrlList.get("cctvImg"))

@@ -29,9 +29,10 @@ public class FootstepsController {
 
     @PostMapping("/premises")
     private ResponseEntity<?> createPost(@ModelAttribute PhotoListRequestDto photoListRequestDto,
+                                         @RequestParam(required = false, value = "file") @Valid List<MultipartFile> multipartFiles,
                                          @RequestPart(value = "post") Photoprofile photoprofileList,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
-        footstepsService.createPost(photoListRequestDto, photoprofileList, userDetails);
+        footstepsService.createPost(photoListRequestDto,multipartFiles, photoprofileList, userDetails);
         return new ResponseEntity(HttpStatus.OK);
     }
     @PutMapping("/premises/{premisesId}")

@@ -93,4 +93,16 @@ public class AmazonS3Service {
         return imgUrlList;
     }
 
+    public List<String> uploadMultipleS3Photo1(List<MultipartFile> multipartFile, UserDetailsImpl userDetails) throws IOException {
+        List<String> imgUrlList = new ArrayList<>();
+
+        for (MultipartFile file : multipartFile) {
+            if(multipartFile == null || multipartFile.isEmpty()){
+                throw new ImageNotFoundException();
+            }
+            String imageUrl = upload(file, "FootstepPhotos", userDetails.getUser().getEmail());
+            imgUrlList.add(imageUrl);
+        }
+        return imgUrlList;
+    }
 }

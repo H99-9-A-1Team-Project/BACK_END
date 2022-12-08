@@ -27,6 +27,8 @@ public class Photo {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private FootstepsPost footstepsPost;
     @Column
+    private String postImgUrl;
+    @Column
     private String sunImg;
     //습도/곰팡이
     @Column
@@ -76,4 +78,8 @@ public class Photo {
     @Column
     private String parkImg;
 
+    public Photo(String postImgUrl ,FootstepsPost footstepsPost){
+        this.postImgUrl = postImgUrl;
+        this.footstepsPost = footstepsPost;
+    }
 }
