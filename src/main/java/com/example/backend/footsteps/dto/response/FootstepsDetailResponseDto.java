@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -67,7 +69,6 @@ public class FootstepsDetailResponseDto {
     private boolean YesOrNo;
     private String expenses;
     public FootstepsDetailResponseDto(FootstepsPost footstepsPost, boolean yesOrNo){
-     this.title = footstepsPost.getTitle();
         this.title = footstepsPost.getTitle();
         this.coordFY = footstepsPost.getCoordFY();
         this.coordFX = footstepsPost.getCoordFX();
@@ -92,8 +93,9 @@ public class FootstepsDetailResponseDto {
         this.hospital = footstepsPost.isHospital();
         this.accessibility = footstepsPost.isAccessibility();
         this.park = footstepsPost.isPark();
-        this.createdAt = footstepsPost.getTitle();
+        this.createdAt = footstepsPost.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
         this.expenses =footstepsPost.getExpenses();
+        this.review = footstepsPost.getReview();
         this.YesOrNo = yesOrNo;
 
     }
