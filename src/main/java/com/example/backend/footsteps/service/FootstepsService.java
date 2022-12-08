@@ -1,37 +1,30 @@
 package com.example.backend.footsteps.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
 import com.example.backend.consult.repository.ConsultRepository;
+import com.example.backend.footsteps.dto.request.PhotoListRequestDto;
+import com.example.backend.footsteps.dto.request.Photoprofile;
+import com.example.backend.footsteps.dto.request.RegisterPhotoRequest;
 import com.example.backend.footsteps.dto.response.FootstepsDetailResponseDto;
 import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
 import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
-import com.example.backend.global.config.S3examination.CommonUtils;
 import com.example.backend.global.infra.S3.service.AmazonS3Service;
 import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.consult.model.Consult;
 import com.example.backend.footsteps.model.FootstepsPost;
-import com.example.backend.consult.model.Photo;
+import com.example.backend.footsteps.model.Photo;
 import com.example.backend.global.exception.customexception.AccessDeniedException;
-import com.example.backend.global.exception.customexception.ImageNotFoundException;
 import com.example.backend.global.exception.customexception.NotFoundException;
 import com.example.backend.user.exception.user.UserUnauthorizedException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -45,13 +38,14 @@ public class FootstepsService {
     private final ConsultRepository consultRepository;
 
     @Transactional
-    public void createPost(List<MultipartFile> multipartFile, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) throws IOException {
+    public void createPost(PhotoListRequestDto photoListRequestDto, Photoprofile photoprofileList, UserDetailsImpl userDetails) throws Exception {
         validAuth(userDetails);
 
-        FootstepsPost footstepsPost = saveFootStepPost(postRequestDto, userDetails);
-        List<String> imgUrlList = amazonS3Service.uploadMultipleS3Photo(multipartFile, userDetails);
+        saveFootStepPost(photoprofileList, userDetails);
+        Long id = saveFootStepPost(photoprofileList, userDetails).getId();
+        HashMap<String,String> photoUrlList = amazonS3Service.uploadMultipleS3Photo(photoListRequestDto, userDetails);
 
-        savePhotos(footstepsPost, imgUrlList);
+        savePhotos(photoUrlList,id);
     }
     @Transactional
     public void updatePost(Long premisesId, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
@@ -67,15 +61,36 @@ public class FootstepsService {
         footstepsRepository.delete(footstepsPost);
     }
 
-    private void savePhotos(FootstepsPost footstepsPost, List<String> imgUrlList) {
-        List<Photo> photos = new ArrayList<>();
-        imgUrlList.forEach(imgUrl -> photos.add(new Photo(imgUrl, footstepsPost)));
-        photoRepository.saveAll(photos);
+    private void savePhotos(HashMap<String,String> imgUrlList, Long id) {
+        Photo photo = Photo.builder()
+                .accessibilityImg(imgUrlList.get("accessibilityImg"))
+                .cctvImg(imgUrlList.get("cctvImg"))
+                .hillImg(imgUrlList.get("hillImg"))
+                .destroyImg(imgUrlList.get("destroyImg"))
+                .draftImg(imgUrlList.get("draftImg"))
+                .loanImg(imgUrlList.get("loanImg"))
+                .hospitalImg(imgUrlList.get("hospitalImg"))
+                .martImg(imgUrlList.get("martImg"))
+                .moldImg(imgUrlList.get("moldImg"))
+                .noiseImg(imgUrlList.get("noiseImg"))
+                .securityWindowImg(imgUrlList.get("securityWindowImg"))
+                .parkImg(imgUrlList.get("parkImg"))
+                .utiRoomImg(imgUrlList.get("utiRoomImg"))
+                .waterImg(imgUrlList.get("waterImg"))
+                .sunImg(imgUrlList.get("sunImg"))
+                .ventImg(imgUrlList.get("ventImg"))
+                .ventilImg(imgUrlList.get("ventilImg"))
+                .drainImg(imgUrlList.get("drainImg"))
+                .utiRoomImg(imgUrlList.get("utiRoomImg"))
+                .footstepsPost(footstepsRepository.getReferenceById(id))
+                .build();
+
+        photoRepository.save(photo);
     }
 
 
-    private FootstepsPost saveFootStepPost(FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
-        FootstepsPost footstepsPost = postRequestDto.toFootstepsPost(postRequestDto, userDetails);
+    private FootstepsPost saveFootStepPost(Photoprofile photoprofileList, UserDetailsImpl userDetails) {
+        FootstepsPost footstepsPost = Photoprofile.toFootstepsPost(photoprofileList, userDetails);
         footstepsRepository.save(footstepsPost);
         return footstepsPost;
         }
@@ -115,6 +130,5 @@ public class FootstepsService {
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
     }
-
 
 }
