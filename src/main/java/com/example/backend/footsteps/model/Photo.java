@@ -76,6 +76,4 @@ public class Photo {
     @Column
     private String parkImg;
 
-
-
 }

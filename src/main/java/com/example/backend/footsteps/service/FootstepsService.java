@@ -42,9 +42,10 @@ public class FootstepsService {
         validAuth(userDetails);
 
         saveFootStepPost(photoprofileList, userDetails);
+        Long id = saveFootStepPost(photoprofileList, userDetails).getId();
         HashMap<String,String> photoUrlList = amazonS3Service.uploadMultipleS3Photo(photoListRequestDto, userDetails);
 
-        savePhotos(photoUrlList);
+        savePhotos(photoUrlList,id);
     }
     @Transactional
     public void updatePost(Long premisesId, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
@@ -60,7 +61,7 @@ public class FootstepsService {
         footstepsRepository.delete(footstepsPost);
     }
 
-    private void savePhotos(HashMap<String,String> imgUrlList) {
+    private void savePhotos(HashMap<String,String> imgUrlList, Long id) {
         Photo photo = Photo.builder()
                 .accessibilityImg(imgUrlList.get("accessibilityImg"))
                 .cctvImg(imgUrlList.get("cctvImg"))
@@ -81,6 +82,7 @@ public class FootstepsService {
                 .ventilImg(imgUrlList.get("ventilImg"))
                 .drainImg(imgUrlList.get("drainImg"))
                 .utiRoomImg(imgUrlList.get("utiRoomImg"))
+                .footstepsPost(footstepsRepository.getReferenceById(id))
                 .build();
 
         photoRepository.save(photo);
