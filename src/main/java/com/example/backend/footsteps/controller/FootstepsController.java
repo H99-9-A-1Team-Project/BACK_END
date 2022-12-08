@@ -1,5 +1,7 @@
 package com.example.backend.footsteps.controller;
 
+import com.example.backend.footsteps.dto.request.PhotoListRequestDto;
+import com.example.backend.footsteps.dto.request.Photoprofile;
 import com.example.backend.footsteps.dto.request.RegisterPhotoRequest;
 import com.example.backend.footsteps.dto.response.FootstepsDetailResponseDto;
 import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
@@ -26,9 +28,10 @@ public class FootstepsController {
     private final FootstepsService footstepsService;
 
     @PostMapping("/premises")
-    private ResponseEntity<?> createPost(@ModelAttribute RegisterPhotoRequest request,
-                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        footstepsService.createPost(request,userDetails);
+    private ResponseEntity<?> createPost(@ModelAttribute PhotoListRequestDto photoListRequestDto,
+                                         @RequestPart(value = "post") Photoprofile photoprofileList,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+        footstepsService.createPost(photoListRequestDto, photoprofileList, userDetails);
         return new ResponseEntity(HttpStatus.OK);
     }
     @PutMapping("/premises/{premisesId}")

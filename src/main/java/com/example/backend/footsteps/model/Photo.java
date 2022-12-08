@@ -2,20 +2,19 @@ package com.example.backend.footsteps.model;
 
 import com.example.backend.footsteps.model.FootstepsPost;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.HashMap;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class Photo {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,26 +76,6 @@ public class Photo {
     @Column
     private String parkImg;
 
-    public Photo(String sunImg,String moldImg,String ventImg,String waterImg ,String ventilImg,String drainImg,String draftImg,String destroyImg, String utiRoomImg,String securityWindowImg,
-                 String noiseImg,String loanImg,String cctvImg,String hillImg,String martImg,String hospitalImg,String accessibilityImg, String parkImg, FootstepsPost post){
-        this.sunImg = sunImg;
-        this.moldImg =moldImg;
-        this.ventImg = ventImg;
-        this.waterImg = waterImg;
-        this.ventilImg =ventilImg;
-        this.drainImg = drainImg;
-        this.draftImg = draftImg;
-        this.destroyImg = destroyImg;
-        this.utiRoomImg = utiRoomImg;
-        this.securityWindowImg = securityWindowImg;
-        this.noiseImg = noiseImg;
-        this.loanImg =loanImg;
-        this.cctvImg =cctvImg;
-        this.hillImg =hillImg;
-        this.martImg = martImg;
-        this.hospitalImg =hospitalImg;
-        this.accessibilityImg = accessibilityImg;
-        this.parkImg =parkImg;
-        this.footstepsPost = post;
-    }
+
+
 }

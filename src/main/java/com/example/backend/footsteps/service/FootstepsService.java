@@ -1,6 +1,7 @@
 package com.example.backend.footsteps.service;
 
 import com.example.backend.consult.repository.ConsultRepository;
+import com.example.backend.footsteps.dto.request.PhotoListRequestDto;
 import com.example.backend.footsteps.dto.request.Photoprofile;
 import com.example.backend.footsteps.dto.request.RegisterPhotoRequest;
 import com.example.backend.footsteps.dto.response.FootstepsDetailResponseDto;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -36,13 +38,13 @@ public class FootstepsService {
     private final ConsultRepository consultRepository;
 
     @Transactional
-    public void createPost(RegisterPhotoRequest request, UserDetailsImpl userDetails) throws IOException {
+    public void createPost(PhotoListRequestDto photoListRequestDto, Photoprofile photoprofileList, UserDetailsImpl userDetails) throws Exception {
         validAuth(userDetails);
 
-        FootstepsPost footstepsPost = saveFootStepPost(request, userDetails);
-        List<RegisterPhotoRequest> imgUrlList = amazonS3Service.uploadMultipleS3Photo(request.getPhotoListRequestDto(), userDetails);
+        saveFootStepPost(photoprofileList, userDetails);
+        HashMap<String,String> photoUrlList = amazonS3Service.uploadMultipleS3Photo(photoListRequestDto, userDetails);
 
-        savePhotos(footstepsPost, imgUrlList);
+        savePhotos(photoUrlList);
     }
     @Transactional
     public void updatePost(Long premisesId, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
@@ -58,15 +60,35 @@ public class FootstepsService {
         footstepsRepository.delete(footstepsPost);
     }
 
-    private void savePhotos(FootstepsPost footstepsPost, List<String> imgUrlList) {
-        List<Photo> photos = new ArrayList<>();
-        imgUrlList.forEach(imgUrl -> photos.add(new Photo(imgUrl, footstepsPost)));
-        photoRepository.saveAll(photos);
+    private void savePhotos(HashMap<String,String> imgUrlList) {
+        Photo photo = Photo.builder()
+                .accessibilityImg(imgUrlList.get("accessibilityImg"))
+                .cctvImg(imgUrlList.get("cctvImg"))
+                .hillImg(imgUrlList.get("hillImg"))
+                .destroyImg(imgUrlList.get("destroyImg"))
+                .draftImg(imgUrlList.get("draftImg"))
+                .loanImg(imgUrlList.get("loanImg"))
+                .hospitalImg(imgUrlList.get("hospitalImg"))
+                .martImg(imgUrlList.get("martImg"))
+                .moldImg(imgUrlList.get("moldImg"))
+                .noiseImg(imgUrlList.get("noiseImg"))
+                .securityWindowImg(imgUrlList.get("securityWindowImg"))
+                .parkImg(imgUrlList.get("parkImg"))
+                .utiRoomImg(imgUrlList.get("utiRoomImg"))
+                .waterImg(imgUrlList.get("waterImg"))
+                .sunImg(imgUrlList.get("sunImg"))
+                .ventImg(imgUrlList.get("ventImg"))
+                .ventilImg(imgUrlList.get("ventilImg"))
+                .drainImg(imgUrlList.get("drainImg"))
+                .utiRoomImg(imgUrlList.get("utiRoomImg"))
+                .build();
+
+        photoRepository.save(photo);
     }
 
 
-    private FootstepsPost saveFootStepPost(RegisterPhotoRequest request, UserDetailsImpl userDetails) {
-        FootstepsPost footstepsPost = Photoprofile.toFootstepsPost(request.getPhotoprofileList(), userDetails);
+    private FootstepsPost saveFootStepPost(Photoprofile photoprofileList, UserDetailsImpl userDetails) {
+        FootstepsPost footstepsPost = Photoprofile.toFootstepsPost(photoprofileList, userDetails);
         footstepsRepository.save(footstepsPost);
         return footstepsPost;
         }
@@ -106,6 +128,5 @@ public class FootstepsService {
     public void validAuth(UserDetailsImpl userDetails){
         if(userDetails == null) throw new UserUnauthorizedException();
     }
-
 
 }

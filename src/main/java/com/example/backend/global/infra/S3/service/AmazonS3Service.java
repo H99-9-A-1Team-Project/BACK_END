@@ -3,21 +3,26 @@ package com.example.backend.global.infra.S3.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.backend.footsteps.dto.request.PhotoImgUrlDto;
+import com.example.backend.footsteps.dto.request.PhotoListRequestDto;
+import com.example.backend.footsteps.model.Photo;
 import com.example.backend.global.exception.customexception.ImageNotFoundException;
-import com.example.backend.global.infra.S3.dto.AwsS3;
 import com.example.backend.global.security.auth.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -66,16 +71,21 @@ public class AmazonS3Service {
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    public List<String> uploadMultipleS3Photo(List<MultipartFile> multipartFile, UserDetailsImpl userDetails) throws IOException {
-        List<String> imgUrlList = new ArrayList<>();
+    public HashMap<String, String> uploadMultipleS3Photo(PhotoListRequestDto multipartFile, UserDetailsImpl userDetails) throws Exception {
+        BeanInfo beanInfo = Introspector.getBeanInfo(PhotoListRequestDto.class);
+        HashMap<String, String> imgUrlList = new HashMap<>();
 
-        for (MultipartFile file : multipartFile) {
-            if(multipartFile == null || multipartFile.isEmpty()){
-                throw new ImageNotFoundException();
+        for (PropertyDescriptor propertyDesc : beanInfo.getPropertyDescriptors()) {
+            String propertyName = propertyDesc.getName(); // column 이름
+            Object value = propertyDesc.getReadMethod().invoke(multipartFile); // column 값
+
+            if(propertyName.contains("Img") && value != null) {
+                String imageUrl = upload((MultipartFile) value, "FootstepPhotos", userDetails.getUser().getEmail());
+                imgUrlList.put(propertyName,imageUrl);
             }
-            String imageUrl = upload(file, "FootstepPhotos", userDetails.getUser().getEmail());
-            imgUrlList.add(imageUrl);
         }
+
         return imgUrlList;
     }
+
 }
