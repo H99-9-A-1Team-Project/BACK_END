@@ -40,13 +40,10 @@ public class FootstepsService {
     @Transactional
     public void createPost(PhotoListRequestDto photoListRequestDto, List<MultipartFile> multipartFile, Photoprofile photoprofileList, UserDetailsImpl userDetails) throws Exception {
         validAuth(userDetails);
-
-        List<String> imgUrlList = amazonS3Service.uploadMultipleS3Photo1(multipartFile, userDetails);
-        saveFootStepPost(photoprofileList, userDetails);
-        Long id = saveFootStepPost(photoprofileList, userDetails).getId();
+        FootstepsPost footstepsPost = saveFootStepPost(photoprofileList, userDetails);
         HashMap<String,String> photoUrlList = amazonS3Service.uploadMultipleS3Photo(photoListRequestDto, userDetails);
-
-        savePhotos(imgUrlList, multipartFile, photoUrlList,id);
+        List<String> imgUrlList = amazonS3Service.uploadMultipleS3Photo1(multipartFile, userDetails);
+        savePhotos(footstepsPost,imgUrlList, photoUrlList,footstepsPost.getId());
     }
     @Transactional
     public void updatePost(Long premisesId, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
@@ -62,11 +59,13 @@ public class FootstepsService {
         footstepsRepository.delete(footstepsPost);
     }
 
-    private void savePhotos(FootstepsPost footstepsPost, List<String> imgUrlList1, HashMap<String,String> imgUrlList, Long id) {
+    private void savePhotos(FootstepsPost footstepsPost,List<String> imgUrlList1, HashMap<String,String> imgUrlList, Long id) {
         List<Photo> photos = new ArrayList<>();
-        imgUrlList1.forEach(imgUrl -> photos.add(new Photo(imgUrl, footstepsPost)));
-        photoRepository.saveAll(photos);
+        imgUrlList1.forEach(imgUrl -> photos.add(new Photo(imgUrl,footstepsPost)));
+
         Photo photo = Photo.builder()
+                .extraMemoImg(imgUrlList.get("extraMemoImg"))
+                .optionImg(imgUrlList.get("optionImg"))
                 .accessibilityImg(imgUrlList.get("accessibilityImg"))
                 .cctvImg(imgUrlList.get("cctvImg"))
                 .hillImg(imgUrlList.get("hillImg"))
@@ -90,6 +89,7 @@ public class FootstepsService {
                 .build();
 
         photoRepository.save(photo);
+        photoRepository.saveAll(photos);
     }
 
 

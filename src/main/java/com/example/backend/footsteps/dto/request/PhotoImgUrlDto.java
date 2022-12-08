@@ -6,6 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PhotoImgUrlDto {
+    private String extraMemoImg;
+    private String optionImg;
     private String sunImg;
     private String moldImg;
     private String ventImg;

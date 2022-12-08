@@ -28,6 +28,13 @@ public class Photo {
     private FootstepsPost footstepsPost;
     @Column
     private String postImgUrl;
+
+    @Column
+    private String extraMemoImg;
+
+    @Column
+    private String optionImg;
+
     @Column
     private String sunImg;
     //습도/곰팡이
@@ -78,8 +85,8 @@ public class Photo {
     @Column
     private String parkImg;
 
-    public Photo(String postImgUrl ,FootstepsPost footstepsPost){
-        this.postImgUrl = postImgUrl;
-        this.footstepsPost = footstepsPost;
+    public Photo(String photoImgUrl, FootstepsPost post){
+        this.footstepsPost = post;
+        this.postImgUrl = photoImgUrl;
     }
 }
