@@ -10,6 +10,7 @@ import com.example.backend.global.exception.customexception.ImageNotFoundExcepti
 import com.example.backend.global.security.auth.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +34,7 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Async
     public String upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
         File file = convertMultipartFileToFile(multipartFile)
                 .orElseThrow( ()-> new IllegalArgumentException("파일 업로드에 실패했습니다"));
@@ -80,8 +82,11 @@ public class AmazonS3Service {
             Object value = propertyDesc.getReadMethod().invoke(multipartFile); // column 값
 
             if(propertyName.contains("Img") && value != null) {
-                String imageUrl = upload((MultipartFile) value, "FootstepPhotos", userDetails.getUser().getEmail());
-                imgUrlList.put(propertyName,imageUrl);
+                MultipartFile file = (MultipartFile) value;
+                if(!file.isEmpty()){
+                    String imageUrl = upload((MultipartFile) value, "FootstepPhotos", userDetails.getUser().getEmail());
+                    imgUrlList.put(propertyName,imageUrl);
+                }
             }
         }
 
