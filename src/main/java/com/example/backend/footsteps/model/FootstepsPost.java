@@ -1,6 +1,6 @@
 package com.example.backend.footsteps.model;
 
-import com.example.backend.consult.model.Photo;
+//import com.example.backend.consult.model.Photo;
 import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
 import com.example.backend.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

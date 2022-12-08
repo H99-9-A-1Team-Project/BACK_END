@@ -1,36 +1,27 @@
 package com.example.backend.footsteps.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
 import com.example.backend.consult.repository.ConsultRepository;
+import com.example.backend.footsteps.dto.request.Photoprofile;
+import com.example.backend.footsteps.dto.request.RegisterPhotoRequest;
 import com.example.backend.footsteps.dto.response.FootstepsDetailResponseDto;
 import com.example.backend.footsteps.dto.request.FootstepsRequstDto;
 import com.example.backend.footsteps.repository.FootstepsRepository;
 import com.example.backend.footsteps.repository.PhotoRepository;
-import com.example.backend.global.config.S3examination.CommonUtils;
 import com.example.backend.global.infra.S3.service.AmazonS3Service;
 import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.consult.model.Consult;
 import com.example.backend.footsteps.model.FootstepsPost;
-import com.example.backend.consult.model.Photo;
+import com.example.backend.footsteps.model.Photo;
 import com.example.backend.global.exception.customexception.AccessDeniedException;
-import com.example.backend.global.exception.customexception.ImageNotFoundException;
 import com.example.backend.global.exception.customexception.NotFoundException;
 import com.example.backend.user.exception.user.UserUnauthorizedException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +36,11 @@ public class FootstepsService {
     private final ConsultRepository consultRepository;
 
     @Transactional
-    public void createPost(List<MultipartFile> multipartFile, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) throws IOException {
+    public void createPost(RegisterPhotoRequest request, UserDetailsImpl userDetails) throws IOException {
         validAuth(userDetails);
 
-        FootstepsPost footstepsPost = saveFootStepPost(postRequestDto, userDetails);
-        List<String> imgUrlList = amazonS3Service.uploadMultipleS3Photo(multipartFile, userDetails);
+        FootstepsPost footstepsPost = saveFootStepPost(request, userDetails);
+        List<RegisterPhotoRequest> imgUrlList = amazonS3Service.uploadMultipleS3Photo(request.getPhotoListRequestDto(), userDetails);
 
         savePhotos(footstepsPost, imgUrlList);
     }
@@ -74,8 +65,8 @@ public class FootstepsService {
     }
 
 
-    private FootstepsPost saveFootStepPost(FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
-        FootstepsPost footstepsPost = postRequestDto.toFootstepsPost(postRequestDto, userDetails);
+    private FootstepsPost saveFootStepPost(RegisterPhotoRequest request, UserDetailsImpl userDetails) {
+        FootstepsPost footstepsPost = Photoprofile.toFootstepsPost(request.getPhotoprofileList(), userDetails);
         footstepsRepository.save(footstepsPost);
         return footstepsPost;
         }
