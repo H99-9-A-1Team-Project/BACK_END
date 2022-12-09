@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,8 +35,8 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Async
     public String upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
+
         File file = convertMultipartFileToFile(multipartFile)
                 .orElseThrow( ()-> new IllegalArgumentException("파일 업로드에 실패했습니다"));
         String key = randomFileName(email, dirName);

@@ -23,7 +23,6 @@ public class CommentController {
                                                    @PathVariable Long consult_id,
                                                    @RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
         return ResponseEntity.ok(commentService.registerConsultCommentImg(userDetails, multipartFile));
-
     }
 
     @PostMapping("/consult/{consult_id}/comment")
