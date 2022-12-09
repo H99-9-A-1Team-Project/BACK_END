@@ -1,12 +1,10 @@
 package com.example.backend.comment.service;
 
-import com.example.backend.chat.domain.ChatRoom;
 import com.example.backend.chat.service.ChatRoomService;
-import com.example.backend.comment.dto.ImageResponseDto;
 import com.example.backend.comment.dto.ConsultMessageRequestDto;
+import com.example.backend.comment.dto.ImageResponseDto;
 import com.example.backend.comment.repository.CommentRepository;
 import com.example.backend.consult.repository.ConsultRepository;
-import com.example.backend.global.infra.S3.dto.AwsS3;
 import com.example.backend.global.infra.S3.service.AmazonS3Service;
 import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.user.model.Authority;
@@ -24,11 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CommentService {
 
     private final ConsultRepository consultRepository;
@@ -45,6 +42,7 @@ public class CommentService {
         }
 
         String imageUrl = amazonS3Service.upload(multipartFile, "CommentAnswerPhotos", userDetails.getUser().getEmail());
+
         return new ImageResponseDto(imageUrl);
     }
 
