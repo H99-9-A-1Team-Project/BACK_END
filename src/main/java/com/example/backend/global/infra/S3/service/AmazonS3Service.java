@@ -34,7 +34,6 @@ public class AmazonS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Async
     public String upload(MultipartFile multipartFile, String dirName, String email) throws IOException {
         File file = convertMultipartFileToFile(multipartFile)
                 .orElseThrow( ()-> new IllegalArgumentException("파일 업로드에 실패했습니다"));

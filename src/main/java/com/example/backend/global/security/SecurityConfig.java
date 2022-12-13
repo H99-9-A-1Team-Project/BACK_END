@@ -99,7 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.GET, "/image/**").permitAll()
 //                .antMatchers("/chat/**").permitAll()
 
-                .antMatchers("/v1/signup", "/v1/emailconfirm", "/v1/realtor/signup", "/v1/login", "/v1/reissue", "/awsHealthCheck").permitAll()
+                .antMatchers("/v1/signup", "/v1/emailconfirm", "/v1/realtor/signup", "/v1/login", "/v1/*", "/awsHealthCheck").permitAll()
 
                 .antMatchers("/v1/user").access("hasRole('ROLE_USER')")
                 .antMatchers("/v1/myprofile").access("hasRole('USER') or hasRole('REALTOR')")

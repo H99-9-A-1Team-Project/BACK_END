@@ -43,7 +43,7 @@ public class FootstepsService {
         FootstepsPost footstepsPost = saveFootStepPost(photoprofileList, userDetails);
         HashMap<String,String> photoUrlList = amazonS3Service.uploadMultipleS3Photo(photoListRequestDto, userDetails);
         List<String> imgUrlList = amazonS3Service.uploadMultipleS3Photo1(multipartFile, userDetails);
-        savePhotos(footstepsPost,imgUrlList, photoUrlList,footstepsPost.getId());
+        savePhotos(footstepsPost, imgUrlList, photoUrlList,footstepsPost.getId());
     }
     @Transactional
     public void updatePost(Long premisesId, FootstepsRequstDto postRequestDto, UserDetailsImpl userDetails) {
@@ -91,7 +91,6 @@ public class FootstepsService {
         photoRepository.save(photo);
         photoRepository.saveAll(photos);
     }
-
 
     private FootstepsPost saveFootStepPost(Photoprofile photoprofileList, UserDetailsImpl userDetails) {
         FootstepsPost footstepsPost = Photoprofile.toFootstepsPost(photoprofileList, userDetails);

@@ -6,8 +6,11 @@ import com.example.backend.consult.model.AnswerState;
 import com.example.backend.consult.model.Consult;
 import com.example.backend.consult.repository.ConsultRepository;
 import com.example.backend.footsteps.model.FootstepsPost;
+import com.example.backend.footsteps.model.Photo;
 import com.example.backend.footsteps.repository.FootstepsRepository;
+import com.example.backend.footsteps.repository.PhotoRepository;
 import com.example.backend.global.exception.customexception.AccessDeniedException;
+import com.example.backend.global.exception.customexception.ImageNotFoundException;
 import com.example.backend.global.security.auth.UserDetailsImpl;
 import com.example.backend.search.dto.ConsultFootStepsResponseDto;
 import com.example.backend.search.dto.MyConsultResponseDto;
@@ -34,6 +37,7 @@ public class SearchService {
     private final FootstepsRepository footstepsRepository;
     private final CommentRepository commentRepository;
     private final RealtorRepository realtorRepository;
+    private final PhotoRepository photoRepository;
 
     @Transactional(readOnly = true)
     public List<MyConsultResponseDto> searchConsult(UserDetailsImpl userDetails, String keyword) {
@@ -89,6 +93,18 @@ public class SearchService {
         for (Consult consult : consultList) {
             for(FootstepsPost post: footstepsPostList){
                 if(consult.getTitle().equals(post.getTitle())){
+
+                    List<Photo> photos = photoRepository.findByFootstepsPost(post);
+
+                    if(photos.size() == 0){
+                        throw new ImageNotFoundException();
+                    }
+
+                    Photo photo = photos.get(photos.size() - 1);
+                    String thumbnail = photo.getPostImgUrl();
+                    thumbnail = thumbnail.concat(".jpg");
+                    thumbnail = thumbnail.replace("myspartabucket2", "myspartabucket2-resized");
+
                     ResponseDtoList.add(ConsultFootStepsResponseDto.builder()
                             .id(post.getId())
                             .title(post.getTitle())
@@ -96,6 +112,7 @@ public class SearchService {
                             .coordY(post.getCoordFY())
                             .coordX(post.getCoordFX())
                             .review(post.getReview())
+                            .thumbnail(thumbnail)
                             .build());
                 }
             }
@@ -128,15 +145,30 @@ public class SearchService {
                 if(post.getTitle().equals(dto.getTitle())) num++;
             }
 
-            if(num == 0) myConsultResponseDtoList.add(
-                    ConsultFootStepsResponseDto.builder()
-                            .id(post.getId())
-                            .title(post.getTitle())
-                            .coordY(post.getCoordFY())
-                            .coordX(post.getCoordFX())
-                            .overLab(1)
-                            .review(post.getReview())
-                            .build());
+
+
+            if(num == 0) {
+                List<Photo> photos = photoRepository.findByFootstepsPost(post);
+                if(photos.size() == 0){
+                    throw new ImageNotFoundException();
+                }
+
+                Photo photo = photos.get(photos.size() - 1);
+                String thumbnail = photo.getPostImgUrl();
+                thumbnail = thumbnail.concat(".jpg");
+                thumbnail = thumbnail.replace("myspartabucket2", "myspartabucket2-resized");
+
+                myConsultResponseDtoList.add(
+                        ConsultFootStepsResponseDto.builder()
+                                .id(post.getId())
+                                .title(post.getTitle())
+                                .coordY(post.getCoordFY())
+                                .coordX(post.getCoordFX())
+                                .overLab(1)
+                                .review(post.getReview())
+                                .thumbnail(thumbnail)
+                                .build());
+            }
         }
 
         return myConsultResponseDtoList;
