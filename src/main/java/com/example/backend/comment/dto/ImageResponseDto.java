@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 public class ImageResponseDto {
 
-    private String url;
+    private String imageUrl;
 }
