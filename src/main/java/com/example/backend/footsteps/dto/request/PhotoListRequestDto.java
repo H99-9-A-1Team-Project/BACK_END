@@ -25,5 +25,7 @@ public class PhotoListRequestDto {
     private MultipartFile hospitalImg;
     private MultipartFile accessibilityImg;
     private MultipartFile parkImg;
+    private MultipartFile optionImg;
+    private MultipartFile extraMemoImg;
 
 }

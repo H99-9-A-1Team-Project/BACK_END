@@ -16,4 +16,5 @@ public class ConsultFootStepsResponseDto {
     private int overLab;
     private double coordX;
     private double coordY;
+    private String thumbnail;
 }
