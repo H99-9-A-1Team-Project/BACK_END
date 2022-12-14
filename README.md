@@ -63,6 +63,53 @@ SA : https://docs.google.com/spreadsheets/d/1JBQ1iAl9BINJq8oehd-nAWLhO557RTj0O0C
 ![SpringBoot](https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)    
 
 
+## :sparkles: 트러블 슈팅
+
+<details>
+<summary>리사이징으로 썸네일 이미지 생성</summary>
+<div markdown="1">
+
+|||
+|--|--|
+|요구사항|한번의 Request를 통해 최대 30장 이상의 S3에 요금 부담 절충안 필요|
+|선택지|1안) 여러 API로 분할하여 필요시에만 해당 URL을 통해 이미지를 업로드<br>2안) 클라이언트에서 이미지를 압축해서 전달해주기 + S3에 이미지가 업로드 될때마다<br>serverless 프레임워크를 사용해 S3요금 절감|
+|의견 조율|프로젝트의 특성상 많은 이미지 데이터를 주고 받아야함과 동시에<br> 많은 요금이 부과될 것을 전망하여 AWS lambda를 도입해 'serverless 프레임워크'를 사용|
+|의견 결정|1.AWS Lambda를 사용하여 S3 bucket을 분리<br>2. 리사이징된 썸네일 사진과 원본을 따로 저장하고<br>Lambda에 cloud watch를 통해 이미지 데이터의 송수신을 수시로 모니터링|
+
+</div>
+</details>
+
+<details>
+<summary>이메일 Sender 로딩 성능 개선</summary>
+<div markdown="1">
+
+|||
+|--|--|
+|요구사항|공인중개사 회원 가입 승인시 java email sender api로 이메일을 보낼 때 대기시간이 긴 이슈 발생|
+|선택지|1안) 동보 발송 형태의 단건 전송<br>(connection을 개발자가 직접 연 뒤에 보낼 내용을 한번에 전송하는 방식)<br>2안) 비동기 실행|
+|의견 조율|1안 '동보 발송' 형태는 속도 성능 개선의 부분에 있어 좋지만<br>대상자가 많아질수록 스팸처리 되는 부분인 단점이 있을 뿐더러<br>속도도 2안보다 현저히 느리다고 판단함,<br>또한 현 프로젝트에 있어서 다른 내용을 각각의 인원에게 보내야 하는 경우가 아니라고 판단해 2안을 채택하기로 함|
+|의견 결정|멀티 쓰레드로 비동기 환경을 구성해 이메일 전송하는 로직과 사용자에게 응답을 보내는 로직을 비동기 실행|
+|결과|Jmeter를 이용한 테스트 결과 12.22가량 소요되었던 응답시간이 12ms로 감소|
+
+![KakaoTalk_20221213_175142940](https://user-images.githubusercontent.com/113874252/207718559-f0c7c84d-22b8-44f3-ad07-fd57d550302f.png)
+
+</div>
+</details>
+
+<details>
+<summary>Query문 검색 기능 성능 개선중</summary>
+<div markdown="1">
+
+|||
+|--|--|
+|요구사항|유저가 최근에 검색했던 검색어 및 자동완성 기능 요구|
+|선택지|1안) 새로운 Entity를 생성해 DB에 검색했었던 keyword를 저장하고 자동으로 불러오기<br>2안)Querydsl과 fulltext search로 개선 등 다양한 방법론 해결책을 모색 중|
+|의견 조율|현 시점에 배포되어있는 검색 기능 부분에서 속도 개선 위주로 JPA를 사용했었지만<br> 동적 SQL의 다양한 기능을 사용해 유저의 서비스 개선을 고려하여 우선적으로 Query문 개선시도 중|
+|의견 결정|현재 JPA Query DSL을 환경설정 후 동적 SQL을 사용하여 유저의 서비스를 위한 다양한 시도를 하는 중<br>또한 유저의 니즈에 맞는 서비스 구현을 위한<br>redis를 이용한 채팅기능 및 fulltext search 기술 도입 고려 중|
+
+</div>
+</details>
+
 ## :flamingo: 팀원 소개 
 
 |조병민|김성욱|김하나|장경원|조정우|정규재|손하영|
